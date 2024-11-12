@@ -1,123 +1,53 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Overcoming Hurdles to Green Living: Insights for Community Climate Action"
+subtitle: "Understanding What Stops Sustainable Behaviors and How to Tackle It"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: [https://github.com/RohanAlexander/starter_folder](https://github.com/RohanAlexander/starter_folder)."
+  - Lexi Knight
+thanks: "Code and data are available at: [https://github.com/LexiKnight/toronto_climate/tree/main](https://github.com/LexiKnight/toronto_climate/tree/main)."
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
-format: pdf
+abstract: "This paper explores the factors limiting individuals from adopting environmentally friendly behaviors, drawing on survey data to understand motivations and barriers. Findings reveal that while many people are aware of climate change, obstacles like cost, convenience, and perceived effectiveness hinder sustainable actions. Additionally, the research highlights which methods of communication are most effective across different age groups. By addressing these barriers and tailoring strategies for engagement, cities can better empower residents to contribute to meaningful climate action, fostering a more sustainable urban future."
+format:
+  pdf:
+    toc: true
 number-sections: true
 bibliography: references.bib
 ---
 
-```{r}
-#| include: false
-#| warning: false
-#| message: false
-
-library(tidyverse)
-library(palmerpenguins)
-```
-
 
 # Introduction
 
-Overview paragraph
+Climate change remains one of the most pressing global challenges, with rising temperatures, extreme weather events, and environmental degradation threatening ecosystems and human well-being. Despite the urgent need for individual and collective action, many people continue to struggle with adopting sustainable behaviors in daily life. Governments and communities are increasingly interested in understanding how to motivate environmentally friendly practices, but significant gaps remain in identifying and addressing the obstacles that prevent action. This paper seeks to bridge that gap by examining not only what prevents individuals from engaging in sustainable behaviors but also what communication strategies can effectively inspire change.
 
-Estimand paragraph
+This study focuses on a survey conducted in 2018, which gathered insights into people’s awareness of climate change, their likelihood of taking specific climate-friendly actions, the reasons behind inaction, preferred ways of receiving climate-related information, and demographic characteristics such as age and education. We investigate the extent to which people feel informed about climate change, their readiness to adopt energy-efficient practices, reduce waste, and embrace greener transportation options, among other behaviors. Our analysis also sheds light on the barriers individuals face, ranging from financial and logistical concerns to doubts about the impact of their actions, and explores how demographic factors influence communication preferences.
 
-Results paragraph
+Addressing the gap between climate awareness and action is critical for effective community climate initiatives. Studies show that while awareness of environmental issues is widespread, behavioral change remains limited (Gifford, 2011). Additionally, research indicates that communication strategies tailored to specific demographics can enhance engagement and effectiveness (Moser & Dilling, 2007). Yet, there is little empirical evidence that explores how personalized communication and targeted interventions can overcome barriers to sustainable behaviors. Our study aims to fill this gap by estimating the causal impact of various factors on individuals’ willingness and ability to engage in environmentally friendly practices and identifying the best strategies for promoting sustainable change.
 
-Why it matters paragraph
+We found that practical obstacles, such as cost and convenience, alongside perceptions of ineffectiveness, are the primary reasons for inaction. Moreover, age and education level significantly shape how people prefer to receive information about climate action, suggesting that a one-size-fits-all communication strategy may be insufficient. These findings have substantial implications for policymakers and community leaders seeking to design more impactful climate initiatives. By addressing key barriers and tailoring engagement strategies, cities can empower individuals to adopt sustainable behaviors, making meaningful progress toward climate resilience and environmental sustainability.
 
-Telegraphing paragraph: The remainder of this paper is structured as follows. @sec-data....
+The remainder of this paper is structured as follows: @sec-data presents the methods used to analyze these demographic differences, followed by @sec-results, which details the results of the comparison between Rosedale-Moore Park and Downtown Yonge East. @sec-discussion offers a discussion of the findings, highlighting the implications for understanding residential segregation in Toronto. Finally, @sec-conclusion concludes with a reflection on the limitations of the study and suggestions for future research directions.
 
-
-
-
-
+ 
 
 # Data {#sec-data}
 
-## Overview
+## Software and R-packages
+## Methodology 
+### Data Collection
+### Data Cleaning
+### Data Analysis
+## Features
+### Age
+### Highest Level of Education Completed
+### Extent Feel Informed
+### Likelihood Taking Action
+### Barriers Taking Action
+### Best Mode of Delivery
 
-We use the statistical programming language R [@citeR].... Our data [@shelter].... Following @tellingstories, we consider...
-
-Overview text
-
-## Measurement
-	
-Some paragraphs about how we go from a phenomena in the world to an entry in the dataset.
-
-## Outcome variables
-
-Add graphs, tables and text. Use sub-sub-headings for each outcome variable or update the subheading to be singular.
-
-
-
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
-
-```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
-
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
-#| echo: false
-#| warning: false
-#| message: false
-
-analysis_data <- read_csv(here::here("data/02-analysis_data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
-```
-
-Talk way more about it. 
-
-## Predictor variables
-
-Add graphs, tables and text.
-
-Use sub-sub-headings for each outcome variable and feel free to combine a few into one if they go together naturally.
-
-
-
-
-
-
-
-
-# Model
-
+# Model {#sec-model}
 The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
+Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-appendix].
 ## Model set-up
-
 Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
 
 \begin{align} 
@@ -131,47 +61,17 @@ y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
 
 We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
-
-### Model justification
-
+### Model Specifications ###
+### Model Justification 
 We expect a positive relationship between the size of the wings and time spent aloft. In particular...
 
 We can use maths by including latex between dollar signs, for instance $\theta$.
-
+#### Response Variable ####
+#### Input Variabless ####
+#### Model Structure ####
+#### Parameter Estimation ####
 
 # Results
-
-Our results are summarized in @tbl-modelresults.
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
-```
-
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
-```
-
-
 
 
 # Discussion
@@ -186,69 +86,17 @@ Please don't use these as sub-heading labels - change them to be what your point
 
 ## Third discussion point
 
-## Weaknesses and next steps
+## Limitations
 
-Weaknesses and next steps should also be included.
+## Future Directions
+
+# Conclusion {#sec-conclusion}
 
 \newpage
 
 \appendix
 
-# Appendix {-}
-
-
-# Additional data details
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
-
+# Appendix {#sec-appendix}
 
 
 \newpage

@@ -123,17 +123,17 @@ renamed_twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_action_sort_waste_inconvienient_18 = Q11_Lr9r6,
     unlikelihood_action_sort_waste_uninterested_18 = Q11_Lr9r7,
     unlikelihood_action_sort_waste_other_18 = Q11_Lr9r8,
-    toronto.ca_website_18 = Q13r1,
-    events_18 = Q13r2,
-    twitter_18 = Q13r3,
-    facebook_18 = Q13r4,
-    instagram_18 = Q13r5,
-    enewsletter_email_18 = Q13r6,
-    councillor_communication_18 = Q13r7,
-    advertising_campaigns_18 = Q13r8,
-    brochures_pamphlets_18 = Q13r9,
-    other_18 = Q13r10,
-    not_interested_receiving_18 = Q13r11,
+    delivery_method_toronto.ca_website_18 = Q13r1,
+    delivery_method_events_18 = Q13r2,
+    delivery_method_twitter_18 = Q13r3,
+    delivery_method_facebook_18 = Q13r4,
+    delivery_method_instagram_18 = Q13r5,
+    delivery_method_enewsletter_email_18 = Q13r6,
+    delivery_method_councillor_communication_18 = Q13r7,
+    delivery_method_advertising_campaigns_18 = Q13r8,
+    delivery_method_brochures_pamphlets_18 = Q13r9,
+    delivery_method_other_18 = Q13r10,
+    delivery_method_not_interested_receiving_18 = Q13r11,
     highest_level_educ_18 = QD5
   )
 
@@ -141,4 +141,4 @@ renamed_twenty_eighteen <- twenty_eighteen %>%
 head(renamed_twenty_eighteen)
 
 #### Save data ####
-write_csv(renamed_twenty_eighteen, "data/analysis_data.csv")
+write_csv(renamed_twenty_eighteen, "data/02-analysis_data/analysis_data.csv")
