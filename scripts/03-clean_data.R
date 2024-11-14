@@ -32,10 +32,7 @@ twenty_eighteen <- twenty_eighteen_raw_data %>%
   Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
   Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
   Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
-  QD5
-  ) %>%
-  na.omit()  # Remove rows with NA values
-  
+  QD5)
 
 #### Rename columns 2018 ####
 # use rename() function to give more meaningful names
