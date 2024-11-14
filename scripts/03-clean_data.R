@@ -17,11 +17,9 @@ library(dplyr)
 
 #### Clean data 2018 ####
 # Read the csv file
-
 twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
 
 #  I want to select certain columns outlined below
-
 twenty_eighteen <- twenty_eighteen_raw_data %>%
   select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
   Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
@@ -34,7 +32,10 @@ twenty_eighteen <- twenty_eighteen_raw_data %>%
   Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
   Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
   Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
-  QD5)
+  QD5
+  ) %>%
+  na.omit()  # Remove rows with NA values
+  
 
 #### Rename columns 2018 ####
 # use rename() function to give more meaningful names

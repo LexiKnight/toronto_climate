@@ -38,9 +38,223 @@ The remainder of this paper is structured as follows: @sec-data presents the met
 ### Data Analysis
 ## Features
 ### Age
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-one
+#| fig-cap: The chart illustrates the distribution of age for the 2018 survey in the City of Toronto, highlighting the major age categories.
+
+# install libraries 
+# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr"))
+
+# Load necessary libraries
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(here)
+library(stringr)
+library(knitr)
+
+# Read in the data from your CSV file
+analysis_data <- read_csv(here("data/02-analysis_data/analysis_data.csv"))
+
+# Create a histogram to show the distribution of age
+age_plot <- ggplot(data, aes(x = age_18)) +
+  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", alpha = 0.7) +
+  labs(
+    title = "Age Distribution of Survey Respondents (2018)",
+    x = "Age",
+    y = "Frequency"
+  ) +
+  theme_minimal()
+
+# Display the plot
+print(age_plot)
+
+# calculate summary statistics 
+mean_age <- mean(data$age_18, na.rm = TRUE)
+median_age <- median(data$age_18, na.rm = TRUE)
+min_age <- min(data$age_18, na.rm = TRUE)
+max_age <- max(data$age_18, na.rm = TRUE)
+# R does not have built in function thus needs to be defined
+sd_age <- sd(data$age_18, na.rm = TRUE)
+mode_age <- function(x) {
+  unique_x <- unique(x)
+  unique_x[which.max(tabulate(match(x, unique_x)))]
+}
+mode_value <- mode_age(data$age_18)
+
+# Create a data frame with the summary statistics
+summary_stats_age_18 <- data.frame(
+  Statistic = c("Mean Age", "Median Age", "Mode Age", "Standard Deviation", "Minimum Age", "Maximum Age"),
+  Value = c(mean_age, median_age, mode_value, sd_age, min_age, max_age)
+)
+
+# Use kable to generate a nice table
+kable(summary_stats_age_18, 
+      caption = "Summary Statistics for Age of Survey Respondents", 
+      col.names = c("Statistic", "Value"),
+      align = c("l", "c"))
+
+
+```
+
 ### Highest Level of Education Completed
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-one
+#| fig-cap: The chart illustrates the distribution of highest level of education acheived for the 2018 surveyin the city of Toronto, highlighting academic achievement.
+
+# install libraries 
+# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr"))
+
+# Load necessary libraries
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(here)
+library(stringr)
+library(knitr)
+
+# Read in the data from your CSV file
+analysis_data <- read_csv(here("data/02-analysis_data/analysis_data.csv"))
+
+# Create a bar chart for the highest level of education
+ggplot(data = analysis_data, aes(x = factor(highest_level_educ_18, 
+       levels = c("High school or less",
+                  "Some community college, vocational, trade school",
+                  "Completed community college, vocational, trade school",
+                  "Some university",
+                  "Completed undergraduate degree",
+                  "Post graduate/professional school", 
+                  "Prefer not to answer")))) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(
+    title = "Distribution of Highest Level of Education Achievement",
+    x = "Level of Education",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.margin = margin(10, 10, 10, 10), # Adds margin around the plot
+    plot.title = element_text(hjust = 0.5) # Centers the title
+  ) + 
+  # Wrap x-axis labels
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) + 
+  # Y-axis ticks every 25
+  scale_y_continuous(breaks = seq(0, max(table(analysis_data$highest_level_educ_18)), by = 25)) 
+
+# Adjust the size of the figure (increase height)
+  ggsave("education_chart.png", width = 10, height = 6)
+```
+
 ### Extent Feel Informed
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-one
+#| fig-cap: The bar chart illustrates the distribution of the extent individuals feel informed about what causes climate change in the City of Toronto, based on the 2018 survey.
+
+# install libraries 
+# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr"))
+
+# Load necessary libraries
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(here)
+library(stringr)
+library(knitr)
+
+# Read in the data from your CSV file
+analysis_data <- read_csv(here("data/02-analysis_data/analysis_data.csv"))
+
+# Create a bar chart for the extent people feel informed about climate change
+ggplot(data = analysis_data, aes(x = factor(extent_consider_informed_18, 
+       levels = c("Extremely informed", 
+                  "Very informed", 
+                  "Not very informed", 
+                  "Not at all informed")))) +
+  geom_bar(fill = "lightgreen", color = "black") +
+  labs(
+    title = "Extent People Feel Informed About Climate Change",
+    x = "Level of Informedness",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5) # Center the title
+  ) 
+
+
+```
+
 ### Likelihood Taking Action
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-one
+#| fig-cap: The bar chart illustrates the distribution of the likelihood of taking certain actions to address climate change in the City of Toronto based on the 2018 survey. 
+
+# install libraries 
+# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr"))
+
+# Load necessary libraries
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(here)
+library(stringr)
+library(knitr)
+
+# Read in the data from your CSV file
+analysis_data <- read_csv(here("data/02-analysis_data/analysis_data.csv"))
+
+# Create reshaped data for plotting
+action_data_long <- analysis_data %>%
+  pivot_longer(cols = starts_with("likelihood_action"),
+               names_to = "Action",
+               values_to = "Likelihood") %>%
+  mutate(Action = recode(Action,
+                         likelihood_action_home_improvement_18 = "Home Improvement",
+                         likelihood_action_reduce_hydro_18 = "Reduce Hydro Use",
+                         likelihood_action_minimize_car_18 = "Minimize Car Use",
+                         likelihood_action_vehicle_electric_18 = "Use Electric Vehicle",
+                         likelihood_action_protein_alternative_18 = "Alternative Proteins",
+                         likelihood_action_reduce_waste_18 = "Reduce Waste",
+                         likelihood_action_green_product_18 = "Green Products",
+                         likelihood_action_short_distance_18 = "Short Distance Travel",
+                         likelihood_action_sort_waste_18 = "Sort Waste")) %>%
+  filter(!is.na(Likelihood)) %>% # Remove rows where Likelihood is NA
+  mutate(Likelihood = factor(Likelihood)) # Convert Likelihood to a factor
+
+# Plot the distribution of likelihood of actions to address climate change
+ggplot(action_data_long, aes(x = Action, fill = Likelihood)) +
+  geom_bar(stat = "count", position = "dodge") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1), # Rotate x-axis labels for readability
+        axis.title.y = element_text(size = 12),
+        legend.title = element_text(size = 12),
+        legend.text = element_text(size = 10)) +
+  labs(
+    title = "Likelihood of Taking Action to Address Climate Change in Toronto (2018)",
+    x = "Actions to Address Climate Change",
+    y = "Count of Responses",
+    fill = "Likelihood"
+  ) +
+  scale_fill_manual(values = c("Already doing this or have done this" = "green",
+                               "Very likely" = "blue",
+                               "Somewhat likely" = "yellow",
+                               "Somewhat unlikely" = "orange",
+                               "Very unlikely" = "red"))
+```
+
 ### Barriers Taking Action
 ### Best Mode of Delivery
 
