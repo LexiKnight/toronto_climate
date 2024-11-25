@@ -139,16 +139,21 @@ renamed_twenty_eighteen <- twenty_eighteen %>%
     highest_level_educ_18 = QD5
   )
 
-# Fix all "unlikelihood" and 'delivery' columns
+# Fix all "unlikelihood" and "delivery" columns
+# Replace NA, "TO DO", and other values in columns
 fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
   mutate(
     across(
-      starts_with("unlikelihood"),
-      ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no" and non-NA with "yes"
-    ),
+      starts_with("unlikelihood_action"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "TO DO"), "no", "yes"))
+    )
+  ) %>%
+  mutate(
     across(
-      starts_with("delivery"),
-      ~ ifelse(grepl("^NO TO:", ., ignore.case = TRUE), "no", "yes")
+      starts_with("delivery_method"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "TO DO"), "no", "yes"))
     )
   )
 
