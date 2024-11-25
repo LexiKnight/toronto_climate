@@ -140,20 +140,20 @@ renamed_twenty_eighteen <- twenty_eighteen %>%
   )
 
 # Fix all "unlikelihood" and "delivery" columns
-# Replace NA, "TO DO", and other values in columns
+# Replace NA, "NO TO", and other values in columns
 fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
   mutate(
     across(
       starts_with("unlikelihood_action"),
       ~ ifelse(is.na(.), "no",
-               ifelse(startsWith(., "TO DO"), "no", "yes"))
+               ifelse(startsWith(., "NO TO"), "no", "yes"))
     )
   ) %>%
   mutate(
     across(
       starts_with("delivery_method"),
       ~ ifelse(is.na(.), "no",
-               ifelse(startsWith(., "TO DO"), "no", "yes"))
+               ifelse(startsWith(., "NO TO"), "no", "yes"))
     )
   )
 
