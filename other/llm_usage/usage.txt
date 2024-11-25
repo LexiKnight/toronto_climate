@@ -464,3 +464,1396 @@ Summary
 All packages are essential for the tasks performed in this script: downloading files, reading Excel sheets, processing data, and saving outputs. If you want to streamline or avoid loading unnecessary packages, you could replace tidyverse with only readr if you're not using other tidyverse functionalities.
 
 
+
+LLM: ChatGPT-4.
+Date: 25 November 2024 
+
+User: 
+i like the idea of using openxlsx. i am wanting to clean the workbook to save only sheets numbered 3,11,34, 67, 85, 114. remember the first sheet is labeled "index" then sheets go from 1 to 121. Then i want to compile these sheets to all be on one sheet
+
+
+ChatGPT:
+Here’s how you can use openxlsx to clean the workbook, extract the sheets numbered 3, 11, 34, 67, 85, and 114, and combine them into one consolidated sheet:
+
+Steps:
+Read the workbook and sheet names: Use getSheetNames to list all sheets.
+Extract specific sheets: Use read.xlsx to load only the desired sheets.
+Combine the data: Use rbind or bind_rows (from dplyr) to combine the data frames into one.
+Save the cleaned workbook: Write the combined data to a single sheet.
+Code:
+R
+Copy code
+library(openxlsx)
+library(dplyr) # For combining data frames
+
+# File path to the saved workbook
+file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
+
+# Sheet numbers to extract (1-based indexing in R, "index" is first)
+sheet_numbers <- c(3, 11, 34, 67, 85, 114)
+
+# Get all sheet names
+sheet_names <- getSheetNames(file_path)
+
+# Read the specific sheets into a list
+selected_sheets <- lapply(sheet_numbers, function(sheet_num) {
+  read.xlsx(file_path, sheet = sheet_names[sheet_num])
+})
+
+# Combine all selected sheets into one data frame
+combined_data <- bind_rows(selected_sheets)
+
+# Create a new workbook to save the cleaned data
+cleaned_wb <- createWorkbook()
+
+# Add a single sheet with the combined data
+addWorksheet(cleaned_wb, "Consolidated Data")
+writeData(cleaned_wb, "Consolidated Data", combined_data)
+
+# Save the cleaned workbook
+saveWorkbook(cleaned_wb, "data/01-cleaned_data/consolidated_data.xlsx", overwrite = TRUE)
+Explanation:
+sheet_numbers: Contains the 1-based indices of sheets to extract.
+Since the first sheet is "index", the sheets numbered 3, 11, 34, 67, 85, 114 correspond to the Excel sheets.
+lapply: Reads the specified sheets into a list of data frames.
+bind_rows: Combines all selected sheets row-wise into one data frame.
+createWorkbook: Initializes a new workbook.
+addWorksheet & writeData: Writes the combined data into a single sheet named "Consolidated Data".
+saveWorkbook: Saves the new workbook at the desired path.
+Output:
+The combined data is saved in data/01-cleaned_data/consolidated_data.xlsx on a single sheet named "Consolidated Data".
+
+
+
+
+User:
+#### Clean data 2018 ####
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+#  I want to select certain columns outlined below
+twenty_eighteen <- twenty_eighteen_raw_data %>%
+  select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
+  Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
+  Q11_Lr2r1, Q11_Lr2r2, Q11_Lr2r3, Q11_Lr2r4, Q11_Lr2r5, Q11_Lr2r6, Q11_Lr2r7, Q11_Lr2r8,
+  Q11_Lr3r1, Q11_Lr3r2, Q11_Lr3r3, Q11_Lr3r4, Q11_Lr3r5, Q11_Lr3r6, Q11_Lr3r7, Q11_Lr3r8,
+  Q11_Lr4r1, Q11_Lr4r2, Q11_Lr4r3, Q11_Lr4r4, Q11_Lr4r5, Q11_Lr4r6, Q11_Lr4r7, Q11_Lr4r8,
+  Q11_Lr5r1, Q11_Lr5r2, Q11_Lr5r3, Q11_Lr5r4, Q11_Lr5r5, Q11_Lr5r6, Q11_Lr5r7, Q11_Lr5r8,
+  Q11_Lr6r1, Q11_Lr6r2, Q11_Lr6r3, Q11_Lr6r4, Q11_Lr6r5, Q11_Lr6r6, Q11_Lr6r7, Q11_Lr6r8,
+  Q11_Lr7r1, Q11_Lr7r2, Q11_Lr7r3, Q11_Lr7r4, Q11_Lr7r5, Q11_Lr7r6, Q11_Lr7r7, Q11_Lr7r8,
+  Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
+  Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
+  Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
+  QD5)
+
+#### Rename columns 2018 ####
+# use rename() function to give more meaningful names
+renamed_twenty_eighteen <- twenty_eighteen %>%
+  rename(
+    age_18 = HIDAGE1,
+    extent_consider_informed_18 = Q2,
+    likelihood_action_home_improvement_18= Q10r1,
+    likelihood_action_reduce_hydro_18 = Q10r2,
+    likelihood_action_minimize_car_18 = Q10r3,
+    likelihood_action_vehicle_electric_18 = Q10r4,
+    likelihood_action_protein_alternative_18 = Q10r5,
+    likelihood_action_reduce_waste_18 = Q10r6,
+    likelihood_action_green_product_18 = Q10r7,
+    likelihood_action_short_distance_18 = Q10r8,
+    likelihood_action_sort_waste_18 = Q10r9,
+    unlikelihood_action_home_improvement_confusing_18 = Q11_Lr1r1,
+    unlikelihood_action_home_improvement_individual_difference_18 = Q11_Lr1r2,
+    unlikelihood_action_home_improvement_ineffective_18 = Q11_Lr1r3,
+    unlikelihood_action_home_improvement_costly_18 = Q11_Lr1r4,
+    unlikelihood_action_home_improvement_unavailable_18 = Q11_Lr1r5,
+    unlikelihood_action_home_improvement_inconvienient_18 = Q11_Lr1r6,
+    unlikelihood_action_home_improvement_uninterested_18 = Q11_Lr1r7,
+    unlikelihood_action_home_improvement_other_18 = Q11_Lr1r8,
+    unlikelihood_action_reduce_hydro_confusing_18 = Q11_Lr2r1,
+    unlikelihood_action_reduce_hydro_individual_difference_18 = Q11_Lr2r2,
+    unlikelihood_action_reduce_hydro_ineffective_18 = Q11_Lr2r3,
+    unlikelihood_action_reduce_hydro_costly_18 = Q11_Lr2r4,
+    unlikelihood_action_reduce_hydro_unavailable_18 = Q11_Lr2r5,
+    unlikelihood_action_reduce_hydro_inconvienient_18 = Q11_Lr2r6,
+    unlikelihood_action_reduce_hydro_uninterested_18 = Q11_Lr2r7,
+    unlikelihood_action_reduce_hydro_other_18 = Q11_Lr2r8,
+    unlikelihood_action_minimize_car_confusing_18 = Q11_Lr3r1,
+    unlikelihood_action_minimize_car_individual_difference_18 = Q11_Lr3r2,
+    unlikelihood_action_minimize_car_ineffective_18 = Q11_Lr3r3,
+    unlikelihood_action_minimize_car_costly_18 = Q11_Lr3r4,
+    unlikelihood_action_minimize_car_unavailable_18 = Q11_Lr3r5,
+    unlikelihood_action_minimize_car_inconvienient_18 = Q11_Lr3r6,
+    unlikelihood_action_minimize_car_uninterested_18 = Q11_Lr3r7,
+    unlikelihood_action_minimize_car_other_18 = Q11_Lr3r8,
+    unlikelihood_action_vehicle_electric_confusing_18 = Q11_Lr4r1,
+    unlikelihood_action_vehicle_electric_individual_difference_18 = Q11_Lr4r2,
+    unlikelihood_action_vehicle_electric_ineffective_18 = Q11_Lr4r3,
+    unlikelihood_action_vehicle_electric_costly_18 = Q11_Lr4r4,
+    unlikelihood_action_vehicle_electric_unavailable_18 = Q11_Lr4r5,
+    unlikelihood_action_vehicle_electric_inconvienient_18 = Q11_Lr4r6,
+    unlikelihood_action_vehicle_electric_uninterested_18 = Q11_Lr4r7,
+    unlikelihood_action_vehicle_electric_other_18 = Q11_Lr4r8,
+    unlikelihood_action_protein_alternative_confusing_18 = Q11_Lr5r1,
+    unlikelihood_action_protein_alternative_individual_difference_18 = Q11_Lr5r2,
+    unlikelihood_action_protein_alternative_ineffective_18 = Q11_Lr5r3,
+    unlikelihood_action_protein_alternative_costly_18 = Q11_Lr5r4,
+    unlikelihood_action_protein_alternative_unavailable_18 = Q11_Lr5r5,
+    unlikelihood_action_protein_alternative_inconvienient_18 = Q11_Lr5r6,
+    unlikelihood_action_protein_alternative_uninterested_18 = Q11_Lr5r7,
+    unlikelihood_action_protein_alternative_other_18 = Q11_Lr5r8,
+    unlikelihood_action_reduce_waste_confusing_18 = Q11_Lr6r1,
+    unlikelihood_action_reduce_waste_individual_difference_18 = Q11_Lr6r2,
+    unlikelihood_action_reduce_waste_ineffective_18 = Q11_Lr6r3,
+    unlikelihood_action_reduce_waste_costly_18 = Q11_Lr6r4,
+    unlikelihood_action_reduce_waste_unavailable_18 = Q11_Lr6r5,
+    unlikelihood_action_reduce_waste_inconvienient_18 = Q11_Lr6r6,
+    unlikelihood_action_reduce_waste_uninterested_18 = Q11_Lr6r7,
+    unlikelihood_action_reduce_waste_other_18 = Q11_Lr6r8,
+    unlikelihood_action_green_product_confusing_18 = Q11_Lr7r1,
+    unlikelihood_action_green_product_individual_difference_18 = Q11_Lr7r2,
+    unlikelihood_action_green_product_ineffective_18 = Q11_Lr7r3,
+    unlikelihood_action_green_product_costly_18 = Q11_Lr7r4,
+    unlikelihood_action_green_product_unavailable_18 = Q11_Lr7r5,
+    unlikelihood_action_green_product_inconvienient_18 = Q11_Lr7r6,
+    unlikelihood_action_green_product_uninterested_18 = Q11_Lr7r7,
+    unlikelihood_action_green_product_other_18 = Q11_Lr7r8,
+    unlikelihood_action_short_distance_confusing_18 = Q11_Lr8r1,
+    unlikelihood_action_short_distance_individual_difference_18 = Q11_Lr8r2,
+    unlikelihood_action_short_distance_ineffective_18 = Q11_Lr8r3,
+    unlikelihood_action_short_distance_costly_18 = Q11_Lr8r4,
+    unlikelihood_action_short_distance_unavailable_18 = Q11_Lr8r5,
+    unlikelihood_action_short_distance_inconvienient_18 = Q11_Lr8r6,
+    unlikelihood_action_short_distance_uninterested_18 = Q11_Lr8r7,
+    unlikelihood_action_short_distance_other_18 = Q11_Lr8r8,
+    unlikelihood_action_sort_waste_confusing_18 = Q11_Lr9r1,
+    unlikelihood_action_sort_waste_individual_difference_18 = Q11_Lr9r2,
+    unlikelihood_action_sort_waste_ineffective_18 = Q11_Lr9r3,
+    unlikelihood_action_sort_waste_costly_18 = Q11_Lr9r4,
+    unlikelihood_action_sort_waste_unavailable_18 = Q11_Lr9r5,
+    unlikelihood_action_sort_waste_inconvienient_18 = Q11_Lr9r6,
+    unlikelihood_action_sort_waste_uninterested_18 = Q11_Lr9r7,
+    unlikelihood_action_sort_waste_other_18 = Q11_Lr9r8,
+    delivery_method_toronto.ca_website_18 = Q13r1,
+    delivery_method_events_18 = Q13r2,
+    delivery_method_twitter_18 = Q13r3,
+    delivery_method_facebook_18 = Q13r4,
+    delivery_method_instagram_18 = Q13r5,
+    delivery_method_enewsletter_email_18 = Q13r6,
+    delivery_method_councillor_communication_18 = Q13r7,
+    delivery_method_advertising_campaigns_18 = Q13r8,
+    delivery_method_brochures_pamphlets_18 = Q13r9,
+    delivery_method_other_18 = Q13r10,
+    delivery_method_not_interested_receiving_18 = Q13r11,
+    highest_level_educ_18 = QD5
+  )
+
+# View the first few rows to confirm the data
+head(renamed_twenty_eighteen)
+
+
+# for 2018 data, need to fix unlikehood columns and method of communication columns
+
+#### Save 2018 individual data ####
+write_csv(renamed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
+Given my code, I need to fix the rows associated with columns starting with "unlikelihood". The "NA" indicate that people are not unlikely to perform the action.  I would like to change this to"no". All other rows under these columns should be changed to "yes" in that yes people are unlikely to perform the action. can you help with this? 
+ChatGPT said:
+ChatGPT
+To fix the rows in columns starting with "unlikelihood" in your dataset, you can use the mutate_at function (deprecated but still works) or its newer alternative, across, to apply a conditional transformation across all relevant columns. Below is an example implementation using dplyr to update the data as per your instructions:
+
+R
+Copy code
+# Fix "unlikelihood" columns in the 2018 dataset
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(across(
+    starts_with("unlikelihood"),
+    ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no" and all others with "yes"
+  ))
+
+# View the first few rows to confirm the changes
+head(fixed_twenty_eighteen)
+
+# Save the fixed data
+write_csv(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_fixed_analysis_data.csv")
+Explanation:
+across:
+
+Targets all columns starting with "unlikelihood" using the starts_with() function.
+Applies a transformation using ifelse(), where:
+is.na(.) changes NA values to "no".
+Non-NA values are set to "yes".
+Saving the Data:
+
+The fixed dataset is written to a new CSV file for further analysis.
+Let me know if you have any additional questions!
+
+
+
+
+User:
+ok i wanna do the same thing for columns starting with "delivery". rows under these columns that start with "NO TO:" please change to "no" as in the person does not want to receive information via this method of communication". All other rows under these columns are to be changed to "yes"
+ChatGPT said:
+ChatGPT
+Here's how you can make the requested changes in your dataset using R. This assumes your dataset is a data frame called df.
+
+Steps:
+Identify columns starting with "delivery".
+Locate rows under these columns that start with "NO TO:" and set them to "no".
+Set all other rows in these columns to "yes".
+Code:
+R
+Copy code
+# Identify columns starting with "delivery"
+delivery_columns <- grep("^delivery", colnames(df), value = TRUE)
+
+# Iterate over the delivery columns and modify the rows
+df[delivery_columns] <- lapply(df[delivery_columns], function(column) {
+  # Change rows starting with "NO TO:" to "no"
+  column <- ifelse(grepl("^NO TO:", column, ignore.case = TRUE), "no", "yes")
+  return(column)
+})
+Explanation:
+grep("^delivery", colnames(df), value = TRUE): Finds column names that start with "delivery".
+lapply(): Loops through each of these columns.
+grepl("^NO TO:", column, ignore.case = TRUE): Identifies rows starting with "NO TO:" (case-insensitive).
+ifelse(): Changes those rows to "no" and all others to "yes".
+Let me know if you need further assistance!
+
+
+
+
+User:
+#### Clean data 2021 ####
+
+# File path to the saved workbook
+file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
+
+# Sheet numbers to extract (1-based indexing in R, "index" is first)
+sheet_numbers <- c(3, 11, 34, 67, 85, 114)
+
+# Get all sheet names
+sheet_names <- getSheetNames(file_path)
+
+# Read the specific sheets into a list
+selected_sheets <- lapply(sheet_numbers, function(sheet_num) {
+  read.xlsx(file_path, sheet = sheet_names[sheet_num])
+})
+
+# Combine all selected sheets into one data frame
+combined_data <- bind_rows(selected_sheets)
+
+# Create a new workbook to save the cleaned data
+cleaned_wb <- createWorkbook()
+
+# Add a single sheet with the combined data
+addWorksheet(cleaned_wb, "Consolidated Data")
+writeData(cleaned_wb, "Consolidated Data", combined_data)
+
+#### Save 2021 summary data ####
+saveWorkbook(cleaned_wb, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.xlsx", overwrite = TRUE) Based on the code above, I want to extract certain rows from columns A and B for sheets numbered 3,11,34,69,85,113, 114. The sample size for 2021 is 1401, can we add this somewhere?For sheet 3, I want the age categories under column A rows 8, 11, 14, 17. the corresponding percentages in decimal form are under column B rows 9, 12, 15, 18. Also can we change the percentage into a whole number? For sheet 11, I want under column A rows 8, 11, 14, 17, 20, 23. the corresponding percentages in decimal form are in column B rows 12, 15, 18, 21, 24.  From sheet 34 from column A, i want categories in rows 8, 11, 14, 17. the corresponding percentages in decimal forms are in column B rows 9, 12, 15, 18.  From sheet 69 I want column A rows 6, 8, 10, 12, 14, 16, 18.  Column B through column P corresponding rows in decimal form are 7, 9, 11, 13, 15, 17, 19. From sheet 85 i want column A rows 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34. Column B thru L , i want corresponding rows in decimal from namely rows 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35 ( replace "-" by "0").  From sheet 113, I want column A rows 8,11,14,17,20,23,26,29,32,35,38,41,44,47,50,53,56,59,62,65,68,71,74,77,80,83,86,89,92,95,98,101,104,107,110,113,116,119. From column B i need corresponding percentages (expressed in decimal form) rows 9,12,15,18,21,24,27,30,33,36,39,42,45,48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120.  From sheet 114 I want column A rows 8,11,14,17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50.  column B rows 9,12,15,18,21,24,27,30,33,36,39,42,45,48, 51.  Please provide full code to do so given my current code
+
+ChatGPT:
+Below is a complete R script tailored to your requirements. It extracts the specified rows and columns from each of the listed sheets, converts percentages in decimal form to whole numbers, replaces "-" with "0", and consolidates the data into a single workbook. Additionally, the sample size of 1401 for 2021 is included as a comment for clarity.
+
+Full Code:
+r
+Copy code
+#### Load required libraries ####
+library(openxlsx)
+library(dplyr)
+
+#### File path and setup ####
+# File path to the saved workbook
+file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
+
+# Sheet numbers to extract
+sheet_numbers <- c(3, 11, 34, 69, 85, 113, 114)
+
+# Get all sheet names
+sheet_names <- getSheetNames(file_path)
+
+# Sample size information
+sample_size_2021 <- 1401 # This is the sample size for the year 2021
+
+#### Function to extract data from a sheet ####
+extract_data <- function(sheet, rows_A, rows_B, cols_B_to = NULL) {
+  # Read the sheet
+  data <- read.xlsx(file_path, sheet = sheet)
+  
+  # Extract Column A rows
+  col_A <- data[rows_A, "A"]
+  
+  # Extract corresponding rows from Column B (or additional columns)
+  if (is.null(cols_B_to)) {
+    col_B <- data[rows_B, "B"]
+    # Replace "-" with "0" and convert percentages to whole numbers
+    col_B <- gsub("-", "0", col_B)
+    col_B <- as.numeric(col_B) * 100
+    return(data.frame(Category = col_A, Percentage = col_B))
+  } else {
+    # Extract multiple columns (e.g., B through P)
+    cols_data <- data[rows_B, cols_B_to]
+    cols_data <- as.data.frame(lapply(cols_data, function(x) {
+      x <- gsub("-", "0", x)
+      as.numeric(x) * 100
+    }))
+    return(data.frame(Category = col_A, cols_data))
+  }
+}
+
+#### Extract data from the specified sheets ####
+
+# Sheet 3
+sheet_3_data <- extract_data(sheet = sheet_names[3],
+                             rows_A = c(8, 11, 14, 17),
+                             rows_B = c(9, 12, 15, 18))
+
+# Sheet 11
+sheet_11_data <- extract_data(sheet = sheet_names[11],
+                              rows_A = c(8, 11, 14, 17, 20, 23),
+                              rows_B = c(12, 15, 18, 21, 24))
+
+# Sheet 34
+sheet_34_data <- extract_data(sheet = sheet_names[34],
+                              rows_A = c(8, 11, 14, 17),
+                              rows_B = c(9, 12, 15, 18))
+
+# Sheet 69
+sheet_69_data <- extract_data(sheet = sheet_names[69],
+                              rows_A = c(6, 8, 10, 12, 14, 16, 18),
+                              rows_B = c(7, 9, 11, 13, 15, 17, 19),
+                              cols_B_to = "B:P")
+
+# Sheet 85
+sheet_85_data <- extract_data(sheet = sheet_names[85],
+                              rows_A = c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34),
+                              rows_B = c(7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35),
+                              cols_B_to = "B:L")
+
+# Sheet 113
+sheet_113_data <- extract_data(sheet = sheet_names[113],
+                               rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107, 110, 113, 116, 119),
+                               rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120))
+
+# Sheet 114
+sheet_114_data <- extract_data(sheet = sheet_names[114],
+                               rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50),
+                               rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51))
+
+#### Combine all extracted data ####
+combined_data <- bind_rows(
+  list(
+    Sheet_3 = sheet_3_data,
+    Sheet_11 = sheet_11_data,
+    Sheet_34 = sheet_34_data,
+    Sheet_69 = sheet_69_data,
+    Sheet_85 = sheet_85_data,
+    Sheet_113 = sheet_113_data,
+    Sheet_114 = sheet_114_data
+  ),
+  .id = "Source"
+)
+
+#### Save the consolidated data ####
+# Create a new workbook to save the cleaned data
+cleaned_wb <- createWorkbook()
+
+# Add a single sheet with the combined data
+addWorksheet(cleaned_wb, "Consolidated Data")
+writeData(cleaned_wb, "Consolidated Data", combined_data)
+
+# Save the workbook
+saveWorkbook(cleaned_wb, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.xlsx", overwrite = TRUE)
+Key Points:
+Extract Data Functionality:
+
+Adjusted extract_data() to handle both single-column (cols_B_to = NULL) and multi-column data (cols_B_to).
+Replaces - with 0 and converts decimal percentages to whole numbers.
+Sample Size Documentation:
+
+Sample size 1401 is included as a comment for clarity.
+Consolidation:
+
+Data from all sheets is combined into a single data frame for easier management.
+Let me know if you need any adjustments!
+
+
+
+
+
+
+User:
+hallo please see my code: #### Workspace setup ####
+# install necessary packages
+# install.packages(c("readr", "dplyr", "openxlsx"))
+
+# load necessary packages
+library(readr)
+library(dplyr) # for combining data frames
+library(openxlsx)
+
+#### Clean data 2018 ####
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+# Sample size information
+sample_size_2018 <- 404 # This is the sample size for the year 2018
+
+#  I want to select certain columns outlined below
+twenty_eighteen <- twenty_eighteen_raw_data %>%
+  select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
+  Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
+  Q11_Lr2r1, Q11_Lr2r2, Q11_Lr2r3, Q11_Lr2r4, Q11_Lr2r5, Q11_Lr2r6, Q11_Lr2r7, Q11_Lr2r8,
+  Q11_Lr3r1, Q11_Lr3r2, Q11_Lr3r3, Q11_Lr3r4, Q11_Lr3r5, Q11_Lr3r6, Q11_Lr3r7, Q11_Lr3r8,
+  Q11_Lr4r1, Q11_Lr4r2, Q11_Lr4r3, Q11_Lr4r4, Q11_Lr4r5, Q11_Lr4r6, Q11_Lr4r7, Q11_Lr4r8,
+  Q11_Lr5r1, Q11_Lr5r2, Q11_Lr5r3, Q11_Lr5r4, Q11_Lr5r5, Q11_Lr5r6, Q11_Lr5r7, Q11_Lr5r8,
+  Q11_Lr6r1, Q11_Lr6r2, Q11_Lr6r3, Q11_Lr6r4, Q11_Lr6r5, Q11_Lr6r6, Q11_Lr6r7, Q11_Lr6r8,
+  Q11_Lr7r1, Q11_Lr7r2, Q11_Lr7r3, Q11_Lr7r4, Q11_Lr7r5, Q11_Lr7r6, Q11_Lr7r7, Q11_Lr7r8,
+  Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
+  Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
+  Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
+  QD5)
+
+#### Rename columns 2018 ####
+# use rename() function to give more meaningful names
+renamed_twenty_eighteen <- twenty_eighteen %>%
+  rename(
+    age_18 = HIDAGE1,
+    extent_consider_informed_18 = Q2,
+    likelihood_action_home_improvement_18= Q10r1,
+    likelihood_action_reduce_hydro_18 = Q10r2,
+    likelihood_action_minimize_car_18 = Q10r3,
+    likelihood_action_vehicle_electric_18 = Q10r4,
+    likelihood_action_protein_alternative_18 = Q10r5,
+    likelihood_action_reduce_waste_18 = Q10r6,
+    likelihood_action_green_product_18 = Q10r7,
+    likelihood_action_short_distance_18 = Q10r8,
+    likelihood_action_sort_waste_18 = Q10r9,
+    unlikelihood_action_home_improvement_confusing_18 = Q11_Lr1r1,
+    unlikelihood_action_home_improvement_individual_difference_18 = Q11_Lr1r2,
+    unlikelihood_action_home_improvement_ineffective_18 = Q11_Lr1r3,
+    unlikelihood_action_home_improvement_costly_18 = Q11_Lr1r4,
+    unlikelihood_action_home_improvement_unavailable_18 = Q11_Lr1r5,
+    unlikelihood_action_home_improvement_inconvienient_18 = Q11_Lr1r6,
+    unlikelihood_action_home_improvement_uninterested_18 = Q11_Lr1r7,
+    unlikelihood_action_home_improvement_other_18 = Q11_Lr1r8,
+    unlikelihood_action_reduce_hydro_confusing_18 = Q11_Lr2r1,
+    unlikelihood_action_reduce_hydro_individual_difference_18 = Q11_Lr2r2,
+    unlikelihood_action_reduce_hydro_ineffective_18 = Q11_Lr2r3,
+    unlikelihood_action_reduce_hydro_costly_18 = Q11_Lr2r4,
+    unlikelihood_action_reduce_hydro_unavailable_18 = Q11_Lr2r5,
+    unlikelihood_action_reduce_hydro_inconvienient_18 = Q11_Lr2r6,
+    unlikelihood_action_reduce_hydro_uninterested_18 = Q11_Lr2r7,
+    unlikelihood_action_reduce_hydro_other_18 = Q11_Lr2r8,
+    unlikelihood_action_minimize_car_confusing_18 = Q11_Lr3r1,
+    unlikelihood_action_minimize_car_individual_difference_18 = Q11_Lr3r2,
+    unlikelihood_action_minimize_car_ineffective_18 = Q11_Lr3r3,
+    unlikelihood_action_minimize_car_costly_18 = Q11_Lr3r4,
+    unlikelihood_action_minimize_car_unavailable_18 = Q11_Lr3r5,
+    unlikelihood_action_minimize_car_inconvienient_18 = Q11_Lr3r6,
+    unlikelihood_action_minimize_car_uninterested_18 = Q11_Lr3r7,
+    unlikelihood_action_minimize_car_other_18 = Q11_Lr3r8,
+    unlikelihood_action_vehicle_electric_confusing_18 = Q11_Lr4r1,
+    unlikelihood_action_vehicle_electric_individual_difference_18 = Q11_Lr4r2,
+    unlikelihood_action_vehicle_electric_ineffective_18 = Q11_Lr4r3,
+    unlikelihood_action_vehicle_electric_costly_18 = Q11_Lr4r4,
+    unlikelihood_action_vehicle_electric_unavailable_18 = Q11_Lr4r5,
+    unlikelihood_action_vehicle_electric_inconvienient_18 = Q11_Lr4r6,
+    unlikelihood_action_vehicle_electric_uninterested_18 = Q11_Lr4r7,
+    unlikelihood_action_vehicle_electric_other_18 = Q11_Lr4r8,
+    unlikelihood_action_protein_alternative_confusing_18 = Q11_Lr5r1,
+    unlikelihood_action_protein_alternative_individual_difference_18 = Q11_Lr5r2,
+    unlikelihood_action_protein_alternative_ineffective_18 = Q11_Lr5r3,
+    unlikelihood_action_protein_alternative_costly_18 = Q11_Lr5r4,
+    unlikelihood_action_protein_alternative_unavailable_18 = Q11_Lr5r5,
+    unlikelihood_action_protein_alternative_inconvienient_18 = Q11_Lr5r6,
+    unlikelihood_action_protein_alternative_uninterested_18 = Q11_Lr5r7,
+    unlikelihood_action_protein_alternative_other_18 = Q11_Lr5r8,
+    unlikelihood_action_reduce_waste_confusing_18 = Q11_Lr6r1,
+    unlikelihood_action_reduce_waste_individual_difference_18 = Q11_Lr6r2,
+    unlikelihood_action_reduce_waste_ineffective_18 = Q11_Lr6r3,
+    unlikelihood_action_reduce_waste_costly_18 = Q11_Lr6r4,
+    unlikelihood_action_reduce_waste_unavailable_18 = Q11_Lr6r5,
+    unlikelihood_action_reduce_waste_inconvienient_18 = Q11_Lr6r6,
+    unlikelihood_action_reduce_waste_uninterested_18 = Q11_Lr6r7,
+    unlikelihood_action_reduce_waste_other_18 = Q11_Lr6r8,
+    unlikelihood_action_green_product_confusing_18 = Q11_Lr7r1,
+    unlikelihood_action_green_product_individual_difference_18 = Q11_Lr7r2,
+    unlikelihood_action_green_product_ineffective_18 = Q11_Lr7r3,
+    unlikelihood_action_green_product_costly_18 = Q11_Lr7r4,
+    unlikelihood_action_green_product_unavailable_18 = Q11_Lr7r5,
+    unlikelihood_action_green_product_inconvienient_18 = Q11_Lr7r6,
+    unlikelihood_action_green_product_uninterested_18 = Q11_Lr7r7,
+    unlikelihood_action_green_product_other_18 = Q11_Lr7r8,
+    unlikelihood_action_short_distance_confusing_18 = Q11_Lr8r1,
+    unlikelihood_action_short_distance_individual_difference_18 = Q11_Lr8r2,
+    unlikelihood_action_short_distance_ineffective_18 = Q11_Lr8r3,
+    unlikelihood_action_short_distance_costly_18 = Q11_Lr8r4,
+    unlikelihood_action_short_distance_unavailable_18 = Q11_Lr8r5,
+    unlikelihood_action_short_distance_inconvienient_18 = Q11_Lr8r6,
+    unlikelihood_action_short_distance_uninterested_18 = Q11_Lr8r7,
+    unlikelihood_action_short_distance_other_18 = Q11_Lr8r8,
+    unlikelihood_action_sort_waste_confusing_18 = Q11_Lr9r1,
+    unlikelihood_action_sort_waste_individual_difference_18 = Q11_Lr9r2,
+    unlikelihood_action_sort_waste_ineffective_18 = Q11_Lr9r3,
+    unlikelihood_action_sort_waste_costly_18 = Q11_Lr9r4,
+    unlikelihood_action_sort_waste_unavailable_18 = Q11_Lr9r5,
+    unlikelihood_action_sort_waste_inconvienient_18 = Q11_Lr9r6,
+    unlikelihood_action_sort_waste_uninterested_18 = Q11_Lr9r7,
+    unlikelihood_action_sort_waste_other_18 = Q11_Lr9r8,
+    delivery_method_toronto.ca_website_18 = Q13r1,
+    delivery_method_events_18 = Q13r2,
+    delivery_method_twitter_18 = Q13r3,
+    delivery_method_facebook_18 = Q13r4,
+    delivery_method_instagram_18 = Q13r5,
+    delivery_method_enewsletter_email_18 = Q13r6,
+    delivery_method_councillor_communication_18 = Q13r7,
+    delivery_method_advertising_campaigns_18 = Q13r8,
+    delivery_method_brochures_pamphlets_18 = Q13r9,
+    delivery_method_other_18 = Q13r10,
+    delivery_method_not_interested_receiving_18 = Q13r11,
+    highest_level_educ_18 = QD5
+  )
+
+# Fix "unlikelihood" columns in the 2018 dataset
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(across(
+    starts_with("unlikelihood"),
+    ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no" and all others with "yes"
+  ))
+
+# Identify columns starting with "delivery"
+delivery_columns <- grep("^delivery", colnames(df), value = TRUE)
+
+# Iterate over the delivery columns and modify the rows
+df[delivery_columns] <- lapply(df[delivery_columns], function(column) {
+  # Change rows starting with "NO TO:" to "no"
+  column <- ifelse(grepl("^NO TO:", column, ignore.case = TRUE), "no", "yes")
+  return(column)
+})
+
+# View the first few rows to confirm the data
+head(renamed_twenty_eighteen)
+
+# for 2018 data, need to fix unlikehood columns and method of communication columns
+
+#### Save 2018 individual data ####
+write_csv(renamed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
+
+
+
+
+
+#### Clean data 2021 ####
+
+# File path to the saved workbook
+file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
+
+# Sheet numbers to extract
+sheet_numbers <- c(3, 11, 34, 69, 85, 113, 114)
+
+# Get all sheet names
+sheet_names <- getSheetNames(file_path)
+
+# Sample size information
+sample_size_2021 <- 1401 # This is the sample size for the year 2021
+
+#### Function to extract data from a sheet ####
+extract_data <- function(sheet, rows_A, rows_B, cols_B_to = NULL) {
+  # Read the sheet
+  data <- read.xlsx(file_path, sheet = sheet)
+  
+  # Extract Column A rows
+  col_A <- data[rows_A, "A"]
+  
+  # Extract corresponding rows from Column B (or additional columns)
+  if (is.null(cols_B_to)) {
+    col_B <- data[rows_B, "B"]
+    # Replace "-" with "0" and convert percentages to whole numbers
+    col_B <- gsub("-", "0", col_B)
+    col_B <- as.numeric(col_B) * 100
+    return(data.frame(Category = col_A, Percentage = col_B))
+  } else {
+    # Extract multiple columns (e.g., B through P)
+    cols_data <- data[rows_B, cols_B_to]
+    cols_data <- as.data.frame(lapply(cols_data, function(x) {
+      x <- gsub("-", "0", x)
+      as.numeric(x) * 100
+    }))
+    return(data.frame(Category = col_A, cols_data))
+  }
+}
+
+#### Extract data from the specified sheets ####
+
+# Sheet 3
+sheet_3_data <- extract_data(sheet = sheet_names[3],
+                             rows_A = c(8, 11, 14, 17),
+                             rows_B = c(9, 12, 15, 18))
+
+# Sheet 11
+sheet_11_data <- extract_data(sheet = sheet_names[11],
+                              rows_A = c(8, 11, 14, 17, 20, 23),
+                              rows_B = c(12, 15, 18, 21, 24))
+
+# Sheet 34
+sheet_34_data <- extract_data(sheet = sheet_names[34],
+                              rows_A = c(8, 11, 14, 17),
+                              rows_B = c(9, 12, 15, 18))
+
+# Sheet 69
+sheet_69_data <- extract_data(sheet = sheet_names[69],
+                              rows_A = c(6, 8, 10, 12, 14, 16, 18),
+                              rows_B = c(7, 9, 11, 13, 15, 17, 19),
+                              cols_B_to = "B:P")
+
+# Sheet 85
+sheet_85_data <- extract_data(sheet = sheet_names[85],
+                              rows_A = c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34),
+                              rows_B = c(7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35),
+                              cols_B_to = "B:L")
+
+# Sheet 113
+sheet_113_data <- extract_data(sheet = sheet_names[113],
+                               rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107, 110, 113, 116, 119),
+                               rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120))
+
+# Sheet 114
+sheet_114_data <- extract_data(sheet = sheet_names[114],
+                               rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50),
+                               rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51))
+
+#### Combine all extracted data ####
+combined_data <- bind_rows(
+  list(
+    Sheet_3 = sheet_3_data,
+    Sheet_11 = sheet_11_data,
+    Sheet_34 = sheet_34_data,
+    Sheet_69 = sheet_69_data,
+    Sheet_85 = sheet_85_data,
+    Sheet_113 = sheet_113_data,
+    Sheet_114 = sheet_114_data
+  ),
+  .id = "Source"
+)
+
+#### Save the consolidated data ####
+# Create a new workbook to save the cleaned data
+cleaned_wb <- createWorkbook()
+
+# Add a single sheet with the combined data
+addWorksheet(cleaned_wb, "Consolidated Data")
+writeData(cleaned_wb, "Consolidated Data", combined_data)
+
+# Save the workbook
+saveWorkbook(cleaned_wb, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.xlsx", overwrite = TRUE). the error is > # Iterate over the delivery columns and modify the rows
+> df[delivery_columns] <- lapply(df[delivery_columns], function(column) {
++   # Change rows starting with "NO TO:" to "no"
++   column <- ifelse(grepl("^NO TO:", column, ignore.case = TRUE), "no", "yes")
++   return(column)
++ })
+Error in df[delivery_columns] : 
+  object of type 'closure' is not subsettable
+> 
+ChatGPT said:
+ChatGPT
+Your code looks quite organized and well-structured. However, I noticed your code snippet for mutate using across is incomplete. Here's how you can finish it and ensure the "unlikelihood" columns are updated as intended:
+
+Complete Code for mutate(across(...))
+r
+Copy code
+# Fix "unlikelihood" columns in the 2018 dataset
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(across(
+    starts_with("unlikelihood"),
+    ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no" and all others with "yes"
+  ))
+Explanation:
+mutate(across(...)): This applies transformations across all columns that meet the specified condition, which in this case is columns starting with "unlikelihood".
+starts_with("unlikelihood"): Identifies all columns whose names begin with "unlikelihood".
+ifelse(is.na(.), "no", "yes"):
+Checks if the column values are NA. If NA, it replaces them with "no".
+Otherwise, it assigns "yes".
+This will ensure all "unlikelihood" columns in your 2018 dataset are standardized to "yes" or "no".
+
+Additional Suggestions:
+Check for Column Names Consistency: Ensure the columns in the raw data actually start with "unlikelihood". If not, adjust the starts_with() condition accordingly.
+
+Output Verification: After applying mutate, you can inspect the changes with:
+
+r
+Copy code
+glimpse(fixed_twenty_eighteen)
+Save the Cleaned Dataset: If you want to save the cleaned dataset for later use:
+
+r
+Copy code
+write_csv(fixed_twenty_eighteen, "data/02-cleaned_data/twenty_eighteen_cleaned.csv")
+Let me know if you have further questions! 😊
+
+
+
+
+
+
+User:
+I think that that this section "# Fix "unlikelihood" columns in the 2018 dataset" is fine. I think the issue is the code after this section "# Iterate over the delivery columns and modify the rows
+df[delivery_columns] <- lapply(df[delivery_columns], function(column) {
+  # Change rows starting with "NO TO:" to "no"
+  column <- ifelse(grepl("^NO TO:", column, ignore.case = TRUE), "no", "yes")
+  return(column)
+})". Error is still there Error in df[delivery_columns] : 
+  object of type 'closure' is not subsettable
+ChatGPT said:
+ChatGPT
+The error message object of type 'closure' is not subsettable indicates that the df object is being treated as a function rather than as a data frame. This could happen if df has been inadvertently overwritten or incorrectly defined in your code.
+
+Here are steps to troubleshoot and fix the issue:
+
+1. Check the Definition of df
+Ensure that df is correctly defined as a data frame. Before the section causing the error, add this line:
+
+R
+Copy code
+print(class(df))
+If it does not print data.frame or tbl_df (if using a tibble), then df is not correctly defined.
+
+2. Check the Column Names
+Verify that delivery_columns is defined as a valid vector of column names from df. You can check this with:
+
+R
+Copy code
+print(delivery_columns)
+print(names(df))
+Ensure that all column names in delivery_columns exist in df.
+
+3. Refactor the Code
+The issue might also be in how the lapply function is used. Here’s a safer approach:
+
+Updated Code
+R
+Copy code
+# Check if `df` is a data frame and `delivery_columns` are valid
+if (is.data.frame(df) && all(delivery_columns %in% names(df))) {
+  # Modify the specified columns in `df`
+  df[delivery_columns] <- lapply(df[delivery_columns], function(column) {
+    # Change rows starting with "NO TO:" to "no", otherwise "yes"
+    ifelse(grepl("^NO TO:", column, ignore.case = TRUE), "no", "yes")
+  })
+} else {
+  stop("`df` is not a valid data frame or `delivery_columns` contains invalid names.")
+}
+4. Check for Logical Errors
+The ifelse statement assumes that each column is character or factor. If the columns are not in the correct type, you may need to coerce them:
+
+R
+Copy code
+df[delivery_columns] <- lapply(df[delivery_columns], as.character)
+5. Re-run the Code
+After ensuring df is a data frame and delivery_columns contains valid column names, the updated code should work without errors. Let me know if the issue persists, and I can provide further assistance.
+
+
+
+
+
+
+User:
+> print(class(df))
+[1] "function"
+> print(delivery_columns)
+character(0)
+> print(names(df))
+NULL
+> 
+ChatGPT said:
+ChatGPT
+The issue lies in the fact that df is being treated as a function, not as a data frame. Additionally, delivery_columns is empty, and names(df) is NULL, confirming that df is not correctly initialized.
+
+Steps to Fix the Problem
+1. Verify df Initialization
+Ensure that df is properly assigned as a data frame earlier in your code. If you intended to load a dataset into df, confirm that step succeeded. For example:
+
+R
+Copy code
+df <- read.csv("your_dataset.csv")
+Alternatively, if you are constructing df manually, make sure it's defined as a data frame:
+
+R
+Copy code
+df <- data.frame(column1 = c("NO TO: A", "YES TO: B"), column2 = c("NO TO: C", "YES TO: D"))
+2. Define delivery_columns
+Ensure that delivery_columns is assigned the correct column names. If df is already a data frame, you can check its column names with names(df) and then assign delivery_columns:
+
+R
+Copy code
+delivery_columns <- c("column1", "column2")  # Replace with actual column names
+3. Full Corrected Code Example
+Here’s the corrected code in context, assuming df is a valid data frame and delivery_columns contains appropriate column names:
+
+R
+Copy code
+# Initialize `df` (example - replace with actual data loading code)
+df <- data.frame(
+  column1 = c("NO TO: A", "YES TO: B"),
+  column2 = c("NO TO: C", "YES TO: D")
+)
+
+# Define `delivery_columns`
+delivery_columns <- c("column1", "column2")
+
+# Check if `df` is valid and `delivery_columns` exist
+if (is.data.frame(df) && all(delivery_columns %in% names(df))) {
+  # Modify the specified columns in `df`
+  df[delivery_columns] <- lapply(df[delivery_columns], function(column) {
+    # Change rows starting with "NO TO:" to "no", otherwise "yes"
+    ifelse(grepl("^NO TO:", column, ignore.case = TRUE), "no", "yes")
+  })
+} else {
+  stop("`df` is not a valid data frame or `delivery_columns` contains invalid names.")
+}
+
+# View the modified data frame
+print(df)
+4. Debugging Tips
+If you’re loading the data from an external file, check that the file path and format are correct.
+Use str(df) after loading your dataset to confirm the structure of df and its columns.
+Print intermediate outputs (e.g., head(df), names(df)) to validate assumptions before proceeding.
+Let me know if you need further clarification!
+
+
+
+
+
+
+User:
+ok but can you provide me the exact code for me
+ChatGPT said:
+ChatGPT
+Certainly! Below is a complete example that you can adapt to your situation. It includes initialization, validation, and the transformation of your delivery columns.
+
+Complete R Code:
+R
+Copy code
+# Load the dataset (replace 'your_dataset.csv' with your actual file path)
+# Uncomment the line below if you are loading from a file
+# df <- read.csv("your_dataset.csv")
+
+# Example dataset for demonstration
+df <- data.frame(
+  delivery1 = c("NO TO: A", "YES TO: B", "NO TO: C"),
+  delivery2 = c("YES TO: D", "NO TO: E", "YES TO: F"),
+  other_column = c(1, 2, 3)  # Non-delivery column
+)
+
+# Specify the columns to be modified
+delivery_columns <- c("delivery1", "delivery2")  # Replace with actual delivery column names
+
+# Check if `df` is a data frame and `delivery_columns` exist in the data frame
+if (is.data.frame(df) && all(delivery_columns %in% names(df))) {
+  # Modify the specified columns
+  df[delivery_columns] <- lapply(df[delivery_columns], function(column) {
+    # Change rows starting with "NO TO:" to "no", otherwise "yes"
+    ifelse(grepl("^NO TO:", column, ignore.case = TRUE), "no", "yes")
+  })
+} else {
+  stop("`df` is not a valid data frame or `delivery_columns` contain invalid names.")
+}
+
+# View the modified data frame
+print(df)
+Explanation of the Code:
+Dataset Initialization:
+
+Replace the example df with your actual dataset, e.g., read.csv("your_dataset.csv").
+Ensure that the column names in delivery_columns match your dataset.
+Delivery Columns Definition:
+
+Update delivery_columns with the names of the columns you want to modify.
+Validation:
+
+The if condition ensures df is a valid data frame and all column names in delivery_columns exist.
+Transformation:
+
+The lapply function iterates over the specified columns.
+ifelse checks for rows starting with "NO TO:" and sets them to "no"; otherwise, it sets "yes."
+Output:
+
+The modified data frame is printed to confirm the changes.
+Example Output:
+Given the example data frame:
+
+plaintext
+Copy code
+  delivery1 delivery2 other_column
+1   NO TO: A   YES TO: D            1
+2   YES TO: B    NO TO: E            2
+3   NO TO: C   YES TO: F            3
+The result after running the code:
+
+plaintext
+Copy code
+  delivery1 delivery2 other_column
+1       no       yes            1
+2      yes        no            2
+3       no       yes            3
+Let me know if you need further customization or explanations!
+
+
+
+
+
+
+User:
+please provide specific code given my code: #### Workspace setup ####
+# install necessary packages
+# install.packages(c("readr", "dplyr", "openxlsx"))
+
+# load necessary packages
+library(readr)
+library(dplyr) # for combining data frames
+library(openxlsx)
+
+#### Clean data 2018 ####
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+# Sample size information
+sample_size_2018 <- 404 # This is the sample size for the year 2018
+
+#  I want to select certain columns outlined below
+twenty_eighteen <- twenty_eighteen_raw_data %>%
+  select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
+  Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
+  Q11_Lr2r1, Q11_Lr2r2, Q11_Lr2r3, Q11_Lr2r4, Q11_Lr2r5, Q11_Lr2r6, Q11_Lr2r7, Q11_Lr2r8,
+  Q11_Lr3r1, Q11_Lr3r2, Q11_Lr3r3, Q11_Lr3r4, Q11_Lr3r5, Q11_Lr3r6, Q11_Lr3r7, Q11_Lr3r8,
+  Q11_Lr4r1, Q11_Lr4r2, Q11_Lr4r3, Q11_Lr4r4, Q11_Lr4r5, Q11_Lr4r6, Q11_Lr4r7, Q11_Lr4r8,
+  Q11_Lr5r1, Q11_Lr5r2, Q11_Lr5r3, Q11_Lr5r4, Q11_Lr5r5, Q11_Lr5r6, Q11_Lr5r7, Q11_Lr5r8,
+  Q11_Lr6r1, Q11_Lr6r2, Q11_Lr6r3, Q11_Lr6r4, Q11_Lr6r5, Q11_Lr6r6, Q11_Lr6r7, Q11_Lr6r8,
+  Q11_Lr7r1, Q11_Lr7r2, Q11_Lr7r3, Q11_Lr7r4, Q11_Lr7r5, Q11_Lr7r6, Q11_Lr7r7, Q11_Lr7r8,
+  Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
+  Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
+  Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
+  QD5)
+
+#### Rename columns 2018 ####
+# use rename() function to give more meaningful names
+renamed_twenty_eighteen <- twenty_eighteen %>%
+  rename(
+    age_18 = HIDAGE1,
+    extent_consider_informed_18 = Q2,
+    likelihood_action_home_improvement_18= Q10r1,
+    likelihood_action_reduce_hydro_18 = Q10r2,
+    likelihood_action_minimize_car_18 = Q10r3,
+    likelihood_action_vehicle_electric_18 = Q10r4,
+    likelihood_action_protein_alternative_18 = Q10r5,
+    likelihood_action_reduce_waste_18 = Q10r6,
+    likelihood_action_green_product_18 = Q10r7,
+    likelihood_action_short_distance_18 = Q10r8,
+    likelihood_action_sort_waste_18 = Q10r9,
+    unlikelihood_action_home_improvement_confusing_18 = Q11_Lr1r1,
+    unlikelihood_action_home_improvement_individual_difference_18 = Q11_Lr1r2,
+    unlikelihood_action_home_improvement_ineffective_18 = Q11_Lr1r3,
+    unlikelihood_action_home_improvement_costly_18 = Q11_Lr1r4,
+    unlikelihood_action_home_improvement_unavailable_18 = Q11_Lr1r5,
+    unlikelihood_action_home_improvement_inconvienient_18 = Q11_Lr1r6,
+    unlikelihood_action_home_improvement_uninterested_18 = Q11_Lr1r7,
+    unlikelihood_action_home_improvement_other_18 = Q11_Lr1r8,
+    unlikelihood_action_reduce_hydro_confusing_18 = Q11_Lr2r1,
+    unlikelihood_action_reduce_hydro_individual_difference_18 = Q11_Lr2r2,
+    unlikelihood_action_reduce_hydro_ineffective_18 = Q11_Lr2r3,
+    unlikelihood_action_reduce_hydro_costly_18 = Q11_Lr2r4,
+    unlikelihood_action_reduce_hydro_unavailable_18 = Q11_Lr2r5,
+    unlikelihood_action_reduce_hydro_inconvienient_18 = Q11_Lr2r6,
+    unlikelihood_action_reduce_hydro_uninterested_18 = Q11_Lr2r7,
+    unlikelihood_action_reduce_hydro_other_18 = Q11_Lr2r8,
+    unlikelihood_action_minimize_car_confusing_18 = Q11_Lr3r1,
+    unlikelihood_action_minimize_car_individual_difference_18 = Q11_Lr3r2,
+    unlikelihood_action_minimize_car_ineffective_18 = Q11_Lr3r3,
+    unlikelihood_action_minimize_car_costly_18 = Q11_Lr3r4,
+    unlikelihood_action_minimize_car_unavailable_18 = Q11_Lr3r5,
+    unlikelihood_action_minimize_car_inconvienient_18 = Q11_Lr3r6,
+    unlikelihood_action_minimize_car_uninterested_18 = Q11_Lr3r7,
+    unlikelihood_action_minimize_car_other_18 = Q11_Lr3r8,
+    unlikelihood_action_vehicle_electric_confusing_18 = Q11_Lr4r1,
+    unlikelihood_action_vehicle_electric_individual_difference_18 = Q11_Lr4r2,
+    unlikelihood_action_vehicle_electric_ineffective_18 = Q11_Lr4r3,
+    unlikelihood_action_vehicle_electric_costly_18 = Q11_Lr4r4,
+    unlikelihood_action_vehicle_electric_unavailable_18 = Q11_Lr4r5,
+    unlikelihood_action_vehicle_electric_inconvienient_18 = Q11_Lr4r6,
+    unlikelihood_action_vehicle_electric_uninterested_18 = Q11_Lr4r7,
+    unlikelihood_action_vehicle_electric_other_18 = Q11_Lr4r8,
+    unlikelihood_action_protein_alternative_confusing_18 = Q11_Lr5r1,
+    unlikelihood_action_protein_alternative_individual_difference_18 = Q11_Lr5r2,
+    unlikelihood_action_protein_alternative_ineffective_18 = Q11_Lr5r3,
+    unlikelihood_action_protein_alternative_costly_18 = Q11_Lr5r4,
+    unlikelihood_action_protein_alternative_unavailable_18 = Q11_Lr5r5,
+    unlikelihood_action_protein_alternative_inconvienient_18 = Q11_Lr5r6,
+    unlikelihood_action_protein_alternative_uninterested_18 = Q11_Lr5r7,
+    unlikelihood_action_protein_alternative_other_18 = Q11_Lr5r8,
+    unlikelihood_action_reduce_waste_confusing_18 = Q11_Lr6r1,
+    unlikelihood_action_reduce_waste_individual_difference_18 = Q11_Lr6r2,
+    unlikelihood_action_reduce_waste_ineffective_18 = Q11_Lr6r3,
+    unlikelihood_action_reduce_waste_costly_18 = Q11_Lr6r4,
+    unlikelihood_action_reduce_waste_unavailable_18 = Q11_Lr6r5,
+    unlikelihood_action_reduce_waste_inconvienient_18 = Q11_Lr6r6,
+    unlikelihood_action_reduce_waste_uninterested_18 = Q11_Lr6r7,
+    unlikelihood_action_reduce_waste_other_18 = Q11_Lr6r8,
+    unlikelihood_action_green_product_confusing_18 = Q11_Lr7r1,
+    unlikelihood_action_green_product_individual_difference_18 = Q11_Lr7r2,
+    unlikelihood_action_green_product_ineffective_18 = Q11_Lr7r3,
+    unlikelihood_action_green_product_costly_18 = Q11_Lr7r4,
+    unlikelihood_action_green_product_unavailable_18 = Q11_Lr7r5,
+    unlikelihood_action_green_product_inconvienient_18 = Q11_Lr7r6,
+    unlikelihood_action_green_product_uninterested_18 = Q11_Lr7r7,
+    unlikelihood_action_green_product_other_18 = Q11_Lr7r8,
+    unlikelihood_action_short_distance_confusing_18 = Q11_Lr8r1,
+    unlikelihood_action_short_distance_individual_difference_18 = Q11_Lr8r2,
+    unlikelihood_action_short_distance_ineffective_18 = Q11_Lr8r3,
+    unlikelihood_action_short_distance_costly_18 = Q11_Lr8r4,
+    unlikelihood_action_short_distance_unavailable_18 = Q11_Lr8r5,
+    unlikelihood_action_short_distance_inconvienient_18 = Q11_Lr8r6,
+    unlikelihood_action_short_distance_uninterested_18 = Q11_Lr8r7,
+    unlikelihood_action_short_distance_other_18 = Q11_Lr8r8,
+    unlikelihood_action_sort_waste_confusing_18 = Q11_Lr9r1,
+    unlikelihood_action_sort_waste_individual_difference_18 = Q11_Lr9r2,
+    unlikelihood_action_sort_waste_ineffective_18 = Q11_Lr9r3,
+    unlikelihood_action_sort_waste_costly_18 = Q11_Lr9r4,
+    unlikelihood_action_sort_waste_unavailable_18 = Q11_Lr9r5,
+    unlikelihood_action_sort_waste_inconvienient_18 = Q11_Lr9r6,
+    unlikelihood_action_sort_waste_uninterested_18 = Q11_Lr9r7,
+    unlikelihood_action_sort_waste_other_18 = Q11_Lr9r8,
+    delivery_method_toronto.ca_website_18 = Q13r1,
+    delivery_method_events_18 = Q13r2,
+    delivery_method_twitter_18 = Q13r3,
+    delivery_method_facebook_18 = Q13r4,
+    delivery_method_instagram_18 = Q13r5,
+    delivery_method_enewsletter_email_18 = Q13r6,
+    delivery_method_councillor_communication_18 = Q13r7,
+    delivery_method_advertising_campaigns_18 = Q13r8,
+    delivery_method_brochures_pamphlets_18 = Q13r9,
+    delivery_method_other_18 = Q13r10,
+    delivery_method_not_interested_receiving_18 = Q13r11,
+    highest_level_educ_18 = QD5
+  )
+
+# Fix "unlikelihood" columns in the 2018 dataset
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(across(
+    starts_with("unlikelihood"),
+    ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no" and all others with "yes"
+  ))
+
+
+# Identify columns starting with "delivery"
+delivery_columns <- grep("^delivery", colnames(df), value = TRUE)
+
+# Iterate over the delivery columns and modify the rows
+df[delivery_columns] <- lapply(df[delivery_columns], function(column) {
+  # Change rows starting with "NO TO:" to "no"
+  column <- ifelse(grepl("^NO TO:", column, ignore.case = TRUE), "no", "yes")
+  return(column)
+})
+
+# View the first few rows to confirm the data
+head(renamed_twenty_eighteen)
+
+# for 2018 data, need to fix unlikehood columns and method of communication columns
+
+#### Save 2018 individual data ####
+write_csv(renamed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
+ChatGPT said:
+ChatGPT
+Here is the completed code based on your setup and requirements. It includes your original code and fills in the missing part to handle the unlikelihood columns:
+
+r
+Copy code
+#### Workspace setup ####
+# install necessary packages
+# install.packages(c("readr", "dplyr", "openxlsx"))
+
+# load necessary packages
+library(readr)
+library(dplyr) # for combining data frames
+library(openxlsx)
+
+#### Clean data 2018 ####
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+# Sample size information
+sample_size_2018 <- 404 # This is the sample size for the year 2018
+
+# I want to select certain columns outlined below
+twenty_eighteen <- twenty_eighteen_raw_data %>%
+  select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
+         Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
+         Q11_Lr2r1, Q11_Lr2r2, Q11_Lr2r3, Q11_Lr2r4, Q11_Lr2r5, Q11_Lr2r6, Q11_Lr2r7, Q11_Lr2r8,
+         Q11_Lr3r1, Q11_Lr3r2, Q11_Lr3r3, Q11_Lr3r4, Q11_Lr3r5, Q11_Lr3r6, Q11_Lr3r7, Q11_Lr3r8,
+         Q11_Lr4r1, Q11_Lr4r2, Q11_Lr4r3, Q11_Lr4r4, Q11_Lr4r5, Q11_Lr4r6, Q11_Lr4r7, Q11_Lr4r8,
+         Q11_Lr5r1, Q11_Lr5r2, Q11_Lr5r3, Q11_Lr5r4, Q11_Lr5r5, Q11_Lr5r6, Q11_Lr5r7, Q11_Lr5r8,
+         Q11_Lr6r1, Q11_Lr6r2, Q11_Lr6r3, Q11_Lr6r4, Q11_Lr6r5, Q11_Lr6r6, Q11_Lr6r7, Q11_Lr6r8,
+         Q11_Lr7r1, Q11_Lr7r2, Q11_Lr7r3, Q11_Lr7r4, Q11_Lr7r5, Q11_Lr7r6, Q11_Lr7r7, Q11_Lr7r8,
+         Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
+         Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
+         Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
+         QD5)
+
+#### Rename columns 2018 ####
+# use rename() function to give more meaningful names
+renamed_twenty_eighteen <- twenty_eighteen %>%
+  rename(
+    age_18 = HIDAGE1,
+    extent_consider_informed_18 = Q2,
+    likelihood_action_home_improvement_18 = Q10r1,
+    likelihood_action_reduce_hydro_18 = Q10r2,
+    likelihood_action_minimize_car_18 = Q10r3,
+    likelihood_action_vehicle_electric_18 = Q10r4,
+    likelihood_action_protein_alternative_18 = Q10r5,
+    likelihood_action_reduce_waste_18 = Q10r6,
+    likelihood_action_green_product_18 = Q10r7,
+    likelihood_action_short_distance_18 = Q10r8,
+    likelihood_action_sort_waste_18 = Q10r9,
+    unlikelihood_action_home_improvement_confusing_18 = Q11_Lr1r1,
+    unlikelihood_action_home_improvement_individual_difference_18 = Q11_Lr1r2,
+    unlikelihood_action_home_improvement_ineffective_18 = Q11_Lr1r3,
+    unlikelihood_action_home_improvement_costly_18 = Q11_Lr1r4,
+    unlikelihood_action_home_improvement_unavailable_18 = Q11_Lr1r5,
+    unlikelihood_action_home_improvement_inconvenient_18 = Q11_Lr1r6,
+    unlikelihood_action_home_improvement_uninterested_18 = Q11_Lr1r7,
+    unlikelihood_action_home_improvement_other_18 = Q11_Lr1r8,
+    # Add similar renaming for all columns in the original code...
+    highest_level_educ_18 = QD5
+  )
+
+#### Fix "unlikelihood" columns in the 2018 dataset ####
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(across(
+    starts_with("unlikelihood"),
+    ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no" and all others with "yes"
+  ))
+
+#### Final Output ####
+# Save cleaned and fixed dataset
+write_csv(fixed_twenty_eighteen, "data/02-clean_data/twenty_eighteen_cleaned.csv")
+Explanation:
+Fix for "unlikelihood" columns:
+
+Uses mutate(across()) to target all columns starting with unlikelihood.
+Replaces NA with "no" and all other values with "yes".
+Final save:
+
+Saves the cleaned dataset to the data/02-clean_data/ directory as a CSV file.
+Make sure the path for reading and writing files exists before running the code.
+
+
+
+
+
+
+User:
+ok what is wrong with my code : #### Workspace setup ####
+# install necessary packages
+# install.packages(c("readr", "dplyr", "openxlsx"))
+
+# load necessary packages
+library(readr)
+library(dplyr) # for combining data frames
+library(openxlsx)
+
+#### Clean data 2018 ####
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+# Sample size information
+sample_size_2018 <- 404 # This is the sample size for the year 2018
+
+#  I want to select certain columns outlined below
+twenty_eighteen <- twenty_eighteen_raw_data %>%
+  select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
+  Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
+  Q11_Lr2r1, Q11_Lr2r2, Q11_Lr2r3, Q11_Lr2r4, Q11_Lr2r5, Q11_Lr2r6, Q11_Lr2r7, Q11_Lr2r8,
+  Q11_Lr3r1, Q11_Lr3r2, Q11_Lr3r3, Q11_Lr3r4, Q11_Lr3r5, Q11_Lr3r6, Q11_Lr3r7, Q11_Lr3r8,
+  Q11_Lr4r1, Q11_Lr4r2, Q11_Lr4r3, Q11_Lr4r4, Q11_Lr4r5, Q11_Lr4r6, Q11_Lr4r7, Q11_Lr4r8,
+  Q11_Lr5r1, Q11_Lr5r2, Q11_Lr5r3, Q11_Lr5r4, Q11_Lr5r5, Q11_Lr5r6, Q11_Lr5r7, Q11_Lr5r8,
+  Q11_Lr6r1, Q11_Lr6r2, Q11_Lr6r3, Q11_Lr6r4, Q11_Lr6r5, Q11_Lr6r6, Q11_Lr6r7, Q11_Lr6r8,
+  Q11_Lr7r1, Q11_Lr7r2, Q11_Lr7r3, Q11_Lr7r4, Q11_Lr7r5, Q11_Lr7r6, Q11_Lr7r7, Q11_Lr7r8,
+  Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
+  Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
+  Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
+  QD5)
+
+#### Rename columns 2018 ####
+# use rename() function to give more meaningful names
+renamed_twenty_eighteen <- twenty_eighteen %>%
+  rename(
+    age_18 = HIDAGE1,
+    extent_consider_informed_18 = Q2,
+    likelihood_action_home_improvement_18= Q10r1,
+    likelihood_action_reduce_hydro_18 = Q10r2,
+    likelihood_action_minimize_car_18 = Q10r3,
+    likelihood_action_vehicle_electric_18 = Q10r4,
+    likelihood_action_protein_alternative_18 = Q10r5,
+    likelihood_action_reduce_waste_18 = Q10r6,
+    likelihood_action_green_product_18 = Q10r7,
+    likelihood_action_short_distance_18 = Q10r8,
+    likelihood_action_sort_waste_18 = Q10r9,
+    unlikelihood_action_home_improvement_confusing_18 = Q11_Lr1r1,
+    unlikelihood_action_home_improvement_individual_difference_18 = Q11_Lr1r2,
+    unlikelihood_action_home_improvement_ineffective_18 = Q11_Lr1r3,
+    unlikelihood_action_home_improvement_costly_18 = Q11_Lr1r4,
+    unlikelihood_action_home_improvement_unavailable_18 = Q11_Lr1r5,
+    unlikelihood_action_home_improvement_inconvienient_18 = Q11_Lr1r6,
+    unlikelihood_action_home_improvement_uninterested_18 = Q11_Lr1r7,
+    unlikelihood_action_home_improvement_other_18 = Q11_Lr1r8,
+    unlikelihood_action_reduce_hydro_confusing_18 = Q11_Lr2r1,
+    unlikelihood_action_reduce_hydro_individual_difference_18 = Q11_Lr2r2,
+    unlikelihood_action_reduce_hydro_ineffective_18 = Q11_Lr2r3,
+    unlikelihood_action_reduce_hydro_costly_18 = Q11_Lr2r4,
+    unlikelihood_action_reduce_hydro_unavailable_18 = Q11_Lr2r5,
+    unlikelihood_action_reduce_hydro_inconvienient_18 = Q11_Lr2r6,
+    unlikelihood_action_reduce_hydro_uninterested_18 = Q11_Lr2r7,
+    unlikelihood_action_reduce_hydro_other_18 = Q11_Lr2r8,
+    unlikelihood_action_minimize_car_confusing_18 = Q11_Lr3r1,
+    unlikelihood_action_minimize_car_individual_difference_18 = Q11_Lr3r2,
+    unlikelihood_action_minimize_car_ineffective_18 = Q11_Lr3r3,
+    unlikelihood_action_minimize_car_costly_18 = Q11_Lr3r4,
+    unlikelihood_action_minimize_car_unavailable_18 = Q11_Lr3r5,
+    unlikelihood_action_minimize_car_inconvienient_18 = Q11_Lr3r6,
+    unlikelihood_action_minimize_car_uninterested_18 = Q11_Lr3r7,
+    unlikelihood_action_minimize_car_other_18 = Q11_Lr3r8,
+    unlikelihood_action_vehicle_electric_confusing_18 = Q11_Lr4r1,
+    unlikelihood_action_vehicle_electric_individual_difference_18 = Q11_Lr4r2,
+    unlikelihood_action_vehicle_electric_ineffective_18 = Q11_Lr4r3,
+    unlikelihood_action_vehicle_electric_costly_18 = Q11_Lr4r4,
+    unlikelihood_action_vehicle_electric_unavailable_18 = Q11_Lr4r5,
+    unlikelihood_action_vehicle_electric_inconvienient_18 = Q11_Lr4r6,
+    unlikelihood_action_vehicle_electric_uninterested_18 = Q11_Lr4r7,
+    unlikelihood_action_vehicle_electric_other_18 = Q11_Lr4r8,
+    unlikelihood_action_protein_alternative_confusing_18 = Q11_Lr5r1,
+    unlikelihood_action_protein_alternative_individual_difference_18 = Q11_Lr5r2,
+    unlikelihood_action_protein_alternative_ineffective_18 = Q11_Lr5r3,
+    unlikelihood_action_protein_alternative_costly_18 = Q11_Lr5r4,
+    unlikelihood_action_protein_alternative_unavailable_18 = Q11_Lr5r5,
+    unlikelihood_action_protein_alternative_inconvienient_18 = Q11_Lr5r6,
+    unlikelihood_action_protein_alternative_uninterested_18 = Q11_Lr5r7,
+    unlikelihood_action_protein_alternative_other_18 = Q11_Lr5r8,
+    unlikelihood_action_reduce_waste_confusing_18 = Q11_Lr6r1,
+    unlikelihood_action_reduce_waste_individual_difference_18 = Q11_Lr6r2,
+    unlikelihood_action_reduce_waste_ineffective_18 = Q11_Lr6r3,
+    unlikelihood_action_reduce_waste_costly_18 = Q11_Lr6r4,
+    unlikelihood_action_reduce_waste_unavailable_18 = Q11_Lr6r5,
+    unlikelihood_action_reduce_waste_inconvienient_18 = Q11_Lr6r6,
+    unlikelihood_action_reduce_waste_uninterested_18 = Q11_Lr6r7,
+    unlikelihood_action_reduce_waste_other_18 = Q11_Lr6r8,
+    unlikelihood_action_green_product_confusing_18 = Q11_Lr7r1,
+    unlikelihood_action_green_product_individual_difference_18 = Q11_Lr7r2,
+    unlikelihood_action_green_product_ineffective_18 = Q11_Lr7r3,
+    unlikelihood_action_green_product_costly_18 = Q11_Lr7r4,
+    unlikelihood_action_green_product_unavailable_18 = Q11_Lr7r5,
+    unlikelihood_action_green_product_inconvienient_18 = Q11_Lr7r6,
+    unlikelihood_action_green_product_uninterested_18 = Q11_Lr7r7,
+    unlikelihood_action_green_product_other_18 = Q11_Lr7r8,
+    unlikelihood_action_short_distance_confusing_18 = Q11_Lr8r1,
+    unlikelihood_action_short_distance_individual_difference_18 = Q11_Lr8r2,
+    unlikelihood_action_short_distance_ineffective_18 = Q11_Lr8r3,
+    unlikelihood_action_short_distance_costly_18 = Q11_Lr8r4,
+    unlikelihood_action_short_distance_unavailable_18 = Q11_Lr8r5,
+    unlikelihood_action_short_distance_inconvienient_18 = Q11_Lr8r6,
+    unlikelihood_action_short_distance_uninterested_18 = Q11_Lr8r7,
+    unlikelihood_action_short_distance_other_18 = Q11_Lr8r8,
+    unlikelihood_action_sort_waste_confusing_18 = Q11_Lr9r1,
+    unlikelihood_action_sort_waste_individual_difference_18 = Q11_Lr9r2,
+    unlikelihood_action_sort_waste_ineffective_18 = Q11_Lr9r3,
+    unlikelihood_action_sort_waste_costly_18 = Q11_Lr9r4,
+    unlikelihood_action_sort_waste_unavailable_18 = Q11_Lr9r5,
+    unlikelihood_action_sort_waste_inconvienient_18 = Q11_Lr9r6,
+    unlikelihood_action_sort_waste_uninterested_18 = Q11_Lr9r7,
+    unlikelihood_action_sort_waste_other_18 = Q11_Lr9r8,
+    delivery_method_toronto.ca_website_18 = Q13r1,
+    delivery_method_events_18 = Q13r2,
+    delivery_method_twitter_18 = Q13r3,
+    delivery_method_facebook_18 = Q13r4,
+    delivery_method_instagram_18 = Q13r5,
+    delivery_method_enewsletter_email_18 = Q13r6,
+    delivery_method_councillor_communication_18 = Q13r7,
+    delivery_method_advertising_campaigns_18 = Q13r8,
+    delivery_method_brochures_pamphlets_18 = Q13r9,
+    delivery_method_other_18 = Q13r10,
+    delivery_method_not_interested_receiving_18 = Q13r11,
+    highest_level_educ_18 = QD5
+  )
+
+# Fix "unlikelihood" columns in the 2018 dataset
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(across(
+    starts_with("unlikelihood"),
+    ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no" and all others with "yes"
+  ))
+
+# Identify columns starting with "delivery"
+delivery_columns <- grep("^delivery", colnames(df), value = TRUE)
+
+# Iterate over the delivery columns and modify the rows
+df[delivery_columns] <- lapply(df[delivery_columns], function(column) {
+  # Change rows starting with "NO TO:" to "no"
+  column <- ifelse(grepl("^NO TO:", column, ignore.case = TRUE), "no", "yes")
+  return(column)
+})
+
+# View the first few rows to confirm the data
+head(renamed_twenty_eighteen)
+
+# for 2018 data, need to fix unlikehood columns and method of communication columns
+
+#### Save 2018 individual data ####
+write_csv(renamed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
+ChatGPT said:
+ChatGPT
+The code appears to have some missing or incorrect syntax. Specifically:
+
+Potential Issues:
+Incomplete Code Block:
+
+The final mutate(across(... line ends abruptly and lacks a closing parenthesis and bracket to complete the pipeline.
+r
+Copy code
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(across(
+    starts_with("unlikelihood"),
+    ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no" and all others with "yes"
+Add the closing parenthesis and bracket:
+
+r
+Copy code
+    ))
+Typographical Errors:
+
+inconvienient should likely be corrected to inconvenient. The misspelling occurs multiple times in your column names during renaming.
+Ensure the column names in the original dataset (twenty_eighteen_raw_data) match those specified in the select() and rename() functions. If any column names are misspelled or missing, you'll encounter errors.
+Handling Missing Data:
+
+In your mutate(across(... step, the ifelse statement is replacing NA values but overwrites all other values with "yes." If this is not intended, you should clarify the logic. For example:
+r
+Copy code
+mutate(across(
+  starts_with("unlikelihood"),
+  ~ ifelse(is.na(.), "no", .)  # Retain existing values, replace NA with "no"
+))
+Path to CSV File:
+
+Verify that the file path "data/01-raw_data/twenty_eighteen_raw_data.csv" is correct and accessible. If the file cannot be found, R will throw an error.
+Column Order Mismatch:
+
+Ensure that the column names in select() match the columns in the raw data. Use colnames(twenty_eighteen_raw_data) to check the actual column names in your dataset.
+Corrected Code (Final Portion):
+r
+Copy code
+# Fix "unlikelihood" columns in the 2018 dataset
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(across(
+    starts_with("unlikelihood"),
+    ~ ifelse(is.na(.), "no", .)  # Replace NA with "no" but retain other values
+  ))
+Debugging Tips:
+Check the column names of the raw dataset using colnames(twenty_eighteen_raw_data).
+Print intermediate outputs (e.g., head(twenty_eighteen)) to ensure data transformation is proceeding as expected.
+Ensure all parentheses and brackets are correctly closed.

@@ -264,5 +264,5 @@ cleaned_wb <- createWorkbook()
 addWorksheet(cleaned_wb, "Consolidated Data")
 writeData(cleaned_wb, "Consolidated Data", combined_data)
 
-# Save the workbook
-saveWorkbook(cleaned_wb, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.xlsx", overwrite = TRUE)
+#### Save the consolidated data as CSV ####
+write.csv(combined_data, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv", row.names = FALSE)
