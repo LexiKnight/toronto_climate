@@ -9,11 +9,12 @@
 
 #### Workspace setup ####
 # install necessary packages
-# install.packages(c("readr", "dplyr"))
+# install.packages(c("readr", "dplyr", "openxlsx"))
 
 # load necessary packages
 library(readr)
-library(dplyr)
+library(dplyr) # for combining data frames
+library(openxlsx)
 
 #### Clean data 2018 ####
 # Read the csv file
@@ -137,6 +138,39 @@ renamed_twenty_eighteen <- twenty_eighteen %>%
 
 # View the first few rows to confirm the data
 head(renamed_twenty_eighteen)
+
+
+# for 2018 data, need to fix unlikehood columns and method of communication columns
+
+
+
+
+#### Clean data 2021 ####
+
+# File path to the saved workbook
+file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
+
+# Sheet numbers to extract (1-based indexing in R, "index" is first)
+sheet_numbers <- c(3, 11, 34, 67, 85, 114)
+
+# Get all sheet names
+sheet_names <- getSheetNames(file_path)
+
+# Read the specific sheets into a list
+selected_sheets <- lapply(sheet_numbers, function(sheet_num) {
+  read.xlsx(file_path, sheet = sheet_names[sheet_num])
+})
+
+# Combine all selected sheets into one data frame
+combined_data <- bind_rows(selected_sheets)
+
+# Create a new workbook to save the cleaned data
+cleaned_wb <- createWorkbook()
+
+# Add a single sheet with the combined data
+addWorksheet(cleaned_wb, "Consolidated Data")
+writeData(cleaned_wb, "Consolidated Data", combined_data)
+
 
 #### Save data ####
 write_csv(renamed_twenty_eighteen, "data/02-analysis_data/analysis_data.csv")

@@ -11,10 +11,10 @@
 # install.packages(c("httr", "readxl", "tidyverse", "openxlsx"))
 
 # Load required libraries
-library(httr)
-library(readxl)
-library(tidyverse)
-library(openxlsx)
+library(httr) # downloads excel file
+library(readxl) # enables reading excel files
+library(tidyverse) # provides write_csv function to save 2018 dataset
+library(openxlsx) #creates new excel workbook with mulitple sheets to save 2021 dataset
 
 #### Download data for 2018 ####
 # Note, there are two versions where each version is formatted differently, 
