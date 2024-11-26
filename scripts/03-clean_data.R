@@ -607,7 +607,7 @@ combined_summary_21 <- bind_rows(
 
 # Save the combined data as a Parquet file
 write_parquet(combined_summary_21, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.parquet")
-
+write_csv(combined_summary_21, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv")
 
 # Confirmation message
 print("Data saved successfully!")
