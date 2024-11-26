@@ -1857,3 +1857,540 @@ Debugging Tips:
 Check the column names of the raw dataset using colnames(twenty_eighteen_raw_data).
 Print intermediate outputs (e.g., head(twenty_eighteen)) to ensure data transformation is proceeding as expected.
 Ensure all parentheses and brackets are correctly closed.
+
+
+
+
+User:
+alright so my code for individual 2018 data is as follows: 
+#### Workspace setup ####
+# install necessary packages
+# install.packages(c("readr", "dplyr", "openxlsx"))
+
+# load necessary packages
+library(readr)
+library(dplyr) # for combining data frames
+library(openxlsx)
+
+#### Clean data 2018 ####
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+# Sample size information
+sample_size_2018 <- 404 # This is the sample size for the year 2018
+
+#  I want to select certain columns outlined below
+twenty_eighteen <- twenty_eighteen_raw_data %>%
+  select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
+  Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
+  Q11_Lr2r1, Q11_Lr2r2, Q11_Lr2r3, Q11_Lr2r4, Q11_Lr2r5, Q11_Lr2r6, Q11_Lr2r7, Q11_Lr2r8,
+  Q11_Lr3r1, Q11_Lr3r2, Q11_Lr3r3, Q11_Lr3r4, Q11_Lr3r5, Q11_Lr3r6, Q11_Lr3r7, Q11_Lr3r8,
+  Q11_Lr4r1, Q11_Lr4r2, Q11_Lr4r3, Q11_Lr4r4, Q11_Lr4r5, Q11_Lr4r6, Q11_Lr4r7, Q11_Lr4r8,
+  Q11_Lr5r1, Q11_Lr5r2, Q11_Lr5r3, Q11_Lr5r4, Q11_Lr5r5, Q11_Lr5r6, Q11_Lr5r7, Q11_Lr5r8,
+  Q11_Lr6r1, Q11_Lr6r2, Q11_Lr6r3, Q11_Lr6r4, Q11_Lr6r5, Q11_Lr6r6, Q11_Lr6r7, Q11_Lr6r8,
+  Q11_Lr7r1, Q11_Lr7r2, Q11_Lr7r3, Q11_Lr7r4, Q11_Lr7r5, Q11_Lr7r6, Q11_Lr7r7, Q11_Lr7r8,
+  Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
+  Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
+  Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
+  QD5)
+
+#### Rename columns 2018 ####
+# use rename() function to give more meaningful names
+renamed_twenty_eighteen <- twenty_eighteen %>%
+  rename(
+    age_18 = HIDAGE1,
+    extent_consider_informed_18 = Q2,
+    likelihood_action_home_improvement_18= Q10r1,
+    likelihood_action_reduce_hydro_18 = Q10r2,
+    likelihood_action_minimize_car_18 = Q10r3,
+    likelihood_action_vehicle_electric_18 = Q10r4,
+    likelihood_action_protein_alternative_18 = Q10r5,
+    likelihood_action_reduce_waste_18 = Q10r6,
+    likelihood_action_green_product_18 = Q10r7,
+    likelihood_action_short_distance_18 = Q10r8,
+    likelihood_action_sort_waste_18 = Q10r9,
+    unlikelihood_action_home_improvement_confusing_18 = Q11_Lr1r1,
+    unlikelihood_action_home_improvement_individual_difference_18 = Q11_Lr1r2,
+    unlikelihood_action_home_improvement_ineffective_18 = Q11_Lr1r3,
+    unlikelihood_action_home_improvement_costly_18 = Q11_Lr1r4,
+    unlikelihood_action_home_improvement_unavailable_18 = Q11_Lr1r5,
+    unlikelihood_action_home_improvement_inconvenient_18 = Q11_Lr1r6,
+    unlikelihood_action_home_improvement_uninterested_18 = Q11_Lr1r7,
+    unlikelihood_action_home_improvement_other_18 = Q11_Lr1r8,
+    unlikelihood_action_reduce_hydro_confusing_18 = Q11_Lr2r1,
+    unlikelihood_action_reduce_hydro_individual_difference_18 = Q11_Lr2r2,
+    unlikelihood_action_reduce_hydro_ineffective_18 = Q11_Lr2r3,
+    unlikelihood_action_reduce_hydro_costly_18 = Q11_Lr2r4,
+    unlikelihood_action_reduce_hydro_unavailable_18 = Q11_Lr2r5,
+    unlikelihood_action_reduce_hydro_inconvenient_18 = Q11_Lr2r6,
+    unlikelihood_action_reduce_hydro_uninterested_18 = Q11_Lr2r7,
+    unlikelihood_action_reduce_hydro_other_18 = Q11_Lr2r8,
+    unlikelihood_action_minimize_car_confusing_18 = Q11_Lr3r1,
+    unlikelihood_action_minimize_car_individual_difference_18 = Q11_Lr3r2,
+    unlikelihood_action_minimize_car_ineffective_18 = Q11_Lr3r3,
+    unlikelihood_action_minimize_car_costly_18 = Q11_Lr3r4,
+    unlikelihood_action_minimize_car_unavailable_18 = Q11_Lr3r5,
+    unlikelihood_action_minimize_car_inconvenient_18 = Q11_Lr3r6,
+    unlikelihood_action_minimize_car_uninterested_18 = Q11_Lr3r7,
+    unlikelihood_action_minimize_car_other_18 = Q11_Lr3r8,
+    unlikelihood_action_vehicle_electric_confusing_18 = Q11_Lr4r1,
+    unlikelihood_action_vehicle_electric_individual_difference_18 = Q11_Lr4r2,
+    unlikelihood_action_vehicle_electric_ineffective_18 = Q11_Lr4r3,
+    unlikelihood_action_vehicle_electric_costly_18 = Q11_Lr4r4,
+    unlikelihood_action_vehicle_electric_unavailable_18 = Q11_Lr4r5,
+    unlikelihood_action_vehicle_electric_inconvenient_18 = Q11_Lr4r6,
+    unlikelihood_action_vehicle_electric_uninterested_18 = Q11_Lr4r7,
+    unlikelihood_action_vehicle_electric_other_18 = Q11_Lr4r8,
+    unlikelihood_action_protein_alternative_confusing_18 = Q11_Lr5r1,
+    unlikelihood_action_protein_alternative_individual_difference_18 = Q11_Lr5r2,
+    unlikelihood_action_protein_alternative_ineffective_18 = Q11_Lr5r3,
+    unlikelihood_action_protein_alternative_costly_18 = Q11_Lr5r4,
+    unlikelihood_action_protein_alternative_unavailable_18 = Q11_Lr5r5,
+    unlikelihood_action_protein_alternative_inconvenient_18 = Q11_Lr5r6,
+    unlikelihood_action_protein_alternative_uninterested_18 = Q11_Lr5r7,
+    unlikelihood_action_protein_alternative_other_18 = Q11_Lr5r8,
+    unlikelihood_action_reduce_waste_confusing_18 = Q11_Lr6r1,
+    unlikelihood_action_reduce_waste_individual_difference_18 = Q11_Lr6r2,
+    unlikelihood_action_reduce_waste_ineffective_18 = Q11_Lr6r3,
+    unlikelihood_action_reduce_waste_costly_18 = Q11_Lr6r4,
+    unlikelihood_action_reduce_waste_unavailable_18 = Q11_Lr6r5,
+    unlikelihood_action_reduce_waste_inconvenient_18 = Q11_Lr6r6,
+    unlikelihood_action_reduce_waste_uninterested_18 = Q11_Lr6r7,
+    unlikelihood_action_reduce_waste_other_18 = Q11_Lr6r8,
+    unlikelihood_action_green_product_confusing_18 = Q11_Lr7r1,
+    unlikelihood_action_green_product_individual_difference_18 = Q11_Lr7r2,
+    unlikelihood_action_green_product_ineffective_18 = Q11_Lr7r3,
+    unlikelihood_action_green_product_costly_18 = Q11_Lr7r4,
+    unlikelihood_action_green_product_unavailable_18 = Q11_Lr7r5,
+    unlikelihood_action_green_product_inconvenient_18 = Q11_Lr7r6,
+    unlikelihood_action_green_product_uninterested_18 = Q11_Lr7r7,
+    unlikelihood_action_green_product_other_18 = Q11_Lr7r8,
+    unlikelihood_action_short_distance_confusing_18 = Q11_Lr8r1,
+    unlikelihood_action_short_distance_individual_difference_18 = Q11_Lr8r2,
+    unlikelihood_action_short_distance_ineffective_18 = Q11_Lr8r3,
+    unlikelihood_action_short_distance_costly_18 = Q11_Lr8r4,
+    unlikelihood_action_short_distance_unavailable_18 = Q11_Lr8r5,
+    unlikelihood_action_short_distance_inconvenient_18 = Q11_Lr8r6,
+    unlikelihood_action_short_distance_uninterested_18 = Q11_Lr8r7,
+    unlikelihood_action_short_distance_other_18 = Q11_Lr8r8,
+    unlikelihood_action_sort_waste_confusing_18 = Q11_Lr9r1,
+    unlikelihood_action_sort_waste_individual_difference_18 = Q11_Lr9r2,
+    unlikelihood_action_sort_waste_ineffective_18 = Q11_Lr9r3,
+    unlikelihood_action_sort_waste_costly_18 = Q11_Lr9r4,
+    unlikelihood_action_sort_waste_unavailable_18 = Q11_Lr9r5,
+    unlikelihood_action_sort_waste_inconvenient_18 = Q11_Lr9r6,
+    unlikelihood_action_sort_waste_uninterested_18 = Q11_Lr9r7,
+    unlikelihood_action_sort_waste_other_18 = Q11_Lr9r8,
+    delivery_method_toronto.ca_website_18 = Q13r1,
+    delivery_method_events_18 = Q13r2,
+    delivery_method_twitter_18 = Q13r3,
+    delivery_method_facebook_18 = Q13r4,
+    delivery_method_instagram_18 = Q13r5,
+    delivery_method_enewsletter_email_18 = Q13r6,
+    delivery_method_councillor_communication_18 = Q13r7,
+    delivery_method_advertising_campaigns_18 = Q13r8,
+    delivery_method_brochures_pamphlets_18 = Q13r9,
+    delivery_method_other_18 = Q13r10,
+    delivery_method_not_interested_receiving_18 = Q13r11,
+    highest_level_educ_18 = QD5
+  )
+
+# Fix all "unlikelihood" and 'delivery' columns
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(
+    across(
+      starts_with("unlikelihood"),
+      ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no" and non-NA with "yes"
+    ),
+    across(
+      starts_with("delivery"),
+      ~ ifelse(grepl("^NO TO:", ., ignore.case = TRUE), "no", "yes")
+    )
+  )
+
+
+# View the first few rows to confirm the data
+head(renamed_twenty_eighteen)
+
+#### Save 2018 individual data ####
+write_csv(renamed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
+
+
+I need to fix the column named L through CE that begin with "unlikelihood_action_". What I was hoping to do was change rows that indicate "NA" and those that begin with "NO TO:" to "no". Change all else to "yes".  That is the first thing. the second is that I am trying to fix columns CF to CP that start with "delivery_method_". I want the variables that begin with "NO TO:" to change to "no" and all else change it to "yes". Can you help either rewrite the code above to achieve these goals? please!
+
+ChatGPT said:
+ChatGPT
+It looks like your code cuts off right after specifying how you handle NA values for the "unlikelihood" columns. To finish processing the data and address any potential issues, here are a few suggestions and improvements:
+
+Updated Code Continuation:
+r
+Copy code
+      ~ ifelse(is.na(.), "no", "yes")  # Replace NA with "no," non-NA with "yes"
+    )
+  ) %>%
+  mutate(
+    across(
+      starts_with("delivery_method"),
+      ~ ifelse(is.na(.), "no", "yes")  # Apply the same transformation to delivery columns
+    )
+  )
+Add Data Export:
+After cleaning and fixing the data, you may want to export it to a CSV or save it for further analysis:
+
+r
+Copy code
+# Export cleaned data to a new file
+write_csv(fixed_twenty_eighteen, "data/02-cleaned_data/cleaned_2018_data.csv")
+Improvements:
+Column Selection: You have a long list of columns in select(). To streamline your code:
+
+If your columns follow a predictable pattern, you can use matches() or starts_with() to dynamically select them.
+r
+Copy code
+twenty_eighteen <- twenty_eighteen_raw_data %>%
+  select(HIDAGE1, Q2, matches("Q10r|Q11_Lr|Q13r"), QD5)
+Renaming: Renaming many columns manually can be tedious. Instead, consider generating column names programmatically:
+
+r
+Copy code
+rename_cols <- c(
+  "age_18" = "HIDAGE1",
+  "extent_consider_informed_18" = "Q2",
+  "highest_level_educ_18" = "QD5"
+  # Add additional mappings here
+)
+renamed_twenty_eighteen <- twenty_eighteen %>%
+  rename(!!!rename_cols)
+Data Checks: After cleaning, verify the integrity of the data:
+
+r
+Copy code
+# Check for missing values
+summary(fixed_twenty_eighteen)
+# Check unique values in categorical columns
+lapply(fixed_twenty_eighteen %>% select(starts_with("unlikelihood")), unique)
+Questions or Next Steps:
+Is your NA replacement strategy ("yes" or "no") appropriate for all "unlikelihood" and "delivery" columns? If some columns are numeric, this could lead to issues.
+Should "delivery" columns also be summarized or grouped in a specific way for analysis?
+Let me know if you'd like further refinements!
+
+
+
+
+
+
+User:
+ok but for columns starting with unlikelihood_action, in addition to replacing NA with "no", please replace variables that start with "TO DO" with "no" as well. all other variables are to be replaced by 'yes'. its the "TO DO"  task that you missed last time, please provide code
+
+2/2
+
+ChatGPT said:
+ChatGPT
+To address the requirement of replacing NA with "no", values starting with "TO DO" with "no", and all other values with "yes" for columns starting with "unlikelihood_action", here’s the appropriate R code:
+
+R
+Copy code
+# Replace NA, "TO DO", and other values in columns starting with "unlikelihood_action"
+dataset <- dataset %>%
+  mutate(across(starts_with("unlikelihood_action"), 
+                ~ ifelse(is.na(.), "no", 
+                         ifelse(startsWith(., "TO DO"), "no", "yes"))))
+Explanation:
+mutate(across(...)):
+
+mutate() is used to modify columns in the dataset.
+across(starts_with("unlikelihood_action")) applies the function to all columns whose names start with "unlikelihood_action".
+Logic Inside ifelse():
+
+is.na(.): Checks for NA values and replaces them with "no".
+startsWith(., "TO DO"): Checks if the value starts with "TO DO" and replaces it with "no".
+Default "yes": All other values are replaced with "yes".
+Let me know if further clarification is needed!
+
+
+
+
+
+
+User:
+alright, ive got this now, can you tell me if this is correct? I think i messed up the parentheses # Fix all "unlikelihood" and 'delivery' columns
+# Replace NA, "TO DO", and other values in columns
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(
+    across(
+      starts_with("unlikelihood_action"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "TO DO"), "no", "yes"))))
+    )
+  ) %>%
+  mutate(
+    across(
+      starts_with("delivery_method"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "TO DO"), "no", "yes")
+    )
+  )
+ChatGPT said:
+ChatGPT
+Your code has mismatched and unnecessary parentheses, which will cause syntax errors. Here's the corrected version:
+
+r
+Copy code
+# Fix all "unlikelihood" and "delivery" columns
+# Replace NA, "TO DO", and other values in columns
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(
+    across(
+      starts_with("unlikelihood_action"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "TO DO"), "no", "yes"))
+    )
+  ) %>%
+  mutate(
+    across(
+      starts_with("delivery_method"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "TO DO"), "no", "yes"))
+    )
+  )
+Corrections:
+Balanced Parentheses:
+
+Each mutate and across block needs matching opening and closing parentheses.
+There was an extra closing parenthesis ) after the first across block and another missing for the second block.
+Structure and Readability:
+
+Each block is now correctly indented and aligned for clarity.
+Explanation:
+The first mutate fixes columns starting with "unlikelihood_action".
+The second mutate fixes columns starting with "delivery_method".
+Each column's values are updated based on the logic provided.
+This corrected code should work properly. Let me know if you encounter any other issues!
+
+
+
+
+
+
+User:
+given my code, there is no error per se and technically the dataset is saving when i run the code. but the dataset is not appearing like normal in the top right corner under the git tab in RStudio. why is this: 
+#### Workspace setup ####
+# install necessary packages
+# install.packages(c("readr", "dplyr", "openxlsx"))
+
+# load necessary packages
+library(readr)
+library(dplyr) # for combining data frames
+library(openxlsx)
+
+#### Clean data 2018 ####
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+# Sample size information
+sample_size_2018 <- 404 # This is the sample size for the year 2018
+
+#  I want to select certain columns outlined below
+twenty_eighteen <- twenty_eighteen_raw_data %>%
+  select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
+  Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
+  Q11_Lr2r1, Q11_Lr2r2, Q11_Lr2r3, Q11_Lr2r4, Q11_Lr2r5, Q11_Lr2r6, Q11_Lr2r7, Q11_Lr2r8,
+  Q11_Lr3r1, Q11_Lr3r2, Q11_Lr3r3, Q11_Lr3r4, Q11_Lr3r5, Q11_Lr3r6, Q11_Lr3r7, Q11_Lr3r8,
+  Q11_Lr4r1, Q11_Lr4r2, Q11_Lr4r3, Q11_Lr4r4, Q11_Lr4r5, Q11_Lr4r6, Q11_Lr4r7, Q11_Lr4r8,
+  Q11_Lr5r1, Q11_Lr5r2, Q11_Lr5r3, Q11_Lr5r4, Q11_Lr5r5, Q11_Lr5r6, Q11_Lr5r7, Q11_Lr5r8,
+  Q11_Lr6r1, Q11_Lr6r2, Q11_Lr6r3, Q11_Lr6r4, Q11_Lr6r5, Q11_Lr6r6, Q11_Lr6r7, Q11_Lr6r8,
+  Q11_Lr7r1, Q11_Lr7r2, Q11_Lr7r3, Q11_Lr7r4, Q11_Lr7r5, Q11_Lr7r6, Q11_Lr7r7, Q11_Lr7r8,
+  Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
+  Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
+  Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
+  QD5)
+
+#### Rename columns 2018 ####
+# use rename() function to give more meaningful names
+renamed_twenty_eighteen <- twenty_eighteen %>%
+  rename(
+    age_18 = HIDAGE1,
+    extent_consider_informed_18 = Q2,
+    likelihood_action_home_improvement_18= Q10r1,
+    likelihood_action_reduce_hydro_18 = Q10r2,
+    likelihood_action_minimize_car_18 = Q10r3,
+    likelihood_action_vehicle_electric_18 = Q10r4,
+    likelihood_action_protein_alternative_18 = Q10r5,
+    likelihood_action_reduce_waste_18 = Q10r6,
+    likelihood_action_green_product_18 = Q10r7,
+    likelihood_action_short_distance_18 = Q10r8,
+    likelihood_action_sort_waste_18 = Q10r9,
+    unlikelihood_action_home_improvement_confusing_18 = Q11_Lr1r1,
+    unlikelihood_action_home_improvement_individual_difference_18 = Q11_Lr1r2,
+    unlikelihood_action_home_improvement_ineffective_18 = Q11_Lr1r3,
+    unlikelihood_action_home_improvement_costly_18 = Q11_Lr1r4,
+    unlikelihood_action_home_improvement_unavailable_18 = Q11_Lr1r5,
+    unlikelihood_action_home_improvement_inconvenient_18 = Q11_Lr1r6,
+    unlikelihood_action_home_improvement_uninterested_18 = Q11_Lr1r7,
+    unlikelihood_action_home_improvement_other_18 = Q11_Lr1r8,
+    unlikelihood_action_reduce_hydro_confusing_18 = Q11_Lr2r1,
+    unlikelihood_action_reduce_hydro_individual_difference_18 = Q11_Lr2r2,
+    unlikelihood_action_reduce_hydro_ineffective_18 = Q11_Lr2r3,
+    unlikelihood_action_reduce_hydro_costly_18 = Q11_Lr2r4,
+    unlikelihood_action_reduce_hydro_unavailable_18 = Q11_Lr2r5,
+    unlikelihood_action_reduce_hydro_inconvenient_18 = Q11_Lr2r6,
+    unlikelihood_action_reduce_hydro_uninterested_18 = Q11_Lr2r7,
+    unlikelihood_action_reduce_hydro_other_18 = Q11_Lr2r8,
+    unlikelihood_action_minimize_car_confusing_18 = Q11_Lr3r1,
+    unlikelihood_action_minimize_car_individual_difference_18 = Q11_Lr3r2,
+    unlikelihood_action_minimize_car_ineffective_18 = Q11_Lr3r3,
+    unlikelihood_action_minimize_car_costly_18 = Q11_Lr3r4,
+    unlikelihood_action_minimize_car_unavailable_18 = Q11_Lr3r5,
+    unlikelihood_action_minimize_car_inconvenient_18 = Q11_Lr3r6,
+    unlikelihood_action_minimize_car_uninterested_18 = Q11_Lr3r7,
+    unlikelihood_action_minimize_car_other_18 = Q11_Lr3r8,
+    unlikelihood_action_vehicle_electric_confusing_18 = Q11_Lr4r1,
+    unlikelihood_action_vehicle_electric_individual_difference_18 = Q11_Lr4r2,
+    unlikelihood_action_vehicle_electric_ineffective_18 = Q11_Lr4r3,
+    unlikelihood_action_vehicle_electric_costly_18 = Q11_Lr4r4,
+    unlikelihood_action_vehicle_electric_unavailable_18 = Q11_Lr4r5,
+    unlikelihood_action_vehicle_electric_inconvenient_18 = Q11_Lr4r6,
+    unlikelihood_action_vehicle_electric_uninterested_18 = Q11_Lr4r7,
+    unlikelihood_action_vehicle_electric_other_18 = Q11_Lr4r8,
+    unlikelihood_action_protein_alternative_confusing_18 = Q11_Lr5r1,
+    unlikelihood_action_protein_alternative_individual_difference_18 = Q11_Lr5r2,
+    unlikelihood_action_protein_alternative_ineffective_18 = Q11_Lr5r3,
+    unlikelihood_action_protein_alternative_costly_18 = Q11_Lr5r4,
+    unlikelihood_action_protein_alternative_unavailable_18 = Q11_Lr5r5,
+    unlikelihood_action_protein_alternative_inconvenient_18 = Q11_Lr5r6,
+    unlikelihood_action_protein_alternative_uninterested_18 = Q11_Lr5r7,
+    unlikelihood_action_protein_alternative_other_18 = Q11_Lr5r8,
+    unlikelihood_action_reduce_waste_confusing_18 = Q11_Lr6r1,
+    unlikelihood_action_reduce_waste_individual_difference_18 = Q11_Lr6r2,
+    unlikelihood_action_reduce_waste_ineffective_18 = Q11_Lr6r3,
+    unlikelihood_action_reduce_waste_costly_18 = Q11_Lr6r4,
+    unlikelihood_action_reduce_waste_unavailable_18 = Q11_Lr6r5,
+    unlikelihood_action_reduce_waste_inconvenient_18 = Q11_Lr6r6,
+    unlikelihood_action_reduce_waste_uninterested_18 = Q11_Lr6r7,
+    unlikelihood_action_reduce_waste_other_18 = Q11_Lr6r8,
+    unlikelihood_action_green_product_confusing_18 = Q11_Lr7r1,
+    unlikelihood_action_green_product_individual_difference_18 = Q11_Lr7r2,
+    unlikelihood_action_green_product_ineffective_18 = Q11_Lr7r3,
+    unlikelihood_action_green_product_costly_18 = Q11_Lr7r4,
+    unlikelihood_action_green_product_unavailable_18 = Q11_Lr7r5,
+    unlikelihood_action_green_product_inconvenient_18 = Q11_Lr7r6,
+    unlikelihood_action_green_product_uninterested_18 = Q11_Lr7r7,
+    unlikelihood_action_green_product_other_18 = Q11_Lr7r8,
+    unlikelihood_action_short_distance_confusing_18 = Q11_Lr8r1,
+    unlikelihood_action_short_distance_individual_difference_18 = Q11_Lr8r2,
+    unlikelihood_action_short_distance_ineffective_18 = Q11_Lr8r3,
+    unlikelihood_action_short_distance_costly_18 = Q11_Lr8r4,
+    unlikelihood_action_short_distance_unavailable_18 = Q11_Lr8r5,
+    unlikelihood_action_short_distance_inconvenient_18 = Q11_Lr8r6,
+    unlikelihood_action_short_distance_uninterested_18 = Q11_Lr8r7,
+    unlikelihood_action_short_distance_other_18 = Q11_Lr8r8,
+    unlikelihood_action_sort_waste_confusing_18 = Q11_Lr9r1,
+    unlikelihood_action_sort_waste_individual_difference_18 = Q11_Lr9r2,
+    unlikelihood_action_sort_waste_ineffective_18 = Q11_Lr9r3,
+    unlikelihood_action_sort_waste_costly_18 = Q11_Lr9r4,
+    unlikelihood_action_sort_waste_unavailable_18 = Q11_Lr9r5,
+    unlikelihood_action_sort_waste_inconvenient_18 = Q11_Lr9r6,
+    unlikelihood_action_sort_waste_uninterested_18 = Q11_Lr9r7,
+    unlikelihood_action_sort_waste_other_18 = Q11_Lr9r8,
+    delivery_method_toronto.ca_website_18 = Q13r1,
+    delivery_method_events_18 = Q13r2,
+    delivery_method_twitter_18 = Q13r3,
+    delivery_method_facebook_18 = Q13r4,
+    delivery_method_instagram_18 = Q13r5,
+    delivery_method_enewsletter_email_18 = Q13r6,
+    delivery_method_councillor_communication_18 = Q13r7,
+    delivery_method_advertising_campaigns_18 = Q13r8,
+    delivery_method_brochures_pamphlets_18 = Q13r9,
+    delivery_method_other_18 = Q13r10,
+    delivery_method_not_interested_receiving_18 = Q13r11,
+    highest_level_educ_18 = QD5
+  )
+
+# Fix all "unlikelihood" and "delivery" columns
+# Replace NA, "NO TO", and other values in columns
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(
+    across(
+      starts_with("unlikelihood_action"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "NO TO"), "no", "yes"))
+    )
+  ) %>%
+  mutate(
+    across(
+      starts_with("delivery_method"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "NO TO"), "no", "yes"))
+    )
+  )
+
+
+# View the first few rows to confirm the data
+head(renamed_twenty_eighteen)
+
+#### Save 2018 individual data ####
+write_csv(renamed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
+
+
+
+ChatGPT said:
+ChatGPT
+The issue you are experiencing, where the dataset isn't appearing in the Environment pane under the "Data" tab in RStudio, is likely due to how RStudio recognizes objects for display in the Environment tab. Here are some common reasons and solutions:
+
+Potential Reasons and Fixes
+Object Saved but Not in the Global Environment
+If the object renamed_twenty_eighteen is created but not assigned to the global environment, it won't appear in the Environment tab.
+
+Check: Did you run the assignment line (renamed_twenty_eighteen <- ...)?
+Fix: Ensure the object is defined in your current session. For example:
+r
+Copy code
+renamed_twenty_eighteen <- renamed_twenty_eighteen
+Incomplete Code Execution
+If the script ran partially, the object might not have been created.
+
+Check: Did you see any errors during execution? Scroll up in the console to confirm.
+Fix: Rerun the script to ensure all lines execute successfully:
+r
+Copy code
+source("your_script.R")
+Non-standard Data Format
+RStudio might not recognize the data structure properly if it’s in a non-standard format, such as a custom list or other non-tabular structure.
+
+Check: Confirm renamed_twenty_eighteen is a standard data frame or tibble by running:
+r
+Copy code
+class(renamed_twenty_eighteen)
+Fix: Convert it to a recognizable format, like a tibble or data frame:
+r
+Copy code
+renamed_twenty_eighteen <- as_tibble(renamed_twenty_eighteen)
+Large Dataset or Truncated Columns
+If the dataset has too many columns, RStudio might not display it automatically.
+
+Check: Inspect the dimensions of the dataset:
+r
+Copy code
+dim(renamed_twenty_eighteen)
+Fix: Create a smaller version to verify it appears:
+r
+Copy code
+renamed_twenty_eighteen_subset <- renamed_twenty_eighteen[1:10, 1:10]
+Environment Pane Display Issue
+Sometimes, RStudio may not refresh the Environment pane properly.
+
+Check: Verify the object exists by typing its name in the console:
+r
+Copy code
+renamed_twenty_eighteen
+Fix: Restart RStudio or manually refresh the Environment pane by clicking the Refresh button.
+Best Practices
+Save intermediate datasets using meaningful names to keep track of your workflow.
+Ensure each object you want to inspect in the Environment is assigned explicitly in your script.
+Use View() to inspect datasets manually if they don’t appear automatically:
+r
+Copy code
+View(renamed_twenty_eighteen)
+Let me know if you need help debugging specific parts of your script!
+
+

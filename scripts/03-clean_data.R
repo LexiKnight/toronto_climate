@@ -9,12 +9,13 @@
 
 #### Workspace setup ####
 # install necessary packages
-# install.packages(c("readr", "dplyr", "openxlsx"))
+# install.packages(c("readr", "dplyr", "openxlsx", "readxl"))
 
 # load necessary packages
 library(readr)
 library(dplyr) # for combining data frames
 library(openxlsx)
+library(readxl)
 
 #### Clean data 2018 ####
 # Read the csv file
@@ -159,10 +160,10 @@ fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
 
 
 # View the first few rows to confirm the data
-head(renamed_twenty_eighteen)
+head(fixed_twenty_eighteen)
 
 #### Save 2018 individual data ####
-write_csv(renamed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
+write_csv(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
 
 
 
@@ -173,101 +174,149 @@ write_csv(renamed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_indivi
 # File path to the saved workbook
 file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
 
-# Sheet numbers to extract
-sheet_numbers <- c(3, 11, 34, 69, 85, 113, 114)
-
-# Get all sheet names
-sheet_names <- getSheetNames(file_path)
-
 # Sample size information
 sample_size_2021 <- 1401 # This is the sample size for the year 2021
 
-#### Function to extract data from a sheet ####
-extract_data <- function(sheet, rows_A, rows_B, cols_B_to = NULL) {
-  # Read the sheet
-  data <- read.xlsx(file_path, sheet = sheet)
+# Extract data from Sheet 3 + 1 (accounting for the index sheet)
+sheet_data <- read_excel(file_path, sheet = 4)
+
+# Define rows and columns for Sheet 3 that want extract 
+rows_A <- c(8, 11, 14, 17)  # Categories in column A (age categories)
+rows_B <- c(8, 11, 14, 17)  # Data in column B (whole numbers)
+
+# Extract the age categories from column A
+categories <- sheet_data[rows_A, 1]
+
+# Print categories to check if they are properly extracted
+print("Categories (Column A):")
+print(categories)
+
+# Remove any unexpected white spaces or non-printing characters
+categories <- trimws(categories)
+
+# Print categories after trimming whitespace
+print("Trimmed Categories (Column A):")
+print(categories)
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Print the numeric conversion result to check
+print("Converted Raw Data (as numeric):")
+print(raw_data_B_numeric)
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- raw_data_B_numeric * 100
+
+# Print the percentages
+print("Percentages (Converted and multiplied by 100):")
+print(percentages)
+# maybe fix categories - they are showing as NA
+
+
+
+
+
+
+# i think not needed 
+
+# Clean the raw data:
+# Convert to character and remove unwanted characters or spaces
+cleaned_data_B <- as.numeric(gsub("[^0-9.]", "", as.character(raw_data_B)))
+
+# Check for any NAs in the cleaned data
+if (any(is.na(cleaned_data_B))) {
+  cat("There are missing or improperly formatted values in the data.")
+} else {
+  # Multiply by 100 to convert to percentages
+  percentages <- cleaned_data_B * 100
   
-  # Extract Column A rows
-  col_A <- data[rows_A, "A"]
+  # Combine categories and percentages into a data frame
+  final_data <- data.frame(
+    Age = categories,
+    Percentage = percentages
+  )
   
-  # Extract corresponding rows from Column B (or additional columns)
-  if (is.null(cols_B_to)) {
-    col_B <- data[rows_B, "B"]
-    # Replace "-" with "0" and convert percentages to whole numbers
-    col_B <- gsub("-", "0", col_B)
-    col_B <- as.numeric(col_B) * 100
-    return(data.frame(Category = col_A, Percentage = col_B))
-  } else {
-    # Extract multiple columns (e.g., B through P)
-    cols_data <- data[rows_B, cols_B_to]
-    cols_data <- as.data.frame(lapply(cols_data, function(x) {
-      x <- gsub("-", "0", x)
-      as.numeric(x) * 100
-    }))
-    return(data.frame(Category = col_A, cols_data))
-  }
+  # Print the final table
+  print(final_data)
 }
 
-#### Extract data from the specified sheets ####
 
-# Sheet 3
-sheet_3_data <- extract_data(sheet = sheet_names[3],
-                             rows_A = c(8, 11, 14, 17),
-                             rows_B = c(9, 12, 15, 18))
 
-# Sheet 11
-sheet_11_data <- extract_data(sheet = sheet_names[11],
-                              rows_A = c(8, 11, 14, 17, 20, 23),
-                              rows_B = c(12, 15, 18, 21, 24))
 
-# Sheet 34
-sheet_34_data <- extract_data(sheet = sheet_names[34],
-                              rows_A = c(8, 11, 14, 17),
-                              rows_B = c(9, 12, 15, 18))
+# Sheet numbers to extract
+sheet_numbers <- c(3, 11, 34, 69, 85, 113, 114)
 
-# Sheet 69
-sheet_69_data <- extract_data(sheet = sheet_names[69],
-                              rows_A = c(6, 8, 10, 12, 14, 16, 18),
-                              rows_B = c(7, 9, 11, 13, 15, 17, 19),
-                              cols_B_to = "B:P")
-
-# Sheet 85
-sheet_85_data <- extract_data(sheet = sheet_names[85],
-                              rows_A = c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34),
-                              rows_B = c(7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35),
-                              cols_B_to = "B:L")
-
-# Sheet 113
-sheet_113_data <- extract_data(sheet = sheet_names[113],
-                               rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107, 110, 113, 116, 119),
-                               rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120))
-
-# Sheet 114
-sheet_114_data <- extract_data(sheet = sheet_names[114],
-                               rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50),
-                               rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51))
-
-#### Combine all extracted data ####
-combined_data <- bind_rows(
-  list(
-    Sheet_3 = sheet_3_data,
-    Sheet_11 = sheet_11_data,
-    Sheet_34 = sheet_34_data,
-    Sheet_69 = sheet_69_data,
-    Sheet_85 = sheet_85_data,
-    Sheet_113 = sheet_113_data,
-    Sheet_114 = sheet_114_data
-  ),
-  .id = "Source"
+#### Sheet-specific Row Parameters ####
+sheet_params <- list(
+  list(sheet = 3, rows_A = c(8, 11, 14, 17), rows_B = c(9, 12, 15, 18), cols_B_to = NULL),
+  list(sheet = 11, rows_A = c(8, 11, 14, 17, 20, 23), rows_B = c(12, 15, 18, 21, 24), cols_B_to = NULL),
+  list(sheet = 34, rows_A = c(8, 11, 14, 17), rows_B = c(9, 12, 15, 18), cols_B_to = NULL),
+  list(sheet = 69, rows_A = c(6, 8, 10, 12, 14, 16, 18), rows_B = c(7, 9, 11, 13, 15, 17, 19), cols_B_to = "2:16"),
+  list(sheet = 85, rows_A = c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34), rows_B = c(7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35), cols_B_to = "B:L"),
+  list(sheet = 113, rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107, 110, 113, 116, 119), 
+       rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120), cols_B_to = NULL),
+  list(sheet = 114, rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50), rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51), cols_B_to = NULL)
 )
 
-#### Save the consolidated data ####
-# Create a new workbook to save the cleaned data
-cleaned_wb <- createWorkbook()
+#### Save the Consolidated Data ####
+write.csv(combined_data, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv")
 
-# Add a single sheet with the combined data
-addWorksheet(cleaned_wb, "Consolidated Data")
-writeData(cleaned_wb, "Consolidated Data", combined_data)
 
-#### Save the consolidated data as CSV ####
-write.csv(combined_data, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv", row.names = FALSE)
+
+
+
+#### Flexible Function for Data Extraction ####
+extract_data <- function(sheet_index, rows_A, rows_B, cols_B_to) {
+  # Read the sheet
+  data <- read.xlsx(file_path, sheet = sheet_index, colNames = FALSE)
+  
+  # Select rows specified in rows_A and rows_B
+  data_A <- data[rows_A, , drop = FALSE]
+  data_B <- data[rows_B, , drop = FALSE]
+  
+  # Clean Column A (Category) for rows_A
+  data_A <- data_A %>%
+    rename(Category = X1) %>%
+    mutate(across(-Category, ~ gsub("-", "0", .))) %>%
+    mutate(across(
+      -Category,
+      ~ ifelse(grepl("^[0-9.]+$", .), as.numeric(.), NA_real_)
+    ))
+  
+  # Clean Columns B-to-end for rows_B
+  if (!is.null(cols_B_to)) {
+    data_B <- data_B %>%
+      select(1, cols_B_to) %>%
+      mutate(across(-1, ~ gsub("-", "0", .))) %>%
+      mutate(across(
+        -1,
+        ~ ifelse(grepl("^[0-9.]+$", .), as.numeric(.), NA_real_)
+      ))
+  } else {
+    data_B <- data_B %>%
+      mutate(across(-1, ~ gsub("-", "0", .))) %>%
+      mutate(across(
+        -1,
+        ~ ifelse(grepl("^[0-9.]+$", .), as.numeric(.), NA_real_)
+      ))
+  }
+  
+  # Combine Data A and Data B
+  combined_data <- bind_rows(data_A, data_B)
+  return(combined_data)
+}
+
+#### Loop Through All Sheets ####
+combined_data <- lapply(sheet_params, function(params) {
+  extract_data(
+    sheet_index = params$sheet,
+    rows_A = params$rows_A,
+    rows_B = params$rows_B,
+    cols_B_to = params$cols_B_to
+  )
+}) %>% bind_rows()
+
