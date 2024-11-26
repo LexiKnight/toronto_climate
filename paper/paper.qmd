@@ -302,6 +302,14 @@ Please don't use these as sub-heading labels - change them to be what your point
 
 ## Limitations
 
+the following categories were not options under reasons unlikely to perform action   "Use public transit more",
+  "Cycle more",
+  "Walk more",
+  "Purchase electric/hybrid vehicle in next 1-3 years",
+  but they were categories for which actions are you most likely to take part in to address climate change.
+  
+no indiivdual data for 2021, used summary statistics instead
+
 ## Future Directions
 
 # Conclusion {#sec-conclusion}

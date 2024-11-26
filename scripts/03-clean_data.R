@@ -9,13 +9,14 @@
 
 #### Workspace setup ####
 # install necessary packages
-# install.packages(c("readr", "dplyr", "openxlsx", "readxl"))
+# install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow"))
 
 # load necessary packages
 library(readr)
 library(dplyr) # for combining data frames
 library(openxlsx)
 library(readxl)
+library(arrow) # for saving file as parquet
 
 #### Clean data 2018 ####
 # Read the csv file
@@ -39,7 +40,7 @@ twenty_eighteen <- twenty_eighteen_raw_data %>%
   Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
   QD5)
 
-#### Rename columns 2018 ####
+## Rename columns 2018 ##
 # use rename() function to give more meaningful names
 renamed_twenty_eighteen <- twenty_eighteen %>%
   rename(
@@ -163,8 +164,7 @@ fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
 head(fixed_twenty_eighteen)
 
 #### Save 2018 individual data ####
-write_csv(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
-
+write_parquet(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
 
 
 
@@ -177,25 +177,25 @@ file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
 # Sample size information
 sample_size_2021 <- 1401 # This is the sample size for the year 2021
 
+## Age - sheet 3 ##
+
 # Extract data from Sheet 3 + 1 (accounting for the index sheet)
 sheet_data <- read_excel(file_path, sheet = 4)
 
 # Define rows and columns for Sheet 3 that want extract 
-rows_A <- c(8, 11, 14, 17)  # Categories in column A (age categories)
-rows_B <- c(8, 11, 14, 17)  # Data in column B (whole numbers)
+rows_A <- c(7, 10, 13, 16)  # Categories in column A (age categories)
+rows_B <- c(8, 11, 14, 17)  # Data in column B
 
 # Extract the age categories from column A
-categories <- sheet_data[rows_A, 1]
+categories <- sheet_data %>% 
+  slice(rows_A) %>% 
+  pull(1)  # Pull the first column as a vector
 
-# Print categories to check if they are properly extracted
-print("Categories (Column A):")
-print(categories)
-
-# Remove any unexpected white spaces or non-printing characters
+# Remove unexpected white spaces or non-printing characters
 categories <- trimws(categories)
 
-# Print categories after trimming whitespace
-print("Trimmed Categories (Column A):")
+# Print categories to check
+print("Categories (Column A):")
 print(categories)
 
 # Extract the percentage raw data from column B 
@@ -204,119 +204,416 @@ raw_data_B <- sheet_data[rows_B, 2]
 # Convert raw data from tibble to character and then to numeric
 raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
 
-# Print the numeric conversion result to check
-print("Converted Raw Data (as numeric):")
-print(raw_data_B_numeric)
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- raw_data_B_numeric * 100
+
+# Print the consolidated percentages
+# print("Percentages (Converted and multiplied by 100):")
+# print(percentages)
+
+## Save the age_summary_21 ##
+
+# Combine categories and percentages into a data frame
+age_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(age_summary_21) <- c("Age Category", "Percentage")
+
+# Print the consolidated data to check
+print(age_summary_21)
+
+
+
+
+
+## education - sheet 11 ##
+
+# Extract data from Sheet 11 + 1 (accounting for the index sheet)
+sheet_data <- read_excel(file_path, sheet = 12)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(7, 10, 13, 16, 19, 22)  # Categories in column A (education categories)
+rows_B <- c(8, 11, 14, 17, 20, 23)  # Data in column B
+
+# Extract the education categories from column A
+categories <- sheet_data %>% 
+  slice(rows_A) %>% 
+  pull(1)  # Pull the first column as a vector
+
+# Remove unexpected white spaces or non-printing characters
+categories <- trimws(categories)
+
+# Print categories to check
+print("Categories (Column A):")
+print(categories)
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
 
 # Multiply by 100 to convert to percentages (if the conversion succeeded)
 percentages <- raw_data_B_numeric * 100
 
-# Print the percentages
+# Print the consolidated percentages
 print("Percentages (Converted and multiplied by 100):")
 print(percentages)
-# maybe fix categories - they are showing as NA
 
+## Save the education_summary_21 ##
 
-
-
-
-
-# i think not needed 
-
-# Clean the raw data:
-# Convert to character and remove unwanted characters or spaces
-cleaned_data_B <- as.numeric(gsub("[^0-9.]", "", as.character(raw_data_B)))
-
-# Check for any NAs in the cleaned data
-if (any(is.na(cleaned_data_B))) {
-  cat("There are missing or improperly formatted values in the data.")
-} else {
-  # Multiply by 100 to convert to percentages
-  percentages <- cleaned_data_B * 100
-  
-  # Combine categories and percentages into a data frame
-  final_data <- data.frame(
-    Age = categories,
-    Percentage = percentages
-  )
-  
-  # Print the final table
-  print(final_data)
-}
-
-
-
-
-# Sheet numbers to extract
-sheet_numbers <- c(3, 11, 34, 69, 85, 113, 114)
-
-#### Sheet-specific Row Parameters ####
-sheet_params <- list(
-  list(sheet = 3, rows_A = c(8, 11, 14, 17), rows_B = c(9, 12, 15, 18), cols_B_to = NULL),
-  list(sheet = 11, rows_A = c(8, 11, 14, 17, 20, 23), rows_B = c(12, 15, 18, 21, 24), cols_B_to = NULL),
-  list(sheet = 34, rows_A = c(8, 11, 14, 17), rows_B = c(9, 12, 15, 18), cols_B_to = NULL),
-  list(sheet = 69, rows_A = c(6, 8, 10, 12, 14, 16, 18), rows_B = c(7, 9, 11, 13, 15, 17, 19), cols_B_to = "2:16"),
-  list(sheet = 85, rows_A = c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34), rows_B = c(7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35), cols_B_to = "B:L"),
-  list(sheet = 113, rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107, 110, 113, 116, 119), 
-       rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120), cols_B_to = NULL),
-  list(sheet = 114, rows_A = c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50), rows_B = c(9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45, 48, 51), cols_B_to = NULL)
+# Combine categories and percentages into a data frame
+education_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
 )
 
-#### Save the Consolidated Data ####
-write.csv(combined_data, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv")
+# Rename the column headers
+colnames(education_summary_21) <- c("Education Level", "Percentage")
+
+# Print the consolidated data to check
+print(education_summary_21)
 
 
 
 
 
-#### Flexible Function for Data Extraction ####
-extract_data <- function(sheet_index, rows_A, rows_B, cols_B_to) {
-  # Read the sheet
-  data <- read.xlsx(file_path, sheet = sheet_index, colNames = FALSE)
+## Extent Informed - sheet 34 ##
+
+# Extract data from Sheet 34 + 1 (accounting for the index sheet)
+sheet_data <- read_excel(file_path, sheet = 35)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(7, 10, 13, 16)  # Categories in column A (extent informed categories)
+rows_B <- c(8, 11, 14, 17)  # Data in column B
+
+# Extract the extent informed categories from column A
+categories <- sheet_data %>% 
+  slice(rows_A) %>% 
+  pull(1)  # Pull the first column as a vector
+
+# Remove unexpected white spaces or non-printing characters
+categories <- trimws(categories)
+
+# Print categories to check
+print("Categories (Column A):")
+print(categories)
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- raw_data_B_numeric * 100
+
+# Print the consolidated percentages
+print("Percentages (Converted and multiplied by 100):")
+print(percentages)
+
+## Save the informed_summary_21 ##
+
+# Combine categories and percentages into a data frame
+informed_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(informed_summary_21) <- c("Extent Informed", "Percentage")
+
+# Print the consolidated data to check
+print(informed_summary_21)
+
+
+
+
+
+## Likelihood Take Action - sheet 69 ##
+
+# Extract data from Sheet 69 + 1 (accounting for the index sheet)
+sheet_data <- read_excel(file_path, sheet = 70)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(5, 7, 9, 11, 13, 15, 17)  # Categories in column A (likelihood categories)
+rows_B_to_P <- c(6, 8, 10, 12, 14, 16, 18)  # Rows for data in columns B through P
+
+# Extract the likelihood take action categories from column A
+categories <- sheet_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Rename the 13th category (index 5 in rows_A) to "Already doing/done in past year"
+categories[5] <- "Already doing/done in past year"
+# Rename the 17th category (index 7 in rows_A) to "Unsure"
+categories[7] <- "Unsure"
+
+# Print categories to check
+print("Categories (Column A):")
+print(categories)
+
+# Initialize a list to store data for columns B through P
+percentage_list <- list()
+
+# Loop through columns B to P and extract corresponding data
+for (col_index in 2:16) {  # Columns B (2) to P (16) in R indexing
+  raw_data <- sheet_data[rows_B_to_P, col_index]
   
-  # Select rows specified in rows_A and rows_B
-  data_A <- data[rows_A, , drop = FALSE]
-  data_B <- data[rows_B, , drop = FALSE]
+  # Convert raw data to character, replace "-" with "0", then convert to numeric
+  raw_data_cleaned <- as.character(raw_data[[1]])
+  raw_data_cleaned[raw_data_cleaned == "-"] <- "0"
   
-  # Clean Column A (Category) for rows_A
-  data_A <- data_A %>%
-    rename(Category = X1) %>%
-    mutate(across(-Category, ~ gsub("-", "0", .))) %>%
-    mutate(across(
-      -Category,
-      ~ ifelse(grepl("^[0-9.]+$", .), as.numeric(.), NA_real_)
-    ))
-  
-  # Clean Columns B-to-end for rows_B
-  if (!is.null(cols_B_to)) {
-    data_B <- data_B %>%
-      select(1, cols_B_to) %>%
-      mutate(across(-1, ~ gsub("-", "0", .))) %>%
-      mutate(across(
-        -1,
-        ~ ifelse(grepl("^[0-9.]+$", .), as.numeric(.), NA_real_)
-      ))
-  } else {
-    data_B <- data_B %>%
-      mutate(across(-1, ~ gsub("-", "0", .))) %>%
-      mutate(across(
-        -1,
-        ~ ifelse(grepl("^[0-9.]+$", .), as.numeric(.), NA_real_)
-      ))
-  }
-  
-  # Combine Data A and Data B
-  combined_data <- bind_rows(data_A, data_B)
-  return(combined_data)
+  # Convert the cleaned data to numeric and multiply by 100 (if conversion succeeded)
+  numeric_data <- as.numeric(raw_data_cleaned) * 100
+  percentage_list[[paste0("Col_", LETTERS[col_index])]] <- numeric_data
 }
 
-#### Loop Through All Sheets ####
-combined_data <- lapply(sheet_params, function(params) {
-  extract_data(
-    sheet_index = params$sheet,
-    rows_A = params$rows_A,
-    rows_B = params$rows_B,
-    cols_B_to = params$cols_B_to
-  )
-}) %>% bind_rows()
+# Combine categories and percentages into a data frame
+likelihood_summary_21 <- data.frame(
+  Category = categories,
+  percentage_list
+)
+
+colnames(likelihood_summary_21) <- c(
+  "Likelihood to Take Action",
+  "Purchase energy efficient appliances",
+  "Install a programmable thermostat",
+  "Install LED lightbulbs",
+  "Undertake major home renos for energy efficiency",
+  "Add solar panels to home",
+  "Get an EnerGuide home energy evaluation to identify opportunities",
+  "Reduce water use",
+  "Use public transit more",
+  "Cycle more",
+  "Walk more",
+  "Purchase electric/hybrid vehicle in next 1-3 years",
+  "Eat less meat",
+  "Reduce amount of own waste",
+  "Purchase environmentally friendly items",
+  "Put effort into sorting waste into correct bins"
+)
+
+# Print the consolidated data to check
+print("Likelihood Summary:")
+print(likelihood_summary_21)
+
+
+
+
+
+## Reason Unlikely to Take Action - sheet 85 ##
+
+# Extract data from Sheet 85 + 1 (accounting for the index sheet)
+sheet_data <- read_excel(file_path, sheet = 86)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33)  # Categories in column A (reason categories)
+rows_B_to_P <- c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34)  # Rows for data in columns B through P
+
+# Extract the likelihood take action categories from column A
+categories <- sheet_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Print categories to check
+print("Categories (Column A):")
+print(categories)
+
+# Initialize a list to store data for columns B through L
+percentage_list <- list()
+
+# Loop through columns B to L and extract corresponding data
+for (col_index in 2:12) {  # Columns B (2) to L (12) in R indexing
+  raw_data <- sheet_data[rows_B_to_P, col_index]
+  
+  # Convert raw data to character, replace "-" with "0", then convert to numeric
+  raw_data_cleaned <- as.character(raw_data[[1]])
+  raw_data_cleaned[raw_data_cleaned == "-"] <- "0"
+  
+  # Convert the cleaned data to numeric and multiply by 100 (if conversion succeeded)
+  numeric_data <- as.numeric(raw_data_cleaned) * 100
+  percentage_list[[paste0("Col_", LETTERS[col_index])]] <- numeric_data
+}
+
+# Combine categories and percentages into a data frame
+reasons_summary_21 <- data.frame(
+  Category = categories,
+  percentage_list
+)
+
+colnames(reasons_summary_21) <- c(
+  "Likelihood to Take Action",
+  "Purchase energy efficient appliances",
+  "Install a programmable thermostat",
+  "Install LED lightbulbs",
+  "Undertake major home renos for energy efficiency",
+  "Add solar panels to home",
+  "Get an EnerGuide home energy evaluation to identify opportunities",
+  "Reduce water use",
+  "Eat less meat",
+  "Reduce amount of own waste",
+  "Purchase environmentally friendly items",
+  "Put effort into sorting waste into correct bins"
+)
+
+# Print the consolidated data to check
+print("Reasons Summary:")
+print(reasons_summary_21)
+
+
+
+
+
+## City support - sheet 113 ##
+
+# Extract data from Sheet 113 + 1 (accounting for the index sheet)
+sheet_data <- read_excel(file_path, sheet = 114)
+
+# Define rows and columns for Sheet 113 that want extract 
+rows_A <- c(7, 10, 13, 16, 19,22, 25, 28, 31,34, 37,40, 43, 46, 49, 52, 55, 58,
+            61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91, 94, 97, 100, 103, 106,
+            109, 112,115, 118) # Categories in column A (city support categories)
+rows_B <- c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59,
+           62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107,
+           110, 113, 116, 119) # Data in column B
+
+# Extract the city support categories from column A
+categories <- sheet_data %>% 
+  slice(rows_A) %>% 
+  pull(1)  # Pull the first column as a vector
+
+# Remove unexpected white spaces or non-printing characters
+categories <- trimws(categories)
+
+# Print categories to check
+print("Categories (Column A):")
+print(categories)
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- raw_data_B_numeric * 100
+
+# Print the consolidated percentages
+print("Percentages (Converted and multiplied by 100):")
+print(percentages)
+
+## Save the informed_summary_21 ##
+
+# Combine categories and percentages into a data frame
+support_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(support_summary_21) <- c("City Support to Motivate", "Percentage")
+
+# Print the consolidated data to check
+print(support_summary_21)
+
+
+
+
+
+
+
+## Methods of communication - sheet 114 ##
+
+# Extract data from Sheet 113 + 1 (accounting for the index sheet)
+sheet_data <- read_excel(file_path, sheet = 115)
+
+# Define rows and columns for Sheet 113 that want extract 
+rows_A <- c(7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49)
+# Categories in column A (methods of communication)
+rows_B <- c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50) 
+# Data in column B
+
+# Extract the city support categories from column A
+categories <- sheet_data %>% 
+  slice(rows_A) %>% 
+  pull(1)  # Pull the first column as a vector
+
+# Remove unexpected white spaces or non-printing characters
+categories <- trimws(categories)
+
+# Rename the 8th category (index 8 in rows_A)
+categories[8] <- "Advertising campaigns"
+
+# Print categories to check
+print("Categories (Column A):")
+print(categories)
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- raw_data_B_numeric * 100
+
+# Print the consolidated percentages
+print("Percentages (Converted and multiplied by 100):")
+print(percentages)
+
+## Save the informed_summary_21 ##
+
+# Combine categories and percentages into a data frame
+communication_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(communication_summary_21) <- c("Method of Communication", "Percentage")
+
+# Print the consolidated data to check
+print(communication_summary_21)
+
+
+
+## Combine Individual 2021 Data ##
+
+# Add a source column to each dataset to identify their origin
+age_summary_21 <- age_summary_21 %>% mutate(Source = "Age Summary 2021")
+education_summary_21 <- education_summary_21 %>% mutate(Source = "Education Summary 2021")
+informed_summary_21 <- informed_summary_21 %>% mutate(Source = "Informed Summary 2021")
+likelihood_summary_21 <- likelihood_summary_21 %>% mutate(Source = "Likelihood Summary 2021")
+reasons_summary_21 <- reasons_summary_21 %>% mutate(Source = "Reasons Summary 2021")
+support_summary_21 <- support_summary_21 %>% mutate(Source = "Support Summary 2021")
+communication_summary_21 <- communication_summary_21 %>% mutate(Source = "Communication Summary 2021")
+
+# Combine all datasets into one
+combined_summary_21 <- bind_rows(
+  age_summary_21,
+  education_summary_21,
+  informed_summary_21,
+  likelihood_summary_21,
+  reasons_summary_21,
+  support_summary_21,
+  communication_summary_21
+)
+
+# Save the combined data as a Parquet file
+write_parquet(combined_summary_21, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.parquet")
+
+
+# Confirmation message
+print("Data saved successfully!")
+
+
+
+
+
 
