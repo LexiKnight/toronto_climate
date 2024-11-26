@@ -220,7 +220,7 @@ age_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(age_summary_21) <- c("Age Category", "Percentage")
+colnames(age_summary_21) <- c("Age Categories", "Age Percentage")
 
 # Print the consolidated data to check
 print(age_summary_21)
@@ -272,7 +272,7 @@ education_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(education_summary_21) <- c("Education Level", "Percentage")
+colnames(education_summary_21) <- c("Education Levels", "Education Percentage")
 
 # Print the consolidated data to check
 print(education_summary_21)
@@ -324,7 +324,7 @@ informed_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(informed_summary_21) <- c("Extent Informed", "Percentage")
+colnames(informed_summary_21) <- c("Extent Informed", "Informed Percentage")
 
 # Print the consolidated data to check
 print(informed_summary_21)
@@ -381,21 +381,21 @@ likelihood_summary_21 <- data.frame(
 
 colnames(likelihood_summary_21) <- c(
   "Likelihood to Take Action",
-  "Purchase energy efficient appliances",
-  "Install a programmable thermostat",
-  "Install LED lightbulbs",
-  "Undertake major home renos for energy efficiency",
-  "Add solar panels to home",
-  "Get an EnerGuide home energy evaluation to identify opportunities",
-  "Reduce water use",
-  "Use public transit more",
-  "Cycle more",
-  "Walk more",
-  "Purchase electric/hybrid vehicle in next 1-3 years",
-  "Eat less meat",
-  "Reduce amount of own waste",
-  "Purchase environmentally friendly items",
-  "Put effort into sorting waste into correct bins"
+  "Likely purchase energy efficient appliances",
+  "Likely install a programmable thermostat",
+  "Likely install LED lightbulbs",
+  "Likely undertake major home renos for energy efficiency",
+  "Likely add solar panels to home",
+  "Likely get an EnerGuide home energy evaluation to identify opportunities",
+  "Likely reduce water use",
+  "Likely use public transit more",
+  "Likely cycle more",
+  "Likely walk more",
+  "Likely purchase electric/hybrid vehicle in next 1-3 years",
+  "Likely eat less meat",
+  "Likely reduce amount of own waste",
+  "Likely purchase environmentally friendly items",
+  "Likely put effort into sorting waste into correct bins"
 )
 
 # Print the consolidated data to check
@@ -448,23 +448,26 @@ reasons_summary_21 <- data.frame(
 )
 
 colnames(reasons_summary_21) <- c(
-  "Likelihood to Take Action",
-  "Purchase energy efficient appliances",
-  "Install a programmable thermostat",
-  "Install LED lightbulbs",
-  "Undertake major home renos for energy efficiency",
-  "Add solar panels to home",
-  "Get an EnerGuide home energy evaluation to identify opportunities",
-  "Reduce water use",
-  "Eat less meat",
-  "Reduce amount of own waste",
-  "Purchase environmentally friendly items",
-  "Put effort into sorting waste into correct bins"
+  "Reasons unlikely to take action",
+  "Unlikely purchase energy efficient appliances",
+  "Unlikely install a programmable thermostat",
+  "Unlikely install LED lightbulbs",
+  "Unlikely undertake major home renos for energy efficiency",
+  "Unlikely add solar panels to home",
+  "Unlikely get an EnerGuide home energy evaluation to identify opportunities",
+  "Unlikely reduce water use",
+  "Unlikely eat less meat",
+  "Unlikely reduce amount of own waste",
+  "Unlikely purchase environmentally friendly items",
+  "Unlikely put effort into sorting waste into correct bins"
 )
 
 # Print the consolidated data to check
 print("Reasons Summary:")
 print(reasons_summary_21)
+
+#### TO DO : MUST FIX that there is a column named source with 7 rows "reasons summary 2021" 
+
 
 
 
@@ -517,11 +520,10 @@ support_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(support_summary_21) <- c("City Support to Motivate", "Percentage")
+colnames(support_summary_21) <- c("City Support to Motivate", "Support Percentage")
 
 # Print the consolidated data to check
 print(support_summary_21)
-
 
 
 
@@ -576,7 +578,7 @@ communication_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(communication_summary_21) <- c("Method of Communication", "Percentage")
+colnames(communication_summary_21) <- c("Method of Communication", "Communication Percentage")
 
 # Print the consolidated data to check
 print(communication_summary_21)
@@ -613,7 +615,7 @@ write_csv(combined_summary_21, "data/02-analysis_data/twenty_twenty_two_summary_
 print("Data saved successfully!")
 
 
-
+I want the following columns in the following order  Age Categories, Age Percentage, Education Levels, Education Percentage, Extent Informed, Informed Percentage, Likelihood to Take Action, Likely purchase energy efficient appliances, Likely install a programmable thermostat, Likely install LED lightbulbs, Likely undertake major home renos for energy efficiency, Likely add solar panels to home, Likely get an EnerGuide home energy evaluation to identify opportunities, Likely reduce water use, Likely use public transit more, Likely cycle more, Likely walk more,  Likely purchase electric/hybrid vehicle in next 1-3 years, Likely eat less meat, Likely reduce amount of own waste, Likely purchase environmentally friendly items, Likely put effort into sorting waste into correct bins, Reasons unlikely to take action, Unlikely purchase energy efficient appliances, Unlikely install a programmable thermostat, Unlikely install LED lightbulbs, Unlikely undertake major home renos for energy efficiency, Unlikely add solar panels to home, Unlikely get an EnerGuide home energy evaluation to identify opportunities, Unlikely reduce water use, Unlikely eat less meat, Unlikely reduce amount of own waste, Unlikely purchase environmentally friendly items, Unlikely put effort into sorting waste into correct bins, City Support to Motivate, Support Percentage,  Method of Communication, Communication Percentage
 
 
 
