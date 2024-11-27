@@ -9,7 +9,7 @@
 
 #### Workspace setup ####
 # install necessary packages
-# install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow"))
+# install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow", "tidyverse", "tidyr"))
 
 # load necessary packages
 library(readr)
@@ -17,6 +17,8 @@ library(dplyr) # for combining data frames
 library(openxlsx)
 library(readxl)
 library(arrow) # for saving file as parquet
+library(tidyverse)
+library(tidyr)
 
 #### Clean data individual 2018 dataset ####
 # Read the csv file
@@ -159,7 +161,6 @@ fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
     )
   )
 
-
 # View the first few rows to confirm the data
 head(fixed_twenty_eighteen)
 
@@ -173,10 +174,157 @@ write_csv(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individu
 
 
 
+
 #### Clean data summary 2018 dataset ####
 
 # Read the csv file
-twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+twenty_eighteen_individual <- read_csv("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv", col_names = TRUE)
+
+
+## 1. Age Summary ##
+
+## Create age categories based on ranges in 2021 summary data and summarize directly
+age_summary_18 <- as.data.frame(table(cut(fixed_twenty_eighteen$age_18, 
+                                         breaks = c(17, 23, 39, 55, Inf), 
+                                         labels = c("18-23", "24-39", "40-55", "56+"), 
+                                         right = TRUE)))
+
+# Rename columns and calculate the percentage
+names(age_summary_18) <- c("Age Group", "Freq")
+age_summary_18$Percentage <- round((age_summary_18$Freq / sum(age_summary_18$Freq)) * 100)
+
+# Keep only the age group and percentage columns
+age_summary_18 <- age_summary_18[, c("Age Group", "Percentage")]
+
+# View the final summary table
+print(age_summary_18)
+
+
+## 2. Education Level Summary ##
+
+# Create the summary table based on education levels
+education_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$highest_level_educ_18))
+
+# Rename columns and calculate the percentage
+names(education_summary_18) <- c("Education Level", "Freq")
+education_summary_18$Percentage <- round((education_summary_18$Freq / sum(education_summary_18$Freq)) * 100)
+
+# Keep only the education level and percentage columns
+education_summary_18 <- education_summary_18[, c("Education Level", "Percentage")]
+
+# View the final education summary table
+print(education_summary_18)
+
+
+## 3. Informed Summary ##
+
+# Create the summary table based on the informed extent categories
+informed_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$extent_consider_informed_18))
+
+# Rename columns and calculate the percentage
+names(informed_summary_18) <- c("Informed Level", "Freq")
+informed_summary_18$Percentage <- round((informed_summary_18$Freq / sum(informed_summary_18$Freq)) * 100)
+
+# Keep only the informed level and percentage columns
+informed_summary_18 <- informed_summary_18[, c("Informed Level", "Percentage")]
+
+# View the final informed summary table
+print(informed_summary_18)
+
+## 4. Likelihood Action Summary ##
+
+# Identify all columns that start with 'likelihood_action'
+likelihood_columns <- grep("^likelihood_action", colnames(fixed_twenty_eighteen), value = TRUE)
+
+# Create an empty data frame to store the combined summary
+combined_likelihood_summary <- data.frame()
+
+# Loop through each likelihood_action column, summarize, and combine
+for (col in likelihood_columns) {
+  
+  # Create a summary table for each column
+  summary_table <- as.data.frame(table(fixed_twenty_eighteen[[col]]))
+  
+  # Rename columns for clarity
+  names(summary_table) <- c("Likelihood", "Freq")
+  
+  # Calculate the percentage
+  summary_table$Percentage <- round((summary_table$Freq / sum(summary_table$Freq)) * 100)
+  
+  # Add a new column indicating the action name
+  summary_table$Action <- col
+  
+  # Append the summary table to the combined table
+  combined_likelihood_summary <- rbind(combined_likelihood_summary, summary_table)
+}
+
+# Reorder columns for clarity (Action, Likelihood, Percentage)
+combined_likelihood_summary <- combined_likelihood_summary[, c("Action", "Likelihood", "Percentage")]
+
+# Pivot the table to have Actions as columns and Likelihood categories as rows
+likelihood_summary_18 <- combined_likelihood_summary %>%
+  pivot_wider(names_from = Action, values_from = Percentage)
+
+# View the final pivoted summary table
+print(likelihood_summary_18)
+
+
+#### 5. Reasons Summary ####
+
+# Step 1: Select columns starting with "unlikelihood_action"
+reasons_data <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action"))
+
+# Step 2: Create a summary table by gathering data into long format
+reasons_summary_18 <- reasons_data %>%
+  pivot_longer(cols = everything(), 
+               names_to = "Reason", 
+               values_to = "Response") %>%
+  group_by(Reason, Response) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Percentage = round((Freq / sum(Freq)) * 100, 1))
+
+# Step 3: Pivot wider for better readability
+reasons_summary_18 <- reasons_summary_18 %>%
+  pivot_wider(names_from = Reason, values_from = Percentage)
+
+# Step 4: View the final table
+print(reasons_summary_18)
+
+
+
+# Unlikelihood action summary (columns starting with "unlikelihood_action")
+reasons_summary_18 <- twenty_eighteen_raw_data %>%
+  select(starts_with("unlikelihood_action")) %>%
+  pivot_longer(cols = everything(), names_to = "unlikelihood_action", values_to = "response") %>%
+  count(unlikelihood_action, response) %>%
+  mutate(percentage = n / sample_size_2018 * 100) %>%
+  select(unlikelihood_action, response, percentage)
+
+#### 6. Communication Summary ####
+
+# Communication method not interested in receiving
+communication_summary_18 <- twenty_eighteen_raw_data %>%
+  count(delivery_method_not_interested_receiving_18) %>%
+  mutate(percentage = n / sample_size_2018 * 100) %>%
+  select(delivery_method_not_interested_receiving_18, percentage)
+
+#### 7. Combine All Tables ####
+
+# Combine all the summary tables into one data frame
+combined_summary_18 <- bind_rows(
+  age_summary_18 %>% mutate(summary_type = "Age Group"),
+  education_summary_18 %>% mutate(summary_type = "Education Level"),
+  informed_summary_18 %>% mutate(summary_type = "Informed Extent"),
+  likelihood_summary_18 %>% mutate(summary_type = "Likelihood Action"),
+  reasons_summary_18 %>% mutate(summary_type = "Reasons for Unlikeliness"),
+  communication_summary_18 %>% mutate(summary_type = "Communication Method")
+)
+
+#### Save 2018 summary data ####
+write_parquet(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.parquet")
+write_csv(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
+
 
 
 
@@ -228,7 +376,7 @@ age_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(age_summary_21) <- c("Age Categories", "Age Percentage")
+colnames(age_summary_21) <- c("Age Group", "Age Percentage")
 
 # Print the consolidated data to check
 print(age_summary_21)
@@ -270,7 +418,7 @@ education_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(education_summary_21) <- c("Education Levels", "Education Percentage")
+colnames(education_summary_21) <- c("Education Level", "Education Percentage")
 
 # Print the consolidated data to check
 print(education_summary_21)

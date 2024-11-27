@@ -9767,8 +9767,11 @@ Try these steps and see if they resolve the issue. If it's still not working, th
 
 
 
+LLM: ChatGPT-4.
+Date: 27 November 2024 
 
-You said:
+
+User:
 i wonder if its because of this section, that the naming and saving of the dataset # Clean the data by removing columns that start with "V"
 data_cleaned <- combined_data %>%
   select(-starts_with("V"))  # Removes columns starting with "V"
@@ -9797,3 +9800,47 @@ File Overwriting: If you're overwriting an existing file, ensure that the file p
 
 By saving the data_cleaned version of your dataset, you should avoid the issue of the "V" columns being retained in the final saved files.
 
+
+
+Alrightly, see my r code and instructions on what i want to do. please let me know if anything is unclear. #### Clean data summary 2018 dataset ####
+
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+
+Column "age_18", is a numerical whole number and I would like to summarize age into the following
+categories 18-23, 24-39, 40-55 and 56+ in one column. Then i would like to use the 
+sample_size_2018 of 404 to get the percentage of each age group in the second column.
+I want to save this as age_summary_18 age_summary_18
+
+
+Column "highest_level_educ_18" is alphabetical. i want to list the categories in the first colmun
+and the in the second column come up with the percentage of the sample (sample size 404) in the
+second column, naming this table education_summary_18
+
+
+column "extent_consider_informed_18" is alphanetical. I want to list the different categories of
+extent informed in one column and then add a column to come up with the percentage of the sample
+, naming this table informed_summary_18
+
+
+columns beginning with "likelihood_action" are alphabetical. i want to list the different
+categories in one column and create a second column with the corresponding percentage of the
+sample, naming the table likelihood_summary_18
+
+columns beginning with "unlikelihood_action" contain either "yes" or "no". I want to list these two
+categories in one column and create a second column with the corresponding percentage of
+the sample, naming the table reasons_summary_18
+
+
+column "delivery_method_not_interested_receiving_18" contain either "yes" or "no". 
+I want to list the different categoreis in one column and create a second column with the corresponding
+percentages of the sample, naming the table communication_summary_18.
+
+Then i want to combine all 6 tables into one sheet and save it so all the summary data is on
+one sheet.
+
+
+#### Save 2018 summary data ####
+write_parquet(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.parquet")
+write_csv(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
