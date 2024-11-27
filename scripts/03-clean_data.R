@@ -421,10 +421,6 @@ categories <- sheet_data %>%
   pull(1) %>%  # Pull the first column (A) as a vector
   trimws()  # Remove unexpected whitespace
 
-# Print categories to check
-print("Categories (Column A):")
-print(categories)
-
 # Initialize a list to store data for columns B through L
 percentage_list <- list()
 
@@ -465,9 +461,6 @@ colnames(reasons_summary_21) <- c(
 # Print the consolidated data to check
 print("Reasons Summary:")
 print(reasons_summary_21)
-
-#### TO DO : MUST FIX that there is a column named source with 7 rows "reasons summary 2021" 
-
 
 
 
@@ -585,19 +578,51 @@ print(communication_summary_21)
 
 
 
+
+
+
 ## Combine Individual 2021 Data ##
 
-# Add a source column to each dataset to identify their origin
-age_summary_21 <- age_summary_21 %>% mutate(Source = "Age Summary 2021")
-education_summary_21 <- education_summary_21 %>% mutate(Source = "Education Summary 2021")
-informed_summary_21 <- informed_summary_21 %>% mutate(Source = "Informed Summary 2021")
-likelihood_summary_21 <- likelihood_summary_21 %>% mutate(Source = "Likelihood Summary 2021")
-reasons_summary_21 <- reasons_summary_21 %>% mutate(Source = "Reasons Summary 2021")
-support_summary_21 <- support_summary_21 %>% mutate(Source = "Support Summary 2021")
-communication_summary_21 <- communication_summary_21 %>% mutate(Source = "Communication Summary 2021")
+# In order to use bind_cols, data frames need to have the same number of rows
+# The dataframes have different number of rows hece, need to pad them with NA
+# values so they match the longest data frame. 
 
-# Combine all datasets into one
-combined_summary_21 <- bind_rows(
+# Find the maximum number of rows
+num_rows <- sapply(list(
+  age_summary_21,
+  education_summary_21,
+  informed_summary_21,
+  likelihood_summary_21,
+  reasons_summary_21,
+  support_summary_21,
+  communication_summary_21
+), nrow)
+
+max_rows <- max(num_rows)  # Find the maximum number of rows
+print(num_rows)  # Print number of rows for debugging
+
+# Pad data frames with NA for those that have shorter than the max number of rows
+pad_with_na <- function(df, max_rows) {
+  if (nrow(df) < max_rows) {
+    # Pad the data frame with NA rows
+    pad_rows <- max_rows - nrow(df)
+    df <- bind_rows(df, as.data.frame(matrix(NA, nrow = pad_rows, ncol = ncol(df))))
+  }
+  return(df)
+}
+
+# Pad each data frame
+age_summary_21 <- pad_with_na(age_summary_21, max_rows)
+education_summary_21 <- pad_with_na(education_summary_21, max_rows)
+informed_summary_21 <- pad_with_na(informed_summary_21, max_rows)
+likelihood_summary_21 <- pad_with_na(likelihood_summary_21, max_rows)
+reasons_summary_21 <- pad_with_na(reasons_summary_21, max_rows)
+support_summary_21 <- pad_with_na(support_summary_21, max_rows)
+communication_summary_21 <- pad_with_na(communication_summary_21, max_rows)
+
+
+# Combine datasets side by side
+combined_data <- dplyr::bind_cols(
   age_summary_21,
   education_summary_21,
   informed_summary_21,
@@ -608,14 +633,14 @@ combined_summary_21 <- bind_rows(
 )
 
 # Save the combined data as a Parquet file
-write_parquet(combined_summary_21, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.parquet")
-write_csv(combined_summary_21, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv")
+write_parquet(combined_data, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.parquet")
+write_csv(combined_data, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv")
 
 # Confirmation message
 print("Data saved successfully!")
 
 
-I want the following columns in the following order  Age Categories, Age Percentage, Education Levels, Education Percentage, Extent Informed, Informed Percentage, Likelihood to Take Action, Likely purchase energy efficient appliances, Likely install a programmable thermostat, Likely install LED lightbulbs, Likely undertake major home renos for energy efficiency, Likely add solar panels to home, Likely get an EnerGuide home energy evaluation to identify opportunities, Likely reduce water use, Likely use public transit more, Likely cycle more, Likely walk more,  Likely purchase electric/hybrid vehicle in next 1-3 years, Likely eat less meat, Likely reduce amount of own waste, Likely purchase environmentally friendly items, Likely put effort into sorting waste into correct bins, Reasons unlikely to take action, Unlikely purchase energy efficient appliances, Unlikely install a programmable thermostat, Unlikely install LED lightbulbs, Unlikely undertake major home renos for energy efficiency, Unlikely add solar panels to home, Unlikely get an EnerGuide home energy evaluation to identify opportunities, Unlikely reduce water use, Unlikely eat less meat, Unlikely reduce amount of own waste, Unlikely purchase environmentally friendly items, Unlikely put effort into sorting waste into correct bins, City Support to Motivate, Support Percentage,  Method of Communication, Communication Percentage
+# I want the following columns in the following order  Age Categories, Age Percentage, Education Levels, Education Percentage, Extent Informed, Informed Percentage, Likelihood to Take Action, Likely purchase energy efficient appliances, Likely install a programmable thermostat, Likely install LED lightbulbs, Likely undertake major home renos for energy efficiency, Likely add solar panels to home, Likely get an EnerGuide home energy evaluation to identify opportunities, Likely reduce water use, Likely use public transit more, Likely cycle more, Likely walk more,  Likely purchase electric/hybrid vehicle in next 1-3 years, Likely eat less meat, Likely reduce amount of own waste, Likely purchase environmentally friendly items, Likely put effort into sorting waste into correct bins, Reasons unlikely to take action, Unlikely purchase energy efficient appliances, Unlikely install a programmable thermostat, Unlikely install LED lightbulbs, Unlikely undertake major home renos for energy efficiency, Unlikely add solar panels to home, Unlikely get an EnerGuide home energy evaluation to identify opportunities, Unlikely reduce water use, Unlikely eat less meat, Unlikely reduce amount of own waste, Unlikely purchase environmentally friendly items, Unlikely put effort into sorting waste into correct bins, City Support to Motivate, Support Percentage,  Method of Communication, Communication Percentage
 
 
 
