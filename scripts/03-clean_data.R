@@ -18,7 +18,7 @@ library(openxlsx)
 library(readxl)
 library(arrow) # for saving file as parquet
 
-#### Clean data 2018 ####
+#### Clean data individual 2018 dataset ####
 # Read the csv file
 twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
 
@@ -165,6 +165,24 @@ head(fixed_twenty_eighteen)
 
 #### Save 2018 individual data ####
 write_parquet(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+write_csv(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
+
+
+
+
+
+
+
+#### Clean data summary 2018 dataset ####
+
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+
+
+
+
+
 
 
 
