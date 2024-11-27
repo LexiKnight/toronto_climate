@@ -582,9 +582,9 @@ combined_data <- bind_cols(
 data_cleaned <- combined_data %>%
   select(-starts_with("V"))  # Removes columns starting with "V"
 
-# Save the combined data as a Parquet file
-write_parquet(combined_data, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.parquet")
-write_csv(combined_data, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv")
+# Save the combined data as a Parquet file and csv file
+write_parquet(data_cleaned, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.parquet")
+write_csv(data_cleaned, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv")
 
 # Confirmation message
 print("Data saved successfully!")
