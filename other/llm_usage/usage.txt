@@ -12351,3 +12351,23 @@ one sheet.
 #### Save 2018 summary data ####
 write_parquet(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.parquet")
 write_csv(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
+
+
+
+
+
+User: 
+based on this code, i am getting the following error> # Create a histogram to show the distribution of age
+> age_individual_plot <- ggplot(data, aes(x = age_18)) +
++   geom_histogram(binwidth = 5, fill = "skyblue", color = "black", alpha = 0.7) +
++   labs(
++     title = "Age Distribution of Survey Respondents (2018)",
++     x = "Age",
++     y = "Frequency"
++   ) +
++   theme_minimal()
+Error in ggplot():
+! data cannot be a function.
+ℹ Have you misspelled the data argument in ggplot()
+Run rlang::last_trace() to see where the error occurred.
+> 

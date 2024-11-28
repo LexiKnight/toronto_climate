@@ -27,7 +27,7 @@ twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.
 # Sample size information
 sample_size_2018 <- 404 # This is the sample size for the year 2018
 
-#  I want to select certain columns outlined below
+#  Select certain columns outlined below
 twenty_eighteen <- twenty_eighteen_raw_data %>%
   select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
   Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
@@ -42,8 +42,7 @@ twenty_eighteen <- twenty_eighteen_raw_data %>%
   Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
   QD5)
 
-## Rename columns 2018 ##
-# use rename() function to give more meaningful names
+# Rename columns for clarity and meaning via rename() function
 renamed_twenty_eighteen <- twenty_eighteen %>%
   rename(
     age_18 = HIDAGE1,
@@ -142,6 +141,20 @@ renamed_twenty_eighteen <- twenty_eighteen %>%
     delivery_method_not_interested_receiving_18 = Q13r11,
     highest_level_educ_18 = QD5
   )
+# Change "NA" values to "No answer" in the relevant columns
+renamed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(across(
+    c(likelihood_action_home_improvement_18, 
+      likelihood_action_reduce_hydro_18, 
+      likelihood_action_minimize_car_18, 
+      likelihood_action_vehicle_electric_18, 
+      likelihood_action_protein_alternative_18, 
+      likelihood_action_reduce_waste_18, 
+      likelihood_action_green_product_18, 
+      likelihood_action_short_distance_18, 
+      likelihood_action_sort_waste_18), 
+    ~ replace_na(., "No answer")
+  ))
 
 # Fix all "unlikelihood" and "delivery" columns
 # Replace NA, "NO TO", and other values in columns
@@ -160,6 +173,8 @@ fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
                ifelse(startsWith(., "NO TO"), "no", "yes"))
     )
   )
+
+
 
 # View the first few rows to confirm the data
 head(fixed_twenty_eighteen)
