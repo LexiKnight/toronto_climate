@@ -156,25 +156,21 @@ renamed_twenty_eighteen <- renamed_twenty_eighteen %>%
     ~ replace_na(., "No answer")
   ))
 
-# Fix all "unlikelihood" and "delivery" columns
-# Replace NA, "NO TO", and other values in columns
+
 fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
   mutate(
     across(
-      starts_with("unlikelihood_action"),
-      ~ ifelse(is.na(.), "no",
-               ifelse(startsWith(., "NO TO"), "no", "yes"))
-    )
-  ) %>%
-  mutate(
-    across(
-      starts_with("delivery_method"),
-      ~ ifelse(is.na(.), "no",
-               ifelse(startsWith(., "NO TO"), "no", "yes"))
+      starts_with("unlikelihood_action"), 
+      ~ ifelse(startsWith(., "NO TO"), 
+               paste(
+                 # Extract and format the action (second part of the name)
+                 str_to_title(str_extract(cur_column(), "unlikelihood_action_[^_]+_[^_]+")), 
+                 # Extract and format the reason (last part of the name)
+                 str_to_title(str_extract(cur_column(), "[^_]+$"))
+               ),
+               .)
     )
   )
-
-
 
 # View the first few rows to confirm the data
 head(fixed_twenty_eighteen)

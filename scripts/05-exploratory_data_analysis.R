@@ -165,7 +165,7 @@ actions_data <- individual_18_raw %>%
                          "likelihood_action_protein_alternative_18" = "Meat Alternatives",
                          "likelihood_action_reduce_waste_18" = "Reduce Waste",
                          "likelihood_action_green_product_18" = "Purchase Green Products",
-                         "likelihood_action_short_distance_18" = "Walk/Cycle Short Distance",
+                         "likelihood_action_short_distance_18" = "Walk/Cycle Short Distances",
                          "likelihood_action_sort_waste_18" = "Sort Waste Correctly"
   ))
 
@@ -187,40 +187,52 @@ ggplot(actions_data, aes(x = action, fill = likelihood)) +
 
 
 
+
+
 # Create a figure illustrating reasons why people are not taking specific action to mitigate climate change
-# Reshape data to long format (example code assumes data is in 'actions_data')
+# Step 1: Filter only relevant columns and reshape the data
+selected_cols <- individual_18 %>%
+  select(contains("unlikelihood_action")) %>% 
+  summarise(across(everything(), ~ sum(. == "yes") > 0)) %>% 
+  select(where(~ .)) %>% 
+  names()
 
-# Assuming your data is in a dataframe called 'actions_data'
-
-# List of actions
-actions <- c("home_improvement", "reduce_hydro", "minimize_car", "vehicle_electric",
-             "protein_alternative", "reduce_waste", "green_product",
-             "short_distance", "sort_waste")
-
-# List of reasons
-reasons <- c("confusing", "individual_difference", "ineffective", "costly",
-             "unavailable", "inconvenient", "uninterested", "other")
-
-# Reshape your data from wide to long format
-actions_long <- actions_data %>%
-  pivot_longer(cols = starts_with("unlikelihood_action"),
-               names_to = c("Action", "Reason"),
+# Step 2: Reshape the data and clean action names
+data_long <- individual_18 %>%
+  select(all_of(selected_cols)) %>%
+  pivot_longer(everything(),
+               names_to = c("action", "reason"),
                names_pattern = "unlikelihood_action_(.*)_(.*)_18",
-               values_to = "Response") %>%
-  filter(Response == "yes")  # Only keep "Yes" responses
+               values_to = "response") %>%
+  filter(response == "yes") %>%
+  mutate(
+    # Step 3: Clean and simplify action names
+    action = case_when(
+      action == "home_improvement_individual" ~ "Home Improvement",
+      action == "reduce_waste_individual" ~ "Reduce Waste",
+      action == "short_distance_individual" ~ "Walk/Cycle Short Distances",
+      action == "valid_electric_individual" ~ "Electric/Hybrid Vehicle",
+      action == "mintimize_car_individual" ~ "Minimize Car Use",
+      action == "green_product_individual" ~ "Purchase Green Products",
+      action == "protein_alternative_individual" ~ "Meat Alternatives",
+      action == "reduce_hydro_individual" ~ "Reduce Hydro Usage",
+      TRUE ~ action  # Default case for actions already correctly named
+    )
+  ) %>%
+  group_by(action, reason) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  mutate(proportion = count / sum(count))
 
-# Create a grouped bar chart
-ggplot(actions_long, aes(x = Action, fill = Reason)) +
-  geom_bar(position = "dodge") +  # Group by reason
-  coord_flip() +  # Horizontal bars for better readability
-  labs(title = "Reasons for Not Taking Climate Change Actions",
-       x = "Action",
-       y = "Frequency of 'Yes' Responses",
+# Step 4: Plot with unique actions only
+ggplot(data_long, aes(x = action, y = proportion, fill = reason)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Reasons for Unlikelihood of Taking Climate Change Actions",
+       x = "Climate Change Action",
+       y = "Proportion of 'Yes' Responses",
        fill = "Reason") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),  # Adjust readability
-        axis.text.y = element_text(size = 8))  # Adjust font size
-
-
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = c(
+    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999"))
 
 
