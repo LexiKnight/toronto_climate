@@ -9802,6 +9802,2513 @@ By saving the data_cleaned version of your dataset, you should avoid the issue o
 
 
 
+ChatGPT:
+
+It's possible that the issue you're encountering is related to how you're saving the dataset after the column removal process. In the code you provided, you're saving the original combined_data dataset (which still includes the columns starting with "V") rather than the cleaned version (data_cleaned).
+
+To ensure you're saving the cleaned data (which has the "V" columns removed), you should modify the write_parquet and write_csv functions to save data_cleaned instead of combined_data. Here's how you can update the code:
+
+# Clean the data by removing columns that start with "V"
+data_cleaned <- combined_data %>%
+  select(-starts_with("V"))  # Removes columns starting with "V"
+
+# Save the cleaned data as a Parquet file and CSV file
+write_parquet(data_cleaned, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.parquet")
+write_csv(data_cleaned, "data/02-analysis_data/twenty_twenty_two_summary_analysis_data.csv")
+This ensures that the version of the dataset without the "V" columns is saved to both the Parquet and CSV files.
+
+Additional Considerations:
+Column Name Inspection: Make sure to double-check the column names after cleaning the data, especially if you have any non-alphanumeric characters or spaces. This could be done by inspecting the column names with colnames(data_cleaned) after the select step.
+
+File Overwriting: If you're overwriting an existing file, ensure that the file path is correct and that you're not accidentally overwriting an earlier version of the dataset.
+
+By saving the data_cleaned version of your dataset, you should avoid the issue of the "V" columns being retained in the final saved files.
+
+
+
+
+
+
+You said:
+Alrightly, see my r code and instructions on what i want to do. please let me know if anything is unclear. #### Clean data summary 2018 dataset ####
+
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+
+Column "age_18", is a numerical whole number and I would like to summarize age into the following
+categories 18-23, 24-39, 40-55 and 56+ in one column. Then i would like to use the 
+sample_size_2018 of 404 to get the percentage of each age group in the second column.
+I want to save this as age_summary_18 age_summary_18
+
+
+Column "highest_level_educ_18" is alphabetical. i want to list the categories in the first colmun
+and the in the second column come up with the percentage of the sample (sample size 404) in the
+second column, naming this table education_summary_18
+
+
+column "extent_consider_informed_18" is alphanetical. I want to list the different categories of
+extent informed in one column and then add a column to come up with the percentage of the sample
+, naming this table informed_summary_18
+
+
+columns beginning with "likelihood_action" are alphabetical. i want to list the different
+categories in one column and create a second column with the corresponding percentage of the
+sample, naming the table likelihood_summary_18
+
+columns beginning with "unlikelihood_action" contain either "yes" or "no". I want to list these two
+categories in one column and create a second column with the corresponding percentage of
+the sample, naming the table reasons_summary_18
+
+
+column "delivery_method_not_interested_receiving_18" contain either "yes" or "no". 
+I want to list the different categoreis in one column and create a second column with the corresponding
+percentages of the sample, naming the table communication_summary_18.
+
+Then i want to combine all 6 tables into one sheet and save it so all the summary data is on
+one sheet.
+
+
+#### Save 2018 summary data ####
+write_parquet(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.parquet")
+write_csv(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
+ChatGPT said:
+Thank you for providing your R code and instructions. Let's walk through each task based on your specifications and update the code accordingly:
+
+Breakdown of Tasks and Code
+Age Summary (age_18):
+
+You want to categorize age_18 into age groups and then calculate the percentage of each group relative to the sample size of 404.
+Education Summary (highest_level_educ_18):
+
+List the different categories and calculate the percentage of the sample for each category.
+Informed Summary (extent_consider_informed_18):
+
+List the categories for the "extent informed" question and calculate the percentage for each.
+Likelihood Summary (likelihood_action):
+
+List categories of likelihood actions and calculate the percentage.
+Reasons Summary (unlikelihood_action):
+
+List "yes" and "no" for this variable, calculate the percentage, and store it.
+Communication Summary (delivery_method_not_interested_receiving_18):
+
+List "yes" and "no" for this variable and calculate the percentage.
+Combine All Tables:
+
+You want to combine all the summaries into one sheet and save it as a CSV and Parquet file.
+Full Code Implementation Based on Instructions
+# Load required libraries
+library(tidyverse)
+library(readr)
+library(arrow)
+
+#### Clean data summary 2018 dataset ####
+
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+# Sample size for calculations
+sample_size_2018 <- 404
+
+#### 1. Age Summary ####
+
+# Categorize age into groups
+age_summary_18 <- twenty_eighteen_raw_data %>%
+  mutate(age_group = case_when(
+    age_18 >= 18 & age_18 <= 23 ~ "18-23",
+    age_18 >= 24 & age_18 <= 39 ~ "24-39",
+    age_18 >= 40 & age_18 <= 55 ~ "40-55",
+    age_18 >= 56 ~ "56+",
+    TRUE ~ "Unknown"
+  )) %>%
+  count(age_group) %>%
+  mutate(percentage = n / sample_size_2018 * 100) %>%
+  select(age_group, percentage)
+
+#### 2. Education Summary ####
+
+# Education level summary
+education_summary_18 <- twenty_eighteen_raw_data %>%
+  count(highest_level_educ_18) %>%
+  mutate(percentage = n / sample_size_2018 * 100) %>%
+  select(highest_level_educ_18, percentage)
+
+#### 3. Informed Summary ####
+
+# Informed extent summary
+informed_summary_18 <- twenty_eighteen_raw_data %>%
+  count(extent_consider_informed_18) %>%
+  mutate(percentage = n / sample_size_2018 * 100) %>%
+  select(extent_consider_informed_18, percentage)
+
+#### 4. Likelihood Action Summary ####
+
+# Likelihood action summary (columns starting with "likelihood_action")
+likelihood_summary_18 <- twenty_eighteen_raw_data %>%
+  select(starts_with("likelihood_action")) %>%
+  pivot_longer(cols = everything(), names_to = "likelihood_action", values_to = "response") %>%
+  count(likelihood_action, response) %>%
+  mutate(percentage = n / sample_size_2018 * 100) %>%
+  select(likelihood_action, response, percentage)
+
+#### 5. Reasons Summary ####
+
+# Unlikelihood action summary (columns starting with "unlikelihood_action")
+reasons_summary_18 <- twenty_eighteen_raw_data %>%
+  select(starts_with("unlikelihood_action")) %>%
+  pivot_longer(cols = everything(), names_to = "unlikelihood_action", values_to = "response") %>%
+  count(unlikelihood_action, response) %>%
+  mutate(percentage = n / sample_size_2018 * 100) %>%
+  select(unlikelihood_action, response, percentage)
+
+#### 6. Communication Summary ####
+
+# Communication method not interested in receiving
+communication_summary_18 <- twenty_eighteen_raw_data %>%
+  count(delivery_method_not_interested_receiving_18) %>%
+  mutate(percentage = n / sample_size_2018 * 100) %>%
+  select(delivery_method_not_interested_receiving_18, percentage)
+
+#### 7. Combine All Tables ####
+
+# Combine all the summary tables into one data frame
+combined_summary_18 <- bind_rows(
+  age_summary_18 %>% mutate(summary_type = "Age Group"),
+  education_summary_18 %>% mutate(summary_type = "Education Level"),
+  informed_summary_18 %>% mutate(summary_type = "Informed Extent"),
+  likelihood_summary_18 %>% mutate(summary_type = "Likelihood Action"),
+  reasons_summary_18 %>% mutate(summary_type = "Reasons for Unlikeliness"),
+  communication_summary_18 %>% mutate(summary_type = "Communication Method")
+)
+
+# Save the combined summary data to CSV and Parquet
+write_parquet(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.parquet")
+write_csv(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
+Explanation of Code:
+Step 1 - Categorizing Age:
+The age_18 column is categorized into the four specified age groups using mutate and case_when. The count function is used to calculate the number of records in each age group, and the percentage is calculated based on the sample size of 404.
+
+Steps 2 to 6 - Summaries for Education, Informed, Likelihood, Reasons, and Communication:
+For each column (such as highest_level_educ_18, extent_consider_informed_18, etc.), I used count() to get the frequency of each category and then calculated the percentage.
+
+Combining All Tables:
+The summary tables are combined into one using bind_rows(). Each table is also tagged with a summary_type column to differentiate between them once combined.
+
+Saving the Combined Data:
+The final combined_summary_18 table is saved to both a CSV file and a Parquet file, as per your requirements.
+
+Final Output:
+You will end up with a combined summary data table that contains:
+
+Summary Type: A label identifying which summary the row belongs to (e.g., "Age Group", "Education Level", etc.)
+Category/Variable: The value or category (e.g., age group, education level, etc.)
+Percentage: The percentage of the sample size (404) corresponding to that category.
+The data will be saved in both CSV and Parquet formats as specified.
+
+Let me know if you need further clarification or adjustments to any part of the code!
+
+
+
+
+
+
+You said:
+i ran the code and encountered this error: Error in mutate():
+ℹ In argument: age_group = case_when(...).
+Caused by error in case_when():
+! Failed to evaluate the left-hand side of formula 1.
+Caused by error:
+! object 'age_18' not found
+Run rlang::last_trace() to see where the error occurred.
+> 
+ChatGPT said:
+The error message suggests that the column age_18 could not be found in the dataset. This could be due to a few reasons:
+
+Incorrect Column Name: The column might be named differently in the dataset (e.g., Age_18, age_18_years, or a similar variation).
+Column Not Present: The age_18 column may not exist in the dataset at all, or it may have been renamed or removed earlier in your code.
+Whitespace or Typo in Column Name: There could be leading/trailing spaces in the column name or a typographical error.
+Steps to Resolve:
+Check the Column Names: You can check the column names in your twenty_eighteen_raw_data dataset using the colnames() function. This will help you verify if age_18 exists and if there are any discrepancies in the column name.
+
+colnames(twenty_eighteen_raw_data)
+This will return a list of all column names in the dataset. Check if age_18 is listed and if there are any unexpected differences (e.g., additional spaces, typos).
+
+Inspect the Dataset: You can also inspect the first few rows of the dataset using the head() function to see the data and confirm if the column age_18 exists and looks as expected.
+
+head(twenty_eighteen_raw_data)
+Correct the Column Name: If the column name is different, update your code to use the correct name. For example, if the column is named age_18_years, you would change the code as follows:
+
+mutate(age_group = case_when(
+  age_18_years >= 18 & age_18_years <= 23 ~ "18-23",
+  age_18_years >= 24 & age_18_years <= 39 ~ "24-39",
+  age_18_years >= 40 & age_18_years <= 55 ~ "40-55",
+  age_18_years >= 56 ~ "56+",
+  TRUE ~ "Unknown"
+))
+Check for Data Loading Issues: If you are reading the CSV file, ensure that it is loaded properly. You can check the structure of the data using str(twenty_eighteen_raw_data) to confirm that the data is loaded as expected.
+
+Example Debugging:
+Here is a debugging version of the relevant section of the code to help you identify the issue:
+
+# Check the column names in the dataset
+colnames(twenty_eighteen_raw_data)
+
+# Check the first few rows of the dataset
+head(twenty_eighteen_raw_data)
+
+# If you find that 'age_18' is actually named differently, update the mutate statement accordingly
+age_summary_18 <- twenty_eighteen_raw_data %>%
+  mutate(age_group = case_when(
+    age_18 >= 18 & age_18 <= 23 ~ "18-23",
+    age_18 >= 24 & age_18 <= 39 ~ "24-39",
+    age_18 >= 40 & age_18 <= 55 ~ "40-55",
+    age_18 >= 56 ~ "56+",
+    TRUE ~ "Unknown"
+  )) %>%
+  count(age_group) %>%
+  mutate(percentage = n / sample_size_2018 * 100) %>%
+  select(age_group, percentage)
+Once you've confirmed and corrected the column name, the code should run without the error. Let me know if this helps or if you encounter any other issues!
+
+
+
+
+
+
+You said:
+im not sure why age_18 column is not being recognized. I am reading in the dataset whose first column is age_18 without any trailing white spaces or anything. I checked that i am using the dataset that was saved aswrite_csv(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv") and hence to read in the dataset i am doing # Read the csv file
+twenty_eighteen_individual <- read_csv("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
+ChatGPT said:
+Given that you're reading the dataset from a CSV file and the column age_18 should be the first column, it's possible that there is an issue with how the data is being read into R. There are a few common causes and solutions for this:
+
+Possible Issues and Solutions:
+Check Column Names: Even if you say there is no whitespace or issues with the column name, it's good practice to double-check how R is reading the column names.
+
+After reading the data, run the following to confirm the exact column names:
+
+colnames(twenty_eighteen_individual)
+This will give you the exact names of all the columns. If there’s any discrepancy with age_18 (like an extra space or typo), you'll see it here.
+
+Check the Structure of the Data: You can also check the structure of the dataset with str() to confirm that the age_18 column is being properly read as a numeric column and not as a character or factor.
+
+str(twenty_eighteen_individual)
+This will give you a summary of the data types of all columns. Ensure that age_18 is a numeric type.
+
+Try Specifying col_names = TRUE: When reading the CSV file, R should automatically consider the first row as the column names. However, if for some reason the column names are being misinterpreted or read incorrectly, you can explicitly specify the col_names argument to ensure the first row is treated as column headers.
+
+twenty_eighteen_individual <- read_csv("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv", col_names = TRUE)
+Ensure No Hidden Characters: Sometimes, data files can contain hidden characters (like non-breaking spaces) that aren't easily visible. To ensure this isn’t the case, you could manually clean the column names by using janitor::clean_names(), which will standardize the column names to a simpler format.
+
+library(janitor)
+twenty_eighteen_individual <- twenty_eighteen_individual %>%
+  clean_names()
+After this, try checking colnames(twenty_eighteen_individual) again to see if the column names are cleaner and if age_18 is now recognized properly.
+
+Re-run the Code with Adjusted Column Names: If after cleaning or checking the column names you find that age_18 was misnamed, update your code to use the correct name. For example, if it turns out to be Age_18 (case-sensitive), modify the code like so:
+
+mutate(age_group = case_when(
+  age_18 >= 18 & age_18 <= 23 ~ "18-23",
+  age_18 >= 24 & age_18 <= 39 ~ "24-39",
+  age_18 >= 40 & age_18 <= 55 ~ "40-55",
+  age_18 >= 56 ~ "56+",
+  TRUE ~ "Unknown"
+))
+Example Debugging:
+Here’s an adjusted approach to diagnose and fix the issue:
+
+# Read the dataset
+twenty_eighteen_individual <- read_csv("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
+
+# Check column names to ensure 'age_18' exists
+colnames(twenty_eighteen_individual)
+
+# Check the structure of the data (to confirm the data type of 'age_18')
+str(twenty_eighteen_individual)
+
+# Optionally clean the column names for potential issues
+library(janitor)
+twenty_eighteen_individual <- twenty_eighteen_individual %>%
+  clean_names()
+
+# Recheck column names after cleaning
+colnames(twenty_eighteen_individual)
+
+# Now, proceed with your original code for age group summarization
+age_summary_18 <- twenty_eighteen_individual %>%
+  mutate(age_group = case_when(
+    age_18 >= 18 & age_18 <= 23 ~ "18-23",
+    age_18 >= 24 & age_18 <= 39 ~ "24-39",
+    age_18 >= 40 & age_18 <= 55 ~ "40-55",
+    age_18 >= 56 ~ "56+",
+    TRUE ~ "Unknown"
+  )) %>%
+  count(age_group) %>%
+  mutate(percentage = n / 404 * 100) %>%
+  select(age_group, percentage)
+
+# View the summarized data
+print(age_summary_18)
+Key Takeaways:
+Double-check that age_18 exists as a column by inspecting the column names using colnames().
+Confirm the column type (numeric or character) using str().
+Use janitor::clean_names() to clean column names if needed.
+Update the column name if there is any typo or mismatch.
+If you still encounter issues, please share the results of colnames() and str(), and I can help further debug from there!
+
+
+
+
+
+
+You said:
+> colnames(twenty_eighteen_individual)
+ [1] "age_18"                                                          
+ [2] "extent_consider_informed_18"                                     
+ [3] "likelihood_action_home_improvement_18"                           
+ [4] "likelihood_action_reduce_hydro_18"                               
+ [5] "likelihood_action_minimize_car_18"                               
+ [6] "likelihood_action_vehicle_electric_18"                           
+ [7] "likelihood_action_protein_alternative_18"                        
+ [8] "likelihood_action_reduce_waste_18"                               
+ [9] "likelihood_action_green_product_18"                              
+[10] "likelihood_action_short_distance_18"                             
+[11] "likelihood_action_sort_waste_18"                                 
+[12] "unlikelihood_action_home_improvement_confusing_18"               
+[13] "unlikelihood_action_home_improvement_individual_difference_18"   
+[14] "unlikelihood_action_home_improvement_ineffective_18"             
+[15] "unlikelihood_action_home_improvement_costly_18"                  
+[16] "unlikelihood_action_home_improvement_unavailable_18"             
+[17] "unlikelihood_action_home_improvement_inconvenient_18"            
+[18] "unlikelihood_action_home_improvement_uninterested_18"            
+[19] "unlikelihood_action_home_improvement_other_18"                   
+[20] "unlikelihood_action_reduce_hydro_confusing_18"                   
+[21] "unlikelihood_action_reduce_hydro_individual_difference_18"       
+[22] "unlikelihood_action_reduce_hydro_ineffective_18"                 
+[23] "unlikelihood_action_reduce_hydro_costly_18"                      
+[24] "unlikelihood_action_reduce_hydro_unavailable_18"                 
+[25] "unlikelihood_action_reduce_hydro_inconvenient_18"                
+[26] "unlikelihood_action_reduce_hydro_uninterested_18"                
+[27] "unlikelihood_action_reduce_hydro_other_18"                       
+[28] "unlikelihood_action_minimize_car_confusing_18"                   
+[29] "unlikelihood_action_minimize_car_individual_difference_18"       
+[30] "unlikelihood_action_minimize_car_ineffective_18"                 
+[31] "unlikelihood_action_minimize_car_costly_18"                      
+[32] "unlikelihood_action_minimize_car_unavailable_18"                 
+[33] "unlikelihood_action_minimize_car_inconvenient_18"                
+[34] "unlikelihood_action_minimize_car_uninterested_18"                
+[35] "unlikelihood_action_minimize_car_other_18"                       
+[36] "unlikelihood_action_vehicle_electric_confusing_18"               
+[37] "unlikelihood_action_vehicle_electric_individual_difference_18"   
+[38] "unlikelihood_action_vehicle_electric_ineffective_18"             
+[39] "unlikelihood_action_vehicle_electric_costly_18"                  
+[40] "unlikelihood_action_vehicle_electric_unavailable_18"             
+[41] "unlikelihood_action_vehicle_electric_inconvenient_18"            
+[42] "unlikelihood_action_vehicle_electric_uninterested_18"            
+[43] "unlikelihood_action_vehicle_electric_other_18"                   
+[44] "unlikelihood_action_protein_alternative_confusing_18"            
+[45] "unlikelihood_action_protein_alternative_individual_difference_18"
+[46] "unlikelihood_action_protein_alternative_ineffective_18"          
+[47] "unlikelihood_action_protein_alternative_costly_18"               
+[48] "unlikelihood_action_protein_alternative_unavailable_18"          
+[49] "unlikelihood_action_protein_alternative_inconvenient_18"         
+[50] "unlikelihood_action_protein_alternative_uninterested_18"         
+[51] "unlikelihood_action_protein_alternative_other_18"                
+[52] "unlikelihood_action_reduce_waste_confusing_18"                   
+[53] "unlikelihood_action_reduce_waste_individual_difference_18"       
+[54] "unlikelihood_action_reduce_waste_ineffective_18"                 
+[55] "unlikelihood_action_reduce_waste_costly_18"                      
+[56] "unlikelihood_action_reduce_waste_unavailable_18"                 
+[57] "unlikelihood_action_reduce_waste_inconvenient_18"                
+[58] "unlikelihood_action_reduce_waste_uninterested_18"                
+[59] "unlikelihood_action_reduce_waste_other_18"                       
+[60] "unlikelihood_action_green_product_confusing_18"                  
+[61] "unlikelihood_action_green_product_individual_difference_18"      
+[62] "unlikelihood_action_green_product_ineffective_18"                
+[63] "unlikelihood_action_green_product_costly_18"                     
+[64] "unlikelihood_action_green_product_unavailable_18"                
+[65] "unlikelihood_action_green_product_inconvenient_18"               
+[66] "unlikelihood_action_green_product_uninterested_18"               
+[67] "unlikelihood_action_green_product_other_18"                      
+[68] "unlikelihood_action_short_distance_confusing_18"                 
+[69] "unlikelihood_action_short_distance_individual_difference_18"     
+[70] "unlikelihood_action_short_distance_ineffective_18"               
+[71] "unlikelihood_action_short_distance_costly_18"                    
+[72] "unlikelihood_action_short_distance_unavailable_18"               
+[73] "unlikelihood_action_short_distance_inconvenient_18"              
+[74] "unlikelihood_action_short_distance_uninterested_18"              
+[75] "unlikelihood_action_short_distance_other_18"                     
+[76] "unlikelihood_action_sort_waste_confusing_18"                     
+[77] "unlikelihood_action_sort_waste_individual_difference_18"         
+[78] "unlikelihood_action_sort_waste_ineffective_18"                   
+[79] "unlikelihood_action_sort_waste_costly_18"                        
+[80] "unlikelihood_action_sort_waste_unavailable_18"                   
+[81] "unlikelihood_action_sort_waste_inconvenient_18"                  
+[82] "unlikelihood_action_sort_waste_uninterested_18"                  
+[83] "unlikelihood_action_sort_waste_other_18"                         
+[84] "delivery_method_toronto.ca_website_18"                           
+[85] "delivery_method_events_18"                                       
+[86] "delivery_method_twitter_18"                                      
+[87] "delivery_method_facebook_18"                                     
+[88] "delivery_method_instagram_18"                                    
+[89] "delivery_method_enewsletter_email_18"                            
+[90] "delivery_method_councillor_communication_18"                     
+[91] "delivery_method_advertising_campaigns_18"                        
+[92] "delivery_method_brochures_pamphlets_18"                          
+[93] "delivery_method_other_18"                                        
+[94] "delivery_method_not_interested_receiving_18"                     
+[95] "highest_level_educ_18" 
+ChatGPT said:
+It appears that the column age_18 is present in your dataset, and its name is exactly as expected. If age_18 is not being recognized in your code, here are a few things to check:
+
+Check for typographical issues in your code:
+
+Ensure you're calling the column name correctly when referencing it. For example, when accessing the column, you should use:
+twenty_eighteen_individual$age_18
+If you're using functions that manipulate column names, make sure they aren't altering the name in any unexpected way.
+Check for unexpected spaces or characters:
+
+Even though you've checked, it's a good idea to re-verify the column name, just in case there are any hidden characters. For example, try:
+colnames(twenty_eighteen_individual) %>% trimws()
+Inspect the structure of the dataset:
+
+To get a clearer view of how the columns are recognized, use:
+str(twenty_eighteen_individual)
+This will show the structure and can help confirm that the column is being recognized as expected.
+Confirm that no transformations have been applied to the column:
+
+If you've applied functions like select() or rename() previously, double-check that age_18 hasn't been renamed or modified in ways that could cause issues in subsequent steps.
+If the issue persists after checking these steps, it would help to provide more context on how you are trying to use the age_18 column in your analysis, especially in the specific line where it's causing problems.
+
+
+
+
+
+
+You said:
+> twenty_eighteen_individual$age_18
+  [1]  33  70  59  31  43  60  68  34  38  46  76  41  67  70  69  32  27  28  49  63
+ [21]  43  36  34  55  26  30  38  56  32  58  23  30  44  24  32  29  75  23  30  35
+ [41]  40  41  51  53  76  57  58  67  31  24  30  31  30  31  30  35  32  34  29  27
+ [61]  24  20  24  24  22  26  33  24  25  33  32  31  32  35  25  32  24  33  23  33
+ [81]  70  29  54  25  33  27  18  31  29  34  35  32  31  25  55  29  28  57  30 107
+[101]  30  29  41  19  21  30  55  32  57  30  32  30  38  40  99  56  36  33  36  31
+[121]  24  59  27  56  34  30  34  55  44  19  31  75  68  65  35  61  25  48  57  27
+[141]  70  64  53  70  69  48  44  63  67  58  33  54  47  67  69  70  49  57  44  21
+[161]  74  35  34  46  61  57  29  57  60  44  43  19  50  65  26  63  58  38  55  31
+[181]  51  72  18  70  47  61  48  38  62  50  32  46  73  56  54  44  70  22  43  60
+[201]  47  42  49  61  39  40  34  85  76  62  32  69  47  32  49  31  63  42  40  52
+[221]  73  57  34  38  44  35  58  52  73  75  54  44  63  55  61  22  76  70  51  28
+[241]  58  83  25  55  33  67  40  35  72  67  30  24  27  48  65  50  38  40  39  48
+[261]  42  43  32  64  40  49  48  58  36  47  53  38  53  64  52  58  60  52  47  39
+[281]  58  37  38  65  41  36  62  48  71  63  36  63  55  65  64  65  51  52  64  51
+[301]  40  77  56  47  42  40  57  63  57  50  42  51  46  53  44  43  42  56  55  35
+[321]  56  70  66  53  20  46  66  63  41  47  38  38  58  81  43  24  45  62  50  42
+[341]  20  38  64  35  36  37  49  36  75  77  41  79  43  41  36  59  64  66  45  36
+[361]  66  60  47  43  73  42 114  63  64  61  53  41  37  65  45  74  65  39  56  26
+[381]  36  58  18  50  67  60  50  42  75  47  41  45  48  72  53  60  54  40  65  31
+[401]  59  79  44  62  colnames(twenty_eighteen_individual) %>% trimws()
+ [1] "age_18"             .   ..   age_18 = col_double(),                                              
+ [2] "extent_consider_informed_18"                                     
+ [3] "likelihood_action_home_improvement_18"                           
+ [4] "likelihood_action_reduce_hydro_18"                               
+ [5] "likelihood_action_minimize_car_18"                               
+ [6] "likelihood_action_vehicle_electric_18"                           
+ [7] "likelihood_action_protein_alternative_18"                        
+ [8] "likelihood_action_reduce_waste_18"                               
+ [9] "likelihood_action_green_product_18"                              
+[10] "likelihood_action_short_distance_18"                             
+[11] "likelihood_action_sort_waste_18"                                 
+[12] "unlikelihood_action_home_improvement_confusing_18"               
+[13] "unlikelihood_action_home_improvement_individual_difference_18"   
+[14] "unlikelihood_action_home_improvement_ineffective_18"             
+[15] "unlikelihood_action_home_improvement_costly_18"                  
+[16] "unlikelihood_action_home_improvement_unavailable_18"             
+[17] "unlikelihood_action_home_improvement_inconvenient_18"            
+[18] "unlikelihood_action_home_improvement_uninterested_18"            
+[19] "unlikelihood_action_home_improvement_other_18"                   
+[20] "unlikelihood_action_reduce_hydro_confusing_18"                   
+[21] "unlikelihood_action_reduce_hydro_individual_difference_18"       
+[22] "unlikelihood_action_reduce_hydro_ineffective_18"                 
+[23] "unlikelihood_action_reduce_hydro_costly_18"                      
+[24] "unlikelihood_action_reduce_hydro_unavailable_18"                 
+[25] "unlikelihood_action_reduce_hydro_inconvenient_18"                
+[26] "unlikelihood_action_reduce_hydro_uninterested_18"                
+[27] "unlikelihood_action_reduce_hydro_other_18"                       
+[28] "unlikelihood_action_minimize_car_confusing_18"                   
+[29] "unlikelihood_action_minimize_car_individual_difference_18"       
+[30] "unlikelihood_action_minimize_car_ineffective_18"                 
+[31] "unlikelihood_action_minimize_car_costly_18"                      
+[32] "unlikelihood_action_minimize_car_unavailable_18"                 
+[33] "unlikelihood_action_minimize_car_inconvenient_18"                
+[34] "unlikelihood_action_minimize_car_uninterested_18"                
+[35] "unlikelihood_action_minimize_car_other_18"                       
+[36] "unlikelihood_action_vehicle_electric_confusing_18"               
+[37] "unlikelihood_action_vehicle_electric_individual_difference_18"   
+[38] "unlikelihood_action_vehicle_electric_ineffective_18"             
+[39] "unlikelihood_action_vehicle_electric_costly_18"                  
+[40] "unlikelihood_action_vehicle_electric_unavailable_18"             
+[41] "unlikelihood_action_vehicle_electric_inconvenient_18"            
+[42] "unlikelihood_action_vehicle_electric_uninterested_18"            
+[43] "unlikelihood_action_vehicle_electric_other_18"                   
+[44] "unlikelihood_action_protein_alternative_confusing_18"            
+[45] "unlikelihood_action_protein_alternative_individual_difference_18"
+[46] "unlikelihood_action_protein_alternative_ineffective_18"          
+[47] "unlikelihood_action_protein_alternative_costly_18"               
+[48] "unlikelihood_action_protein_alternative_unavailable_18"          
+[49] "unlikelihood_action_protein_alternative_inconvenient_18"         
+[50] "unlikelihood_action_protein_alternative_uninterested_18"         
+[51] "unlikelihood_action_protein_alternative_other_18"                
+[52] "unlikelihood_action_reduce_waste_confusing_18"                   
+[53] "unlikelihood_action_reduce_waste_individual_difference_18"       
+[54] "unlikelihood_action_reduce_waste_ineffective_18"                 
+[55] "unlikelihood_action_reduce_waste_costly_18"                      
+[56] "unlikelihood_action_reduce_waste_unavailable_18"                 
+[57] "unlikelihood_action_reduce_waste_inconvenient_18"                
+[58] "unlikelihood_action_reduce_waste_uninterested_18"                
+[59] "unlikelihood_action_reduce_waste_other_18"                       
+[60] "unlikelihood_action_green_product_confusing_18"                  
+[61] "unlikelihood_action_green_product_individual_difference_18"      
+[62] "unlikelihood_action_green_product_ineffective_18"                
+[63] "unlikelihood_action_green_product_costly_18"                     
+[64] "unlikelihood_action_green_product_unavailable_18"                
+[65] "unlikelihood_action_green_product_inconvenient_18"               
+[66] "unlikelihood_action_green_product_uninterested_18"               
+[67] "unlikelihood_action_green_product_other_18"                      
+[68] "unlikelihood_action_short_distance_confusing_18"                 
+[69] "unlikelihood_action_short_distance_individual_difference_18"     
+[70] "unlikelihood_action_short_distance_ineffective_18"               
+[71] "unlikelihood_action_short_distance_costly_18"                    
+[72] "unlikelihood_action_short_distance_unavailable_18"               
+[73] "unlikelihood_action_short_distance_inconvenient_18"              
+[74] "unlikelihood_action_short_distance_uninterested_18"              
+[75] "unlikelihood_action_short_distance_other_18"                     
+[76] "unlikelihood_action_sort_waste_confusing_18"                     
+[77] "unlikelihood_action_sort_waste_individual_difference_18"         
+[78] "unlikelihood_action_sort_waste_ineffective_18"                   
+[79] "unlikelihood_action_sort_waste_costly_18"                        
+[80] "unlikelihood_action_sort_waste_unavailable_18"                   
+[81] "unlikelihood_action_sort_waste_inconvenient_18"                  
+[82] "unlikelihood_action_sort_waste_uninterested_18"                  
+[83] "unlikelihood_action_sort_waste_other_18"                         
+[84] "delivery_method_toronto.ca_website_18"                           
+[85] "delivery_method_events_18"                                       
+[86] "delivery_method_twitter_18"                                      
+[87] "delivery_method_facebook_18"                                     
+[88] "delivery_method_instagram_18"                                    
+[89] "delivery_method_enewsletter_email_18"                            
+[90] "delivery_method_councillor_communication_18"                     
+[91] "delivery_method_advertising_campaigns_18"                        
+[92] "delivery_method_brochures_pamphlets_18"                          
+[93] "delivery_method_other_18"                                        
+[94] "delivery_method_not_interested_receiving_18"                     
+[95] "highest_level_educ_18"                                           
+> 
+> 
+ChatGPT said:
+It seems you're looking at the age_18 column and checking the dataset structure in twenty_eighteen_individual. The output of twenty_eighteen_individual$age_18 shows a series of ages, and the column names from your dataset include various other attributes related to likelihood and actions (e.g., likelihood to perform various actions like home improvement, minimize car usage, reduce waste, etc.).
+
+To summarize or extract key insights from your age_18 data or other columns, you can perform some basic analysis, such as:
+
+Summary Statistics for age_18:
+
+To get a sense of the distribution of ages:
+summary(twenty_eighteen_individual$age_18)
+Basic Visualization:
+
+You might want to visualize the distribution of age_18:
+library(ggplot2)
+ggplot(twenty_eighteen_individual, aes(x = age_18)) + 
+  geom_histogram(binwidth = 5, fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribution of Age (18+) in 2018", x = "Age", y = "Frequency")
+Checking for NA values:
+
+To ensure there are no missing values in the age_18 column:
+sum(is.na(twenty_eighteen_individual$age_18))
+If you need specific analysis or further assistance with this dataset, feel free to provide more details!
+
+
+
+
+
+
+You said:
+> ## 1. Age Summary ####
+> 
+> # Categorize age into groups
+> age_summary_18 <- twenty_eighteen_raw_data %>%
++   mutate(age_group = case_when(
++     age_18 >= 18 & age_18 <= 23 ~ "18-23",
++     age_18 >= 24 & age_18 <= 39 ~ "24-39",
++     age_18 >= 40 & age_18 <= 55 ~ "40-55",
++     age_18 >= 56 ~ "56+",
++     TRUE ~ "Unknown"
++   )) %>%
++   count(age_group) %>%
++   mutate(percentage = n / sample_size_2018 * 100) %>%
++   select(age_group, percentage)
+Error in mutate():
+ℹ In argument: age_group = case_when(...).
+Caused by error in case_when():
+! Failed to evaluate the left-hand side of formula 1.
+Caused by error:
+! object 'age_18' not found
+Run rlang::last_trace() to see where the error occurred.
+> 
+ChatGPT said:
+The error you're encountering suggests that the variable age_18 is not found in your dataset twenty_eighteen_raw_data. You might have a typo or the variable might not exist as named.
+
+To resolve this, here are a few steps you can follow:
+
+Check the column names of your dataset to confirm the correct variable name for age. You can do this using the following command:
+
+colnames(twenty_eighteen_raw_data)
+Ensure the correct variable is used in your code. If the variable name for age is different (e.g., age or age_2018), update your mutate() function accordingly. For example, if the column is named age_2018, you would use:
+
+mutate(age_group = case_when(
+  age_2018 >= 18 & age_2018 <= 23 ~ "18-23",
+  age_2018 >= 24 & age_2018 <= 39 ~ "24-39",
+  age_2018 >= 40 & age_2018 <= 55 ~ "40-55",
+  age_2018 >= 56 ~ "56+",
+  TRUE ~ "Unknown"
+))
+Check for missing data in the age_18 column. If the column exists but has missing values, you might want to handle that by filtering or filling missing values. For instance:
+
+twenty_eighteen_raw_data <- twenty_eighteen_raw_data %>%
+  filter(!is.na(age_18))  # To remove rows with missing age
+After confirming the correct column name and making any necessary adjustments, you should be able to run the code without errors. Let me know if you need further assistance!
+
+
+
+
+
+
+You said:
+the column was originally called "HIDAGE1" in the raw data but i renamed it to "age_18". See all my code for the 2018 data. does that help you find out why age_18 is not found? 
+#### Clean data individual 2018 dataset ####
+# Read the csv file
+twenty_eighteen_raw_data <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
+
+# Sample size information
+sample_size_2018 <- 404 # This is the sample size for the year 2018
+
+#  I want to select certain columns outlined below
+twenty_eighteen <- twenty_eighteen_raw_data %>%
+  select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
+  Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
+  Q11_Lr2r1, Q11_Lr2r2, Q11_Lr2r3, Q11_Lr2r4, Q11_Lr2r5, Q11_Lr2r6, Q11_Lr2r7, Q11_Lr2r8,
+  Q11_Lr3r1, Q11_Lr3r2, Q11_Lr3r3, Q11_Lr3r4, Q11_Lr3r5, Q11_Lr3r6, Q11_Lr3r7, Q11_Lr3r8,
+  Q11_Lr4r1, Q11_Lr4r2, Q11_Lr4r3, Q11_Lr4r4, Q11_Lr4r5, Q11_Lr4r6, Q11_Lr4r7, Q11_Lr4r8,
+  Q11_Lr5r1, Q11_Lr5r2, Q11_Lr5r3, Q11_Lr5r4, Q11_Lr5r5, Q11_Lr5r6, Q11_Lr5r7, Q11_Lr5r8,
+  Q11_Lr6r1, Q11_Lr6r2, Q11_Lr6r3, Q11_Lr6r4, Q11_Lr6r5, Q11_Lr6r6, Q11_Lr6r7, Q11_Lr6r8,
+  Q11_Lr7r1, Q11_Lr7r2, Q11_Lr7r3, Q11_Lr7r4, Q11_Lr7r5, Q11_Lr7r6, Q11_Lr7r7, Q11_Lr7r8,
+  Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
+  Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
+  Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
+  QD5)
+
+## Rename columns 2018 ##
+# use rename() function to give more meaningful names
+renamed_twenty_eighteen <- twenty_eighteen %>%
+  rename(
+    age_18 = HIDAGE1,
+    extent_consider_informed_18 = Q2,
+    likelihood_action_home_improvement_18= Q10r1,
+    likelihood_action_reduce_hydro_18 = Q10r2,
+    likelihood_action_minimize_car_18 = Q10r3,
+    likelihood_action_vehicle_electric_18 = Q10r4,
+    likelihood_action_protein_alternative_18 = Q10r5,
+    likelihood_action_reduce_waste_18 = Q10r6,
+    likelihood_action_green_product_18 = Q10r7,
+    likelihood_action_short_distance_18 = Q10r8,
+    likelihood_action_sort_waste_18 = Q10r9,
+    unlikelihood_action_home_improvement_confusing_18 = Q11_Lr1r1,
+    unlikelihood_action_home_improvement_individual_difference_18 = Q11_Lr1r2,
+    unlikelihood_action_home_improvement_ineffective_18 = Q11_Lr1r3,
+    unlikelihood_action_home_improvement_costly_18 = Q11_Lr1r4,
+    unlikelihood_action_home_improvement_unavailable_18 = Q11_Lr1r5,
+    unlikelihood_action_home_improvement_inconvenient_18 = Q11_Lr1r6,
+    unlikelihood_action_home_improvement_uninterested_18 = Q11_Lr1r7,
+    unlikelihood_action_home_improvement_other_18 = Q11_Lr1r8,
+    unlikelihood_action_reduce_hydro_confusing_18 = Q11_Lr2r1,
+    unlikelihood_action_reduce_hydro_individual_difference_18 = Q11_Lr2r2,
+    unlikelihood_action_reduce_hydro_ineffective_18 = Q11_Lr2r3,
+    unlikelihood_action_reduce_hydro_costly_18 = Q11_Lr2r4,
+    unlikelihood_action_reduce_hydro_unavailable_18 = Q11_Lr2r5,
+    unlikelihood_action_reduce_hydro_inconvenient_18 = Q11_Lr2r6,
+    unlikelihood_action_reduce_hydro_uninterested_18 = Q11_Lr2r7,
+    unlikelihood_action_reduce_hydro_other_18 = Q11_Lr2r8,
+    unlikelihood_action_minimize_car_confusing_18 = Q11_Lr3r1,
+    unlikelihood_action_minimize_car_individual_difference_18 = Q11_Lr3r2,
+    unlikelihood_action_minimize_car_ineffective_18 = Q11_Lr3r3,
+    unlikelihood_action_minimize_car_costly_18 = Q11_Lr3r4,
+    unlikelihood_action_minimize_car_unavailable_18 = Q11_Lr3r5,
+    unlikelihood_action_minimize_car_inconvenient_18 = Q11_Lr3r6,
+    unlikelihood_action_minimize_car_uninterested_18 = Q11_Lr3r7,
+    unlikelihood_action_minimize_car_other_18 = Q11_Lr3r8,
+    unlikelihood_action_vehicle_electric_confusing_18 = Q11_Lr4r1,
+    unlikelihood_action_vehicle_electric_individual_difference_18 = Q11_Lr4r2,
+    unlikelihood_action_vehicle_electric_ineffective_18 = Q11_Lr4r3,
+    unlikelihood_action_vehicle_electric_costly_18 = Q11_Lr4r4,
+    unlikelihood_action_vehicle_electric_unavailable_18 = Q11_Lr4r5,
+    unlikelihood_action_vehicle_electric_inconvenient_18 = Q11_Lr4r6,
+    unlikelihood_action_vehicle_electric_uninterested_18 = Q11_Lr4r7,
+    unlikelihood_action_vehicle_electric_other_18 = Q11_Lr4r8,
+    unlikelihood_action_protein_alternative_confusing_18 = Q11_Lr5r1,
+    unlikelihood_action_protein_alternative_individual_difference_18 = Q11_Lr5r2,
+    unlikelihood_action_protein_alternative_ineffective_18 = Q11_Lr5r3,
+    unlikelihood_action_protein_alternative_costly_18 = Q11_Lr5r4,
+    unlikelihood_action_protein_alternative_unavailable_18 = Q11_Lr5r5,
+    unlikelihood_action_protein_alternative_inconvenient_18 = Q11_Lr5r6,
+    unlikelihood_action_protein_alternative_uninterested_18 = Q11_Lr5r7,
+    unlikelihood_action_protein_alternative_other_18 = Q11_Lr5r8,
+    unlikelihood_action_reduce_waste_confusing_18 = Q11_Lr6r1,
+    unlikelihood_action_reduce_waste_individual_difference_18 = Q11_Lr6r2,
+    unlikelihood_action_reduce_waste_ineffective_18 = Q11_Lr6r3,
+    unlikelihood_action_reduce_waste_costly_18 = Q11_Lr6r4,
+    unlikelihood_action_reduce_waste_unavailable_18 = Q11_Lr6r5,
+    unlikelihood_action_reduce_waste_inconvenient_18 = Q11_Lr6r6,
+    unlikelihood_action_reduce_waste_uninterested_18 = Q11_Lr6r7,
+    unlikelihood_action_reduce_waste_other_18 = Q11_Lr6r8,
+    unlikelihood_action_green_product_confusing_18 = Q11_Lr7r1,
+    unlikelihood_action_green_product_individual_difference_18 = Q11_Lr7r2,
+    unlikelihood_action_green_product_ineffective_18 = Q11_Lr7r3,
+    unlikelihood_action_green_product_costly_18 = Q11_Lr7r4,
+    unlikelihood_action_green_product_unavailable_18 = Q11_Lr7r5,
+    unlikelihood_action_green_product_inconvenient_18 = Q11_Lr7r6,
+    unlikelihood_action_green_product_uninterested_18 = Q11_Lr7r7,
+    unlikelihood_action_green_product_other_18 = Q11_Lr7r8,
+    unlikelihood_action_short_distance_confusing_18 = Q11_Lr8r1,
+    unlikelihood_action_short_distance_individual_difference_18 = Q11_Lr8r2,
+    unlikelihood_action_short_distance_ineffective_18 = Q11_Lr8r3,
+    unlikelihood_action_short_distance_costly_18 = Q11_Lr8r4,
+    unlikelihood_action_short_distance_unavailable_18 = Q11_Lr8r5,
+    unlikelihood_action_short_distance_inconvenient_18 = Q11_Lr8r6,
+    unlikelihood_action_short_distance_uninterested_18 = Q11_Lr8r7,
+    unlikelihood_action_short_distance_other_18 = Q11_Lr8r8,
+    unlikelihood_action_sort_waste_confusing_18 = Q11_Lr9r1,
+    unlikelihood_action_sort_waste_individual_difference_18 = Q11_Lr9r2,
+    unlikelihood_action_sort_waste_ineffective_18 = Q11_Lr9r3,
+    unlikelihood_action_sort_waste_costly_18 = Q11_Lr9r4,
+    unlikelihood_action_sort_waste_unavailable_18 = Q11_Lr9r5,
+    unlikelihood_action_sort_waste_inconvenient_18 = Q11_Lr9r6,
+    unlikelihood_action_sort_waste_uninterested_18 = Q11_Lr9r7,
+    unlikelihood_action_sort_waste_other_18 = Q11_Lr9r8,
+    delivery_method_toronto.ca_website_18 = Q13r1,
+    delivery_method_events_18 = Q13r2,
+    delivery_method_twitter_18 = Q13r3,
+    delivery_method_facebook_18 = Q13r4,
+    delivery_method_instagram_18 = Q13r5,
+    delivery_method_enewsletter_email_18 = Q13r6,
+    delivery_method_councillor_communication_18 = Q13r7,
+    delivery_method_advertising_campaigns_18 = Q13r8,
+    delivery_method_brochures_pamphlets_18 = Q13r9,
+    delivery_method_other_18 = Q13r10,
+    delivery_method_not_interested_receiving_18 = Q13r11,
+    highest_level_educ_18 = QD5
+  )
+
+# Fix all "unlikelihood" and "delivery" columns
+# Replace NA, "NO TO", and other values in columns
+fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+  mutate(
+    across(
+      starts_with("unlikelihood_action"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "NO TO"), "no", "yes"))
+    )
+  ) %>%
+  mutate(
+    across(
+      starts_with("delivery_method"),
+      ~ ifelse(is.na(.), "no",
+               ifelse(startsWith(., "NO TO"), "no", "yes"))
+    )
+  )
+
+# View the first few rows to confirm the data
+head(fixed_twenty_eighteen)
+
+#### Save 2018 individual data ####
+write_parquet(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+write_csv(fixed_twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
+ChatGPT said:
+It seems that you renamed the column HIDAGE1 to age_18 using the rename() function in the renamed_twenty_eighteen data frame. If you're receiving an error stating that age_18 is not found, there are a few potential reasons:
+
+Data Frame Name Mismatch: Double-check if you're referring to the correct data frame. In your code, you're renaming the columns in the renamed_twenty_eighteen data frame, so if you're trying to access age_18 from the original twenty_eighteen data frame, the column won't be available under that name. Make sure you're working with the renamed_twenty_eighteen data frame after renaming.
+
+Column Name Typo: Ensure that there is no typo in the column name you're trying to access. After renaming, the column should be age_18 in the renamed_twenty_eighteen data frame.
+
+Missing Data Frame Assignment: After renaming the columns, confirm that the renamed data frame is being properly assigned to a variable. For instance, the renamed_twenty_eighteen data frame should be the one you're using for any subsequent operations.
+
+Solution Check:
+If you're using the renamed_twenty_eighteen data frame after renaming, you should reference age_18 like this:
+
+# Access the renamed column in the renamed data frame
+head(renamed_twenty_eighteen$age_18)
+Make sure to reference renamed_twenty_eighteen instead of twenty_eighteen.
+
+If you're still facing issues, please share the exact error message, and we can troubleshoot further.
+
+
+
+
+
+
+You said:
+i dont want to rename columns in renamed_twenty_eighteen data frame. I do want to work with the fixed_twenty_eighteen data frame where i want to create a new dataframe where i look at categories and  the summary in terms of percentages. does that make sense? I dont want to change anything from the stored dataset data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv. I just want to create a new one and for that, i need to be able to extract age_18
+ChatGPT said:
+Got it! You want to create a new dataframe based on fixed_twenty_eighteen, and this new dataframe will summarize categories in terms of percentages, specifically working with the age_18 column. You don't want to modify the original dataset (twenty_eighteen_individual_analysis_data.csv), but rather perform this analysis with a new dataframe derived from it.
+
+Here’s a step-by-step guide to achieve that:
+
+Extract the age_18 Column: Since you want to work with age_18 in the new dataframe, you can filter or select this column from the fixed_twenty_eighteen dataset.
+
+Create a Summary by Category: You can create summary statistics (like percentages) based on this column or any other categorical variables in the dataset.
+
+Here’s an example of how you could proceed in R:
+
+# Assuming fixed_twenty_eighteen is already loaded
+
+# Step 1: Extract the 'age_18' column from fixed_twenty_eighteen dataset
+age_18_data <- fixed_twenty_eighteen$age_18
+
+# Step 2: Create a summary table with percentages based on categories in age_18 (assuming it's categorical)
+summary_table <- as.data.frame(table(age_18_data))
+
+# Step 3: Calculate percentages
+summary_table$Percentage <- (summary_table$Freq / sum(summary_table$Freq)) * 100
+
+# Step 4: View the summary
+print(summary_table)
+
+# Step 5: Optionally, save this new dataframe to a CSV file if needed
+write.csv(summary_table, "path/to/your/new_summary_table.csv", row.names = FALSE)
+Key Steps in the Code:
+Extract age_18: The column age_18 is pulled directly from fixed_twenty_eighteen.
+Create Summary: The table() function creates a frequency table for the age_18 column, showing how often each category appears.
+Calculate Percentages: The frequency of each category is converted to a percentage using the formula (freq / total) * 100.
+Export (Optional): If you need to export this summary as a CSV file, you can save it with write.csv().
+This will create a summary of the age_18 categories in percentage terms, all while leaving the original dataset (twenty_eighteen_individual_analysis_data.csv) unchanged.
+
+
+
+
+
+
+You said:
+ok this is a really good start as i got:> # Step 4: View the summary
+> print(summary_table)
+   age_18_data Freq Percentage
+1           18    3  0.7425743
+2           19    3  0.7425743
+3           20    3  0.7425743
+4           21    2  0.4950495
+5           22    3  0.7425743
+6           23    3  0.7425743
+7           24   10  2.4752475
+8           25    6  1.4851485
+9           26    4  0.9900990
+10          27    6  1.4851485
+11          28    3  0.7425743
+12          29    7  1.7326733
+13          30   13  3.2178218
+14          31   12  2.9702970
+15          32   14  3.4653465
+16          33    9  2.2277228
+17          34    9  2.2277228
+18          35   10  2.4752475
+19          36   11  2.7227723
+20          37    3  0.7425743
+21          38   12  2.9702970
+22          39    4  0.9900990
+23          40   10  2.4752475
+24          41    9  2.2277228
+25          42    9  2.2277228
+26          43    9  2.2277228
+27          44   10  2.4752475
+28          45    4  0.9900990
+29          46    5  1.2376238
+30          47   10  2.4752475
+31          48    8  1.9801980
+32          49    6  1.4851485
+33          50    7  1.7326733
+34          51    6  1.4851485
+35          52    5  1.2376238
+36          53    8  1.9801980
+37          54    5  1.2376238
+38          55    9  2.2277228
+39          56    8  1.9801980
+40          57   10  2.4752475
+41          58   11  2.7227723
+42          59    4  0.9900990
+43          60    7  1.7326733
+44          61    6  1.4851485
+45          62    5  1.2376238
+46          63   10  2.4752475
+47          64    8  1.9801980
+48          65    9  2.2277228
+49          66    4  0.9900990
+50          67    7  1.7326733
+51          68    2  0.4950495
+52          69    4  0.9900990
+53          70   10  2.4752475
+54          71    1  0.2475248
+55          72    3  0.7425743
+56          73    4  0.9900990
+57          74    2  0.4950495
+58          75    5  1.2376238
+59          76    4  0.9900990
+60          77    2  0.4950495
+61          79    2  0.4950495
+62          81    1  0.2475248
+63          83    1  0.2475248
+64          85    1  0.2475248
+65          99    1  0.2475248
+66         107    1  0.2475248
+67         114    1  0.2475248. I do however want to take it a step further and  in summary_table, i want to group the age_18_data ( whole number numerical) values into categories of 18 to 23, 24 to 39, 40 to 55, and 56+. I dont need the second column "Freq". I do want the third column "percentage" however can we multiply this value by 100 and round to the nearest whole number please?
+
+2/2
+
+ChatGPT said:
+To group the age_18_data into the specified categories (18-23, 24-39, 40-55, 56+), and modify the percentage to be multiplied by 100 and rounded to the nearest whole number, you can follow these steps:
+
+Group the age_18_data into the specified age categories.
+Summarize the frequencies of each category.
+Calculate the percentages and multiply by 100.
+Round the percentage values.
+Remove the Freq column and keep only the percentage values.
+Here’s how you can do this in R:
+
+# Step 1: Create age categories based on the ranges you provided
+fixed_twenty_eighteen$age_group <- cut(fixed_twenty_eighteen$age_18, 
+                                       breaks = c(17, 23, 39, 55, Inf), 
+                                       labels = c("18-23", "24-39", "40-55", "56+"), 
+                                       right = TRUE)
+
+# Step 2: Create the summary table based on age groups
+summary_table <- as.data.frame(table(fixed_twenty_eighteen$age_group))
+
+# Step 3: Calculate the percentage for each age group and multiply by 100
+summary_table$Percentage <- (summary_table$Freq / sum(summary_table$Freq)) * 100
+
+# Step 4: Round the percentages to the nearest whole number
+summary_table$Percentage <- round(summary_table$Percentage)
+
+# Step 5: Keep only the age group and percentage columns
+summary_table <- summary_table[, c("age_group", "Percentage")]
+
+# Step 6: View the final summary table
+print(summary_table)
+
+# Step 7: Optionally, save the summary table to a new CSV file
+write.csv(summary_table, "path/to/your/age_group_summary.csv", row.names = FALSE)
+Explanation of the Key Steps:
+cut() function: This function is used to group the age_18 values into the specified ranges. We specify the breaks for the age categories (17, 23, 39, 55, Inf) and label them accordingly (18-23, 24-39, 40-55, 56+).
+
+table(): This counts how many values fall into each age category.
+
+Percentage Calculation: We divide the frequency of each group by the total number of records and then multiply by 100 to get the percentage.
+
+round(): The percentage values are rounded to the nearest whole number to match your request.
+
+Final Formatting: We select only the age group and percentage columns for the final output.
+
+Example Output:
+The final summary_table should look something like this:
+
+  age_group Percentage
+1     18-23         24
+2     24-39         35
+3     40-55         25
+4      56+          16
+This provides the desired age groupings and their corresponding percentage breakdowns, rounded to whole numbers.
+
+
+
+
+
+
+You said:
+> summary_table <- summary_table[, c("age_group", "Percentage")]
+Error in [.data.frame(summary_table, , c("age_group", "Percentage")) : 
+  undefined columns selected
+ChatGPT said:
+The error you're seeing typically occurs when the column names you're trying to select don't exist in the summary_table at that point. It seems like the age_group or Percentage columns might not have been created correctly before the subsetting step.
+
+Let’s troubleshoot and modify the code to ensure everything works step by step:
+
+Check the column names in summary_table after using the table() function.
+Create a new Percentage column if it was not correctly added.
+Here’s the revised code with additional checks to ensure the Percentage column is calculated correctly:
+
+# Step 1: Create age categories based on the ranges you provided
+fixed_twenty_eighteen$age_group <- cut(fixed_twenty_eighteen$age_18, 
+                                       breaks = c(17, 23, 39, 55, Inf), 
+                                       labels = c("18-23", "24-39", "40-55", "56+"), 
+                                       right = TRUE)
+
+# Step 2: Create the summary table based on age groups
+summary_table <- as.data.frame(table(fixed_twenty_eighteen$age_group))
+
+# Check the structure of summary_table to ensure it's correct
+str(summary_table)
+
+# Step 3: Rename the columns for clarity
+names(summary_table) <- c("age_group", "Freq")
+
+# Step 4: Calculate the percentage for each age group and multiply by 100
+summary_table$Percentage <- (summary_table$Freq / sum(summary_table$Freq)) * 100
+
+# Step 5: Round the percentages to the nearest whole number
+summary_table$Percentage <- round(summary_table$Percentage)
+
+# Step 6: Keep only the age group and percentage columns
+summary_table <- summary_table[, c("age_group", "Percentage")]
+
+# Step 7: View the final summary table
+print(summary_table)
+
+# Step 8: Optionally, save the summary table to a new CSV file
+write.csv(summary_table, "path/to/your/age_group_summary.csv", row.names = FALSE)
+Explanation of Updates:
+str(summary_table): This will display the structure of summary_table so you can verify that the columns are named correctly and that the data is in the right format.
+Renaming columns: After creating the summary table, we explicitly rename the columns to "age_group" and "Freq" for clarity before proceeding with the calculation of percentages.
+Final column selection: The code now correctly selects age_group and Percentage.
+Check the Output:
+Once the code runs, verify the output of the str(summary_table) and ensure that the column names are age_group and Freq. If everything looks correct, you should be able to create the desired summary without encountering the column selection error.
+
+
+
+
+
+
+You said:
+> # Check the structure of summary_table to ensure it's correct
+> str(summary_table)
+'data.frame':	4 obs. of  2 variables:
+ $ Var1: Factor w/ 4 levels "18-23","24-39",..: 1 2 3 4
+ $ Freq: int  17 133 120 134
+ChatGPT said:
+The structure of summary_table indicates that the column names aren't exactly as expected. Specifically, Var1 is the column representing age groups, and Freq is the frequency count. We’ll need to adjust the column names to ensure consistency, then proceed with calculating the percentages.
+
+Here's the corrected code to properly rename columns and calculate the percentages:
+
+# Step 1: Create the summary table with age groups
+summary_table <- as.data.frame(table(fixed_twenty_eighteen$age_group))
+
+# Step 2: Rename the columns for clarity
+names(summary_table) <- c("age_group", "Freq")
+
+# Step 3: Calculate the percentage for each age group and multiply by 100
+summary_table$Percentage <- (summary_table$Freq / sum(summary_table$Freq)) * 100
+
+# Step 4: Round the percentages to the nearest whole number
+summary_table$Percentage <- round(summary_table$Percentage)
+
+# Step 5: Keep only the age group and percentage columns
+summary_table <- summary_table[, c("age_group", "Percentage")]
+
+# Step 6: View the final summary table
+print(summary_table)
+
+# Step 7: Optionally, save the summary table to a new CSV file
+write.csv(summary_table, "path/to/your/age_group_summary.csv", row.names = FALSE)
+Explanation of Changes:
+Renaming columns: We renamed the first column (Var1) to age_group and left the Freq column as is.
+Calculating percentages: The percentage is calculated as (Freq / sum(Freq)) * 100 to get the proportion of each age group in relation to the total, then rounded to the nearest whole number.
+Selecting columns: The final summary_table will only contain the age_group and Percentage columns.
+Once you run this code, you should have a table with the age group categories and their corresponding percentages, rounded to whole numbers. Let me know how it works!
+
+
+
+
+
+
+You said:
+> # Keep only the age group and percentage columns
+> summary_table <- summary_table[, c("Age_Group", "Percentage")]
+Error in [.data.frame(summary_table, , c("Age_Group", "Percentage")) : 
+  undefined columns selected
+ChatGPT said:
+The error you're encountering indicates that the column names you're trying to reference ("Age_Group" and "Percentage") don't exist in the summary_table. Based on your previous output, the actual column names in your table are "age_group" (not "Age_Group") and "Percentage" should be correct if it was created properly in the earlier steps.
+
+Let's fix this issue by checking the exact column names in summary_table and making sure we reference them correctly. Here's an updated version of the code:
+
+# Check the exact column names in the summary_table
+names(summary_table)
+
+# Now select the correct columns (age_group and Percentage)
+summary_table <- summary_table[, c("age_group", "Percentage")]
+
+# View the final summary table
+print(summary_table)
+Steps:
+Check column names: The names(summary_table) will confirm the exact column names.
+Correct column selection: Use the correct column names (age_group and Percentage) as output from the names() function.
+After you run this, you should be able to select the correct columns without the error. Let me know how it goes!
+
+
+
+
+
+
+You said:
+How can i rename age_group to "Age Group" based on my code: ## 1. Age Summary ##
+
+## create age categories based on ranges in 2021 summary data
+fixed_twenty_eighteen$age_group <- cut(fixed_twenty_eighteen$age_18, 
+                                       breaks = c(17, 23, 39, 55, Inf), 
+                                       labels = c("18-23", "24-39", "40-55", "56+"), 
+                                       right = TRUE)
+
+# Create the summary table based on age groups
+summary_table <- as.data.frame(table(fixed_twenty_eighteen$age_group))
+
+# Check the structure of summary_table to ensure it's correct
+str(summary_table)
+
+# Rename the columns for clarity
+names(summary_table) <- c(" Age Group", "Freq")
+
+# Calculate the percentage for each age group and multiply by 100
+summary_table$Percentage <- (summary_table$Freq / sum(summary_table$Freq)) * 100
+
+# Round the percentages to the nearest whole number
+summary_table$Percentage <- round(summary_table$Percentage)
+
+# Keep only the age group and percentage columns
+summary_table <- summary_table[, c("Age Group", "Percentage")]
+
+# Step 6: View the final summary table
+print(summary_table)
+ChatGPT said:
+To rename the age_group column to "Age Group" in your summary_table, you can simply use the names() function to set the new name for the first column after you create the summary table. From your code, it seems you've already attempted to rename the columns, but there is a small issue with the syntax. Here's how to correctly rename the columns and proceed with the rest of the process:
+
+Updated code:
+## 1. Age Summary ##
+
+## Create age categories based on ranges in 2021 summary data
+fixed_twenty_eighteen$age_group <- cut(fixed_twenty_eighteen$age_18, 
+                                       breaks = c(17, 23, 39, 55, Inf), 
+                                       labels = c("18-23", "24-39", "40-55", "56+"), 
+                                       right = TRUE)
+
+# Create the summary table based on age groups
+summary_table <- as.data.frame(table(fixed_twenty_eighteen$age_group))
+
+# Check the structure of summary_table to ensure it's correct
+str(summary_table)
+
+# Rename the columns for clarity
+names(summary_table) <- c("age_group", "Freq")
+
+# Calculate the percentage for each age group and multiply by 100
+summary_table$Percentage <- (summary_table$Freq / sum(summary_table$Freq)) * 100
+
+# Round the percentages to the nearest whole number
+summary_table$Percentage <- round(summary_table$Percentage)
+
+# Rename the 'age_group' column to 'Age Group' after creating the summary table
+names(summary_table)[1] <- "Age Group"
+
+# Keep only the age group and percentage columns
+summary_table <- summary_table[, c("Age Group", "Percentage")]
+
+# Step 6: View the final summary table
+print(summary_table)
+Key points:
+Renaming the first column: After creating the summary table (summary_table), I renamed the first column to "Age Group" using names(summary_table)[1] <- "Age Group".
+Percentage calculation: The percentage calculation part is kept the same as you originally had it.
+Selecting columns: Only the "Age Group" and "Percentage" columns are selected for the final table.
+This should work without the error you encountered. Let me know if it helps!
+
+
+
+
+
+
+You said:
+Ok so this code works but wondering if we can be more efficient so there is less code. no worries if not but just thought i would ask : ## 1. Age Summary ##
+
+## create age categories based on ranges in 2021 summary data
+fixed_twenty_eighteen$age_group <- cut(fixed_twenty_eighteen$age_18, 
+                                       breaks = c(17, 23, 39, 55, Inf), 
+                                       labels = c("18-23", "24-39", "40-55", "56+"), 
+                                       right = TRUE)
+
+# Create the summary table based on age groups
+summary_table <- as.data.frame(table(fixed_twenty_eighteen$age_group))
+
+# Check the structure of summary_table to ensure it's correct
+str(summary_table)
+
+# Rename the columns for clarity
+names(summary_table) <- c("age_group", "Freq")
+
+# Calculate the percentage for each age group and multiply by 100
+summary_table$Percentage <- (summary_table$Freq / sum(summary_table$Freq)) * 100
+
+# Round the percentages to the nearest whole number
+summary_table$Percentage <- round(summary_table$Percentage)
+
+# Rename the 'age_group' column to 'Age Group' after creating the summary table
+names(summary_table)[1] <- "Age Group"
+
+# Keep only the age group and percentage columns
+summary_table <- summary_table[, c("Age Group", "Percentage")]
+
+# Step 6: View the final summary table
+print(summary_table)
+ChatGPT said:
+Yes, you can streamline the code a bit to reduce repetition and improve efficiency. Here's a more concise version:
+
+## 1. Age Summary ##
+
+## Create age categories based on ranges in 2021 summary data and summarize directly
+summary_table <- as.data.frame(table(cut(fixed_twenty_eighteen$age_18, 
+                                         breaks = c(17, 23, 39, 55, Inf), 
+                                         labels = c("18-23", "24-39", "40-55", "56+"), 
+                                         right = TRUE)))
+
+# Rename columns and calculate the percentage
+names(summary_table) <- c("Age Group", "Freq")
+summary_table$Percentage <- round((summary_table$Freq / sum(summary_table$Freq)) * 100)
+
+# Keep only the age group and percentage columns
+summary_table <- summary_table[, c("Age Group", "Percentage")]
+
+# Step 6: View the final summary table
+print(summary_table)
+Key Improvements:
+Direct summary creation: We directly create the summary_table with the cut function wrapped inside table(), which removes the need to create fixed_twenty_eighteen$age_group separately.
+Column renaming and percentage calculation: The renaming and percentage calculation are done in fewer steps.
+Reduced intermediate steps: Removed the str(summary_table) step and unnecessary variable assignments.
+This version is more compact and efficient while keeping the functionality intact. Let me know if that works for you!
+
+
+
+
+
+
+You said:
+brilliant. i want to do a similar thing for education level summary. education levels are already categorized so we just need to delete freq and create percentage and save it as education_summary_18
+ChatGPT said:
+Great! To create a summary for education levels, where you delete the "Freq" column and calculate the percentage for each education level, you can follow a similar approach. Here's the streamlined code for the education level summary:
+
+## 2. Education Level Summary ##
+
+# Create the summary table based on education levels
+education_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$education_level))
+
+# Rename columns and calculate the percentage
+names(education_summary_18) <- c("Education Level", "Freq")
+education_summary_18$Percentage <- round((education_summary_18$Freq / sum(education_summary_18$Freq)) * 100)
+
+# Keep only the education level and percentage columns
+education_summary_18 <- education_summary_18[, c("Education Level", "Percentage")]
+
+# Step 6: View the final education summary table
+print(education_summary_18)
+Explanation:
+Create Summary Table: Using table() on education_level to generate the count for each category.
+Renaming Columns: The columns are renamed to "Education Level" and "Freq".
+Percentage Calculation: The percentage is calculated by dividing the frequency by the total sum and then multiplying by 100. The result is rounded to the nearest whole number.
+Keep Only Relevant Columns: We retain only the "Education Level" and "Percentage" columns.
+This code will generate the summary for education levels similar to the age summary, and it will save the output as education_summary_18. Let me know if you need any further adjustments!
+
+
+
+
+
+
+You said:
+and now for informed summary? column header is "extent_consider_informed_18", save it as informed_summary_18. the categories are already there. 
+ChatGPT said:
+To create the summary for the extent_consider_informed_18 column, similar to how we handled the age and education summaries, we can follow this process:
+
+Here’s the streamlined code for the informed_summary_18:
+
+## 3. Informed Summary ##
+
+# Create the summary table based on the informed extent categories
+informed_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$extent_consider_informed_18))
+
+# Rename columns and calculate the percentage
+names(informed_summary_18) <- c("Informed Level", "Freq")
+informed_summary_18$Percentage <- round((informed_summary_18$Freq / sum(informed_summary_18$Freq)) * 100)
+
+# Keep only the informed level and percentage columns
+informed_summary_18 <- informed_summary_18[, c("Informed Level", "Percentage")]
+
+# Step 6: View the final informed summary table
+print(informed_summary_18)
+Explanation:
+Create Summary Table: We generate a table based on the extent_consider_informed_18 column using table().
+Renaming Columns: The columns are renamed to "Informed Level" and "Freq" to make it clearer.
+Percentage Calculation: The percentage is calculated by dividing the frequency for each category by the total number of observations, then multiplying by 100. The result is rounded to the nearest whole number.
+Keep Only Relevant Columns: We keep only the "Informed Level" and "Percentage" columns.
+This will produce the summary of the extent_consider_informed_18 categories, calculating the percentages, and save the output as informed_summary_18. Let me know if you'd like any changes!
+
+
+
+
+
+
+You said:
+and now for likelihood action summary. column header begins with "likelihood_action", save it as likelihood_summary_18. 
+ChatGPT said:
+For the likelihood_action summary, we can follow the same approach as before. Here's how you can create the likelihood_summary_18:
+
+## 4. Likelihood Action Summary ##
+
+# Create the summary table based on the likelihood action categories
+likelihood_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$likelihood_action_18))
+
+# Rename columns and calculate the percentage
+names(likelihood_summary_18) <- c("Likelihood of Action", "Freq")
+likelihood_summary_18$Percentage <- round((likelihood_summary_18$Freq / sum(likelihood_summary_18$Freq)) * 100)
+
+# Keep only the likelihood of action and percentage columns
+likelihood_summary_18 <- likelihood_summary_18[, c("Likelihood of Action", "Percentage")]
+
+# Step 6: View the final likelihood summary table
+print(likelihood_summary_18)
+Explanation:
+Create Summary Table: We use table() to create a summary of the likelihood_action_18 column.
+Renaming Columns: We rename the columns to "Likelihood of Action" and "Freq" for clarity.
+Percentage Calculation: The percentage is calculated by dividing the frequency of each category by the total sum and multiplying by 100. The result is rounded to the nearest whole number.
+Select Relevant Columns: We keep only the "Likelihood of Action" and "Percentage" columns.
+This will give you the likelihood action summary and save it as likelihood_summary_18. Let me know if you need any further adjustments!
+
+
+
+
+
+
+You said:
+> # Create the summary table based on the likelihood action categories
+> likelihood_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$likelihood_action_18))
+Warning message:
+Unknown or uninitialised column: likelihood_action_18. 
+> 
+> # Rename columns and calculate the percentage
+> names(likelihood_summary_18) <- c("Likelihood of Action", "Freq")
+Error in names(likelihood_summary_18) <- c("Likelihood of Action", "Freq") : 
+  'names' attribute [2] must be the same length as the vector [1]
+> 
+ChatGPT said:
+It seems that the column likelihood_action_18 does not exist in your dataset or it may have a different name. To troubleshoot this, we can:
+
+Check for the correct column name: Verify the exact column name in the fixed_twenty_eighteen dataset.
+Fix the column name: If the column name is different or contains typos, we can correct it.
+Steps:
+Check the column names of your dataset: Run this command to see all the column names and check if likelihood_action_18 is present:
+
+colnames(fixed_twenty_eighteen)
+If the column name is different: If you find that the name is slightly different (e.g., it's spelled differently or has extra spaces), update the code with the correct column name.
+
+Update the table creation code: Once you've identified the correct column, use it in the table() function.
+
+Updated Code After Verifying Column Name:
+For example, if the column name is likelihood_action_2018 instead of likelihood_action_18, update the code accordingly:
+
+# Correct column name (assuming the column name is 'likelihood_action_2018')
+likelihood_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$likelihood_action_2018))
+
+# Rename columns and calculate the percentage
+names(likelihood_summary_18) <- c("Likelihood of Action", "Freq")
+likelihood_summary_18$Percentage <- round((likelihood_summary_18$Freq / sum(likelihood_summary_18$Freq)) * 100)
+
+# Keep only the likelihood of action and percentage columns
+likelihood_summary_18 <- likelihood_summary_18[, c("Likelihood of Action", "Percentage")]
+
+# Step 6: View the final likelihood summary table
+print(likelihood_summary_18)
+If you still encounter an issue after confirming the column name, feel free to share the column names or a snippet of the data, and I can help further!
+
+
+
+
+
+
+You said:
+youre right, there is no column that says "likelihood_action_18", instead there are several columns that start with "likelihood_action" 
+ChatGPT said:
+Thanks for the clarification! If there are several columns starting with "likelihood_action", you'll need to identify which specific column you're interested in (e.g., "likelihood_action_18" might be part of a larger series of columns).
+
+To handle this, you can do the following:
+
+Identify the relevant column: List all the columns starting with "likelihood_action" to check which one is the correct column for your summary.
+Step 1: List columns starting with "likelihood_action"
+You can use the grep() function to identify the column names that start with "likelihood_action":
+
+# List all columns that start with 'likelihood_action'
+grep("^likelihood_action", colnames(fixed_twenty_eighteen), value = TRUE)
+This will return the names of all columns that start with "likelihood_action", allowing you to identify the one you're interested in.
+
+Step 2: Create the summary for the relevant column
+Once you identify the correct column, let's assume it is something like "likelihood_action_18". You can then follow the same steps as before to create the summary table.
+
+For example:
+
+# Assuming the relevant column is 'likelihood_action_18'
+likelihood_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$likelihood_action_18))
+
+# Rename columns and calculate the percentage
+names(likelihood_summary_18) <- c("Likelihood of Action", "Freq")
+likelihood_summary_18$Percentage <- round((likelihood_summary_18$Freq / sum(likelihood_summary_18$Freq)) * 100)
+
+# Keep only the likelihood of action and percentage columns
+likelihood_summary_18 <- likelihood_summary_18[, c("Likelihood of Action", "Percentage")]
+
+# Step 6: View the final likelihood summary table
+print(likelihood_summary_18)
+Step 3: Handling multiple columns (if needed)
+If you need to create summaries for multiple "likelihood_action" columns, you can loop through them in a similar manner.
+
+# Example for summarizing multiple likelihood_action columns
+likelihood_columns <- grep("^likelihood_action", colnames(fixed_twenty_eighteen), value = TRUE)
+
+# Create a list to store summaries
+likelihood_summaries <- list()
+
+# Loop through each column and create summary
+for (col in likelihood_columns) {
+  summary_table <- as.data.frame(table(fixed_twenty_eighteen[[col]]))
+  names(summary_table) <- c("Likelihood of Action", "Freq")
+  summary_table$Percentage <- round((summary_table$Freq / sum(summary_table$Freq)) * 100)
+  summary_table <- summary_table[, c("Likelihood of Action", "Percentage")]
+  
+  # Store the summary in the list
+  likelihood_summaries[[col]] <- summary_table
+}
+
+# Example: view the summary for one of the columns
+print(likelihood_summaries[[1]])  # Change the index to view other summaries
+This way, you can efficiently summarize all the relevant "likelihood_action" columns. Let me know if you need further assistance!
+
+
+
+
+
+
+You said:
+So what i am hoping to achieve is a table with different actions represented by several different columns that all start with "likelihood_action". Addtionally i want the associated categories describing how likely people are to complete this action ( these are the rows) which include "Already doing this or have done this, Very likely , Somewhat likely , Somewhat unlikely , Very unlikely". Then i want there to be another column indicating the percentage. is that clear?
+ChatGPT said:
+Yes, it's clear now! You want to create a summary table that consolidates multiple columns starting with "likelihood_action" into one table. Each row will represent a likelihood category (e.g., "Already doing this or have done this," "Very likely," etc.), and each column will correspond to a specific action. The table will also include a percentage column for each likelihood category within each action.
+
+Here's how we can achieve that:
+
+Steps:
+Identify the columns that start with "likelihood_action".
+Summarize each column to get the frequency of each likelihood category.
+Calculate the percentage for each category.
+Combine all the summaries into a single table with actions as columns and likelihood categories as rows.
+Code:
+# Step 1: Identify all columns that start with 'likelihood_action'
+likelihood_columns <- grep("^likelihood_action", colnames(fixed_twenty_eighteen), value = TRUE)
+
+# Step 2: Create an empty data frame to store the combined summary
+combined_likelihood_summary <- data.frame()
+
+# Step 3: Loop through each likelihood_action column, summarize, and combine
+for (col in likelihood_columns) {
+  
+  # Create a summary table for each column
+  summary_table <- as.data.frame(table(fixed_twenty_eighteen[[col]]))
+  
+  # Rename columns for clarity
+  names(summary_table) <- c("Likelihood", "Freq")
+  
+  # Calculate the percentage
+  summary_table$Percentage <- round((summary_table$Freq / sum(summary_table$Freq)) * 100)
+  
+  # Add a new column indicating the action name
+  summary_table$Action <- col
+  
+  # Append the summary table to the combined table
+  combined_likelihood_summary <- rbind(combined_likelihood_summary, summary_table)
+}
+
+# Step 4: Reorder columns for clarity (Action, Likelihood, Percentage)
+combined_likelihood_summary <- combined_likelihood_summary[, c("Action", "Likelihood", "Percentage")]
+
+# View the final combined summary table
+print(combined_likelihood_summary)
+Explanation:
+grep("^likelihood_action", colnames(fixed_twenty_eighteen), value = TRUE): Finds all columns that start with "likelihood_action".
+table(): Creates a frequency table for each likelihood category in each column.
+round((Freq / sum(Freq)) * 100): Calculates the percentage for each likelihood category.
+rbind(): Combines the individual summary tables into one.
+Output Structure:
+Action	Likelihood	Percentage
+likelihood_action_1	Already doing this or have done this	25
+likelihood_action_1	Very likely	30
+likelihood_action_1	Somewhat likely	20
+likelihood_action_1	Somewhat unlikely	15
+likelihood_action_1	Very unlikely	10
+likelihood_action_2	Already doing this or have done this	40
+likelihood_action_2	Very likely	25
+likelihood_action_2	Somewhat likely	15
+likelihood_action_2	Somewhat unlikely	10
+likelihood_action_2	Very unlikely	10
+Optional: Pivot Table (if you want actions as columns and likelihood categories as rows)
+If you'd prefer a pivoted version where actions are in columns and likelihood categories are in rows, you can use tidyr to reshape the data:
+
+# Install and load tidyr if not already installed
+# install.packages("tidyr")
+library(tidyr)
+
+# Pivot the table to have Actions as columns and Likelihood as rows
+pivot_summary <- combined_likelihood_summary %>%
+  pivot_wider(names_from = Action, values_from = Percentage)
+
+# View the pivoted summary table
+print(pivot_summary)
+This will give you a table like this:
+
+Likelihood	likelihood_action_1	likelihood_action_2	likelihood_action_3
+Already doing this or have done this	25	40	30
+Very likely	30	25	35
+Somewhat likely	20	15	20
+Somewhat unlikely	15	10	10
+Very unlikely	10	10	5
+Let me know if this is what you had in mind or if you need any adjustments!
+
+
+
+
+
+
+You said:
+i want to save this table as likelihood_summary_18 please and i like the pivot table. please provide full code. 
+
+2/2
+
+ChatGPT said:
+Got it! Here's the full code to create the likelihood summary table, pivot it, and save it as likelihood_summary_18.
+
+# Load necessary package
+library(tidyr)
+
+# Step 1: Identify all columns that start with 'likelihood_action'
+likelihood_columns <- grep("^likelihood_action", colnames(fixed_twenty_eighteen), value = TRUE)
+
+# Step 2: Create an empty data frame to store the combined summary
+combined_likelihood_summary <- data.frame()
+
+# Step 3: Loop through each likelihood_action column, summarize, and combine
+for (col in likelihood_columns) {
+  
+  # Create a summary table for each column
+  summary_table <- as.data.frame(table(fixed_twenty_eighteen[[col]]))
+  
+  # Rename columns for clarity
+  names(summary_table) <- c("Likelihood", "Freq")
+  
+  # Calculate the percentage
+  summary_table$Percentage <- round((summary_table$Freq / sum(summary_table$Freq)) * 100)
+  
+  # Add a new column indicating the action name
+  summary_table$Action <- col
+  
+  # Append the summary table to the combined table
+  combined_likelihood_summary <- rbind(combined_likelihood_summary, summary_table)
+}
+
+# Step 4: Reorder columns for clarity (Action, Likelihood, Percentage)
+combined_likelihood_summary <- combined_likelihood_summary[, c("Action", "Likelihood", "Percentage")]
+
+# Step 5: Pivot the table to have Actions as columns and Likelihood categories as rows
+likelihood_summary_18 <- combined_likelihood_summary %>%
+  pivot_wider(names_from = Action, values_from = Percentage)
+
+# Step 6: View the final pivoted summary table
+print(likelihood_summary_18)
+
+# Step 7: Save the table as likelihood_summary_18 (optional if saving as a CSV)
+write.csv(likelihood_summary_18, "likelihood_summary_18.csv", row.names = FALSE)
+Explanation:
+grep("^likelihood_action", colnames(...)): Finds all columns that start with "likelihood_action".
+table(): Summarizes the frequency of each likelihood category in each column.
+rbind(): Combines all individual summaries into one table.
+pivot_wider(): Reshapes the table so that actions are columns and likelihood categories are rows.
+write.csv(): Saves the pivoted summary table as a CSV file named likelihood_summary_18.csv. You can change the file path if needed.
+Let me know if you need further adjustments!
+
+
+
+
+
+
+You said:
+> likelihood_summary_18 <- combined_likelihood_summary %>%
++   pivot_wider(names_from = Action, values_from = Percentage)
+Error in combined_likelihood_summary %>% pivot_wider(names_from = Action,  : 
+  could not find function "%>%"
+>
+ChatGPT said:
+The error indicates that the pipe operator (%>%) and the pivot_wider() function are not available because the necessary library isn't loaded. These functions are part of the tidyverse or dplyr and tidyr packages.
+
+You can fix this by loading the necessary library first:
+
+# Load the required libraries
+library(dplyr)
+library(tidyr)
+
+# Create the likelihood summary table and pivot it
+likelihood_summary_18 <- combined_likelihood_summary %>%
+  pivot_wider(names_from = Action, values_from = Percentage)
+
+# View the final pivoted summary table
+print(likelihood_summary_18)
+
+# Save the table as likelihood_summary_18 (optional if saving as a CSV)
+write.csv(likelihood_summary_18, "likelihood_summary_18.csv", row.names = FALSE)
+Explanation:
+library(dplyr): Loads the package that provides the pipe operator (%>%).
+library(tidyr): Loads the package that provides the pivot_wider() function.
+Let me know if you need further clarification!
+
+
+
+
+
+
+You said:
+can you do the same for the reasons summary. save it as reasons_summary_18. in the fixed_twenty_eighteen data, these columns begin with "unlikelihood_action". categories include either a "yes" or "no" indicating whether people are unlikely to take the action. i want to include a percentage column to illustrate how much of the sample would (yes) and would not (no) take the specific action. 
+
+2/2
+
+ChatGPT said:
+Here is the code to create a summary table for columns starting with "unlikelihood_action", showing how many people responded "yes" or "no" for each action, along with the percentage of responses. The table will be saved as reasons_summary_18 and will be pivoted for a cleaner format.
+
+Full Code:
+# Load necessary libraries
+library(dplyr)
+library(tidyr)
+
+# Step 1: Filter columns that start with "unlikelihood_action"
+reasons_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action"))
+
+# Step 2: Create a summary table by gathering all actions into a long format
+reasons_summary_18 <- reasons_columns %>%
+  pivot_longer(cols = everything(), names_to = "Reason", values_to = "Response") %>%
+  group_by(Reason, Response) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Percentage = round((Freq / sum(Freq)) * 100, 1))  # Calculate percentage
+
+# Step 3: Pivot the table to display reasons as columns and "Yes"/"No" percentages as rows
+reasons_summary_18 <- reasons_summary_18 %>%
+  pivot_wider(names_from = Reason, values_from = Percentage, values_fill = 0)
+
+# Step 4: View the final summary table
+print(reasons_summary_18)
+
+# Step 5: Save the table as a CSV (optional)
+write.csv(reasons_summary_18, "reasons_summary_18.csv", row.names = FALSE)
+Explanation:
+select(starts_with("unlikelihood_action")): Selects all columns that begin with "unlikelihood_action".
+pivot_longer(): Converts the wide format (multiple columns) into a long format for easier summarization.
+group_by(): Groups by each action (Reason) and the corresponding Response ("Yes" or "No").
+summarise(Freq = n()): Counts the frequency of each response.
+mutate(Percentage = round((Freq / sum(Freq)) * 100, 1)): Calculates the percentage for each response.
+pivot_wider(): Converts the long format back into a wide format for better readability, showing actions and percentages side by side.
+This code will create a clean and easy-to-read summary for your "unlikelihood_action" reasons, showing both Yes and No responses with their percentages.
+
+
+
+
+
+
+You said:
+i dont like the way the table is displaying. I think that i would like the first column to layout the actions in each row going down. second column header would be yes and third would be no. thus rows in second and third columns are percentages. Does that make sense and sound reasonable?
+ChatGPT said:
+Yes, that makes perfect sense! You're looking for a table where:
+
+The first column lists each action (e.g., unlikelihood_action_X).
+The second column shows the percentage of people who responded "Yes" for each action.
+The third column shows the percentage of people who responded "No" for each action.
+This layout will make it easy to compare the percentage of "Yes" and "No" responses for each action.
+
+Here’s the updated code to achieve that:
+# Load necessary libraries
+library(dplyr)
+library(tidyr)
+
+# Step 1: Filter columns that start with "unlikelihood_action"
+reasons_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action"))
+
+# Step 2: Create a summary table by gathering all actions into a long format
+reasons_summary_18 <- reasons_columns %>%
+  pivot_longer(cols = everything(), names_to = "Reason", values_to = "Response") %>%
+  group_by(Reason, Response) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Percentage = round((Freq / sum(Freq)) * 100, 1))  # Calculate percentage
+
+# Step 3: Pivot the table to display "Yes" and "No" percentages side by side
+reasons_summary_18 <- reasons_summary_18 %>%
+  pivot_wider(names_from = Response, values_from = Percentage, values_fill = 0) %>%
+  rename(Yes = `Yes`, No = `No`)
+
+# Step 4: Arrange columns for a cleaner display
+reasons_summary_18 <- reasons_summary_18 %>%
+  select(Reason, Yes, No)
+
+# Step 5: View the final summary table
+print(reasons_summary_18)
+
+# Step 6: Save the table as a CSV (optional)
+write.csv(reasons_summary_18, "reasons_summary_18.csv", row.names = FALSE)
+Explanation of Changes:
+pivot_wider(names_from = Response, values_from = Percentage, values_fill = 0): Transforms the long table into a wide format where "Yes" and "No" are separate columns.
+rename(Yes = \Yes`, No = `No`)`: Ensures the column names are properly labeled as "Yes" and "No."
+select(Reason, Yes, No): Orders the columns as Reason (actions) in the first column, followed by Yes and No percentages.
+Example Output:
+Reason	Yes	No
+unlikelihood_action_X	45.5	54.5
+unlikelihood_action_Y	30.0	70.0
+unlikelihood_action_Z	20.0	80.0
+Let me know if you need further customization!
+
+
+
+
+
+
+You said:
+can i represent it as similarly to ## 2. Education Level Summary ##
+
+# Create the summary table based on education levels
+education_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$highest_level_educ_18))
+
+# Rename columns and calculate the percentage
+names(education_summary_18) <- c("Education Level", "Freq")
+education_summary_18$Percentage <- round((education_summary_18$Freq / sum(education_summary_18$Freq)) * 100)
+
+# Keep only the education level and percentage columns
+education_summary_18 <- education_summary_18[, c("Education Level", "Percentage")]
+
+# View the final education summary table
+print(education_summary_18), can you write the code for communication summary. save it as communication_summary_18. In the fixed_twenty_eighteen dataset, the column I want starts with "delivery_method". I want the sample percentage too. no frequency
+ChatGPT said:
+Got it! Here's how you can create a communication summary based on the "delivery_method" columns in your dataset, following the same structure as your education summary:
+
+# Load necessary libraries
+library(dplyr)
+
+# Step 1: Filter columns that start with "delivery_method"
+communication_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("delivery_method"))
+
+# Step 2: Convert to long format to aggregate all delivery methods
+communication_summary_18 <- communication_columns %>%
+  pivot_longer(cols = everything(), names_to = "Communication Method", values_to = "Count") %>%
+  group_by(`Communication Method`) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Percentage = round((Freq / sum(Freq)) * 100, 1))  # Calculate percentage
+
+# Step 3: Keep only the communication method and percentage columns
+communication_summary_18 <- communication_summary_18[, c("Communication Method", "Percentage")]
+
+# Step 4: View the final communication summary table
+print(communication_summary_18)
+
+# Step 5: Save the table as a CSV (optional)
+write.csv(communication_summary_18, "communication_summary_18.csv", row.names = FALSE)
+Breakdown of Code:
+select(starts_with("delivery_method")): Filters only the columns that start with "delivery_method".
+pivot_longer(): Converts the data from wide to long format for easier summarization.
+group_by() and summarise(): Aggregates the data by communication method and calculates the frequency and percentage.
+mutate(): Computes the percentage for each communication method and rounds it to one decimal place.
+communication_summary_18[, c("Communication Method", "Percentage")]: Keeps only the relevant columns in the final table.
+Example Output:
+Communication Method	Percentage
+delivery_method_email	35.5
+delivery_method_phone	45.0
+delivery_method_in_person	19.5
+Let me know if this works for you!
+
+
+
+
+
+
+You said:
+can you adjust the table to have percent that said "no" vs "yes". so we need two percentage columns
+
+2/2
+
+ChatGPT said:
+Got it! Here's how you can create a communication summary table with two percentage columns: one for Yes and one for No, based on whether respondents preferred each communication method.
+
+Full Code:
+# Load necessary libraries
+library(dplyr)
+library(tidyr)
+
+# Step 1: Filter columns that start with "delivery_method"
+communication_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("delivery_method"))
+
+# Step 2: Convert to long format to aggregate all delivery methods
+communication_summary_18 <- communication_columns %>%
+  pivot_longer(cols = everything(), names_to = "Communication Method", values_to = "Response") %>%
+  group_by(`Communication Method`, Response) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Total = sum(Freq), .by = `Communication Method`) %>%
+  mutate(Percentage = round((Freq / Total) * 100, 1))
+
+# Step 3: Pivot the data wider to have separate columns for "Yes" and "No" percentages
+communication_summary_18 <- communication_summary_18 %>%
+  pivot_wider(names_from = Response, values_from = Percentage, values_fill = 0) %>%
+  rename(`Yes (%)` = Yes, `No (%)` = No)
+
+# Step 4: Keep only the communication method and percentage columns
+communication_summary_18 <- communication_summary_18[, c("Communication Method", "Yes (%)", "No (%)")]
+
+# Step 5: View the final communication summary table
+print(communication_summary_18)
+
+# Step 6: Save the table as a CSV (optional)
+write.csv(communication_summary_18, "communication_summary_18.csv", row.names = FALSE)
+Breakdown of Code:
+select(starts_with("delivery_method")): Selects all columns that start with "delivery_method."
+pivot_longer(): Converts the data from wide to long format for easy aggregation.
+group_by() and summarise(): Groups by communication method and response (Yes/No) and calculates the frequency.
+mutate(Total = sum(Freq)): Calculates the total responses (Yes + No) for each communication method.
+pivot_wider(): Converts the long format table to a wide format with separate columns for "Yes" and "No."
+rename(): Renames the columns to make them clearer (Yes (%), No (%)).
+write.csv(): (Optional) Saves the final table as a CSV file.
+Example Output:
+Communication Method	Yes (%)	No (%)
+delivery_method_email	60.0	40.0
+delivery_method_phone	45.5	54.5
+delivery_method_in_person	30.0	70.0
+Let me know if this format works for you!
+
+
+
+
+
+
+You said:
+can you adjust this so that percentages are shown as whole numbers and then provide full code
+
+2/2
+
+ChatGPT said:
+Certainly! Here's the updated version of the code where the percentages are rounded to whole numbers:
+
+Full Code:
+# Load necessary libraries
+library(dplyr)
+library(tidyr)
+
+# Step 1: Filter columns that start with "delivery_method"
+communication_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("delivery_method"))
+
+# Step 2: Convert to long format to aggregate all delivery methods
+communication_summary_18 <- communication_columns %>%
+  pivot_longer(cols = everything(), names_to = "Communication Method", values_to = "Response") %>%
+  group_by(`Communication Method`, Response) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Total = sum(Freq), .by = `Communication Method`) %>%
+  mutate(Percentage = round((Freq / Total) * 100))
+
+# Step 3: Pivot the data wider to have separate columns for "Yes" and "No" percentages
+communication_summary_18 <- communication_summary_18 %>%
+  pivot_wider(names_from = Response, values_from = Percentage, values_fill = 0) %>%
+  rename(`Yes (%)` = Yes, `No (%)` = No)
+
+# Step 4: Round the percentages to whole numbers
+communication_summary_18$`Yes (%)` <- round(communication_summary_18$`Yes (%)`)
+communication_summary_18$`No (%)` <- round(communication_summary_18$`No (%)`)
+
+# Step 5: Keep only the communication method and percentage columns
+communication_summary_18 <- communication_summary_18[, c("Communication Method", "Yes (%)", "No (%)")]
+
+# Step 6: View the final communication summary table
+print(communication_summary_18)
+
+# Step 7: Save the table as a CSV (optional)
+write.csv(communication_summary_18, "communication_summary_18.csv", row.names = FALSE)
+Key Adjustments:
+round() for percentages: After calculating the percentage for each "Yes" and "No" response, the percentages are rounded to whole numbers using round().
+Output Table: Now the percentages in the "Yes (%)" and "No (%)" columns will be shown as whole numbers.
+Example Output:
+Communication Method	Yes (%)	No (%)
+delivery_method_email	60	40
+delivery_method_phone	46	54
+delivery_method_in_person	30	70
+Let me know if this works for your needs!
+
+
+
+
+
+
+You said:
+just kidding, i've changed my mind, please only keep the yes %. change the percentage column "Yes(%)" to simply "Percentage" as opposed to both the yes and no percentage. to clarify i want a communication method column and a Percentage column please :)
+
+3/3
+
+ChatGPT said:
+No problem! Here's the updated code that will only keep the "Yes (%)" column, renamed to "Percentage", and remove the "No (%)" column.
+
+Full Code:
+# Load necessary libraries
+library(dplyr)
+library(tidyr)
+
+# Step 1: Filter columns that start with "delivery_method"
+communication_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("delivery_method"))
+
+# Step 2: Convert to long format to aggregate all delivery methods
+communication_summary_18 <- communication_columns %>%
+  pivot_longer(cols = everything(), names_to = "Communication Method", values_to = "Response") %>%
+  group_by(`Communication Method`, Response) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Total = sum(Freq), .by = `Communication Method`) %>%
+  mutate(Percentage = round((Freq / Total) * 100))
+
+# Step 3: Keep only the "Yes" responses and rename the "Yes (%)" column
+communication_summary_18 <- communication_summary_18 %>%
+  filter(Response == "Yes") %>%
+  select(`Communication Method`, Percentage)
+
+# Step 4: Rename the percentage column to "Percentage"
+colnames(communication_summary_18)[2] <- "Percentage"
+
+# Step 5: View the final communication summary table
+print(communication_summary_18)
+
+# Step 6: Save the table as a CSV (optional)
+write.csv(communication_summary_18, "communication_summary_18.csv", row.names = FALSE)
+Key Adjustments:
+Removed "No (%)" column: The "No (%)" column is excluded.
+Renamed "Yes (%)" to "Percentage": The column now simply shows the percentage of "Yes" responses.
+Only "Yes" responses: The filter(Response == "Yes") ensures that only the "Yes" percentage is kept for each communication method.
+Example Output:
+Communication Method	Percentage
+delivery_method_email	60
+delivery_method_phone	46
+delivery_method_in_person	30
+Let me know if this works for you!
+
+
+
+
+
+
+You said:
+how do i get a list of all the columns that start with "unlikelihood_action" in the fixed_twenty_eighteen
+ChatGPT said:
+To get a list of all the columns in your fixed_twenty_eighteen dataset that start with "unlikelihood_action", you can use the grep function in R. Here's the code to do that:
+
+# Get a list of all columns that start with "unlikelihood_action"
+unlikelihood_columns <- grep("^unlikelihood_action", names(fixed_twenty_eighteen), value = TRUE)
+
+# View the list of columns
+print(unlikelihood_columns)
+Explanation:
+grep("^unlikelihood_action", ...) searches for columns that start with "unlikelihood_action". The caret ^ ensures that the match is at the start of the column name.
+names(fixed_twenty_eighteen) gets the column names from the dataset.
+value = TRUE ensures that grep returns the matching column names, not just their indices.
+This will print the names of all columns that start with "unlikelihood_action". Let me know if you need any further adjustments!
+
+
+
+
+
+
+You said:
+Ok so i am trying to fix this ## 5. Reasons Summary ##
+
+# Filter columns that start with "unlikelihood_action"
+reasons_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action"))
+
+# Create a summary table by gathering all actions into a long format
+reasons_summary_18 <- reasons_columns %>%
+  pivot_longer(cols = everything(), names_to = "Reason", values_to = "Response") %>%
+  group_by(Reason, Response) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Percentage = round((Freq / sum(Freq)) * 100, 1))  # Calculate percentage
+
+# Pivot the table to display "Yes" and "No" percentages side by side
+reasons_summary_18 <- reasons_summary_18 %>%
+  pivot_wider(names_from = Response, values_from = Percentage, values_fill = 0) %>%
+  rename(Yes = yes, No = no)
+
+# Arrange columns for a cleaner display
+reasons_summary_18 <- reasons_summary_18 %>%
+  select(Reason, Yes, No)
+
+# View the final summary table
+print(reasons_summary_18). Basically there are different actions; home improvement, reduce hydro, minimize car, vehicle electric, protein alternative, reduce waste, green product, short distance and sort waste. and then there is a reason for why people indicate they are unlikely to perform these actions - these reasons include confusing, individual difference, ineffective, costly, unavailable, inconvenient, uninterested and other. actions are the combination of these  [1] "unlikelihood_action_home_improvement_confusing_18"               
+ [2] "unlikelihood_action_home_improvement_individual_difference_18"   
+ [3] "unlikelihood_action_home_improvement_ineffective_18"             
+ [4] "unlikelihood_action_home_improvement_costly_18"                  
+ [5] "unlikelihood_action_home_improvement_unavailable_18"             
+ [6] "unlikelihood_action_home_improvement_inconvenient_18"            
+ [7] "unlikelihood_action_home_improvement_uninterested_18"            
+ [8] "unlikelihood_action_home_improvement_other_18"                   
+ [9] "unlikelihood_action_reduce_hydro_confusing_18"                   
+[10] "unlikelihood_action_reduce_hydro_individual_difference_18"       
+[11] "unlikelihood_action_reduce_hydro_ineffective_18"                 
+[12] "unlikelihood_action_reduce_hydro_costly_18"                      
+[13] "unlikelihood_action_reduce_hydro_unavailable_18"                 
+[14] "unlikelihood_action_reduce_hydro_inconvenient_18"                
+[15] "unlikelihood_action_reduce_hydro_uninterested_18"                
+[16] "unlikelihood_action_reduce_hydro_other_18"                       
+[17] "unlikelihood_action_minimize_car_confusing_18"                   
+[18] "unlikelihood_action_minimize_car_individual_difference_18"       
+[19] "unlikelihood_action_minimize_car_ineffective_18"                 
+[20] "unlikelihood_action_minimize_car_costly_18"                      
+[21] "unlikelihood_action_minimize_car_unavailable_18"                 
+[22] "unlikelihood_action_minimize_car_inconvenient_18"                
+[23] "unlikelihood_action_minimize_car_uninterested_18"                
+[24] "unlikelihood_action_minimize_car_other_18"                       
+[25] "unlikelihood_action_vehicle_electric_confusing_18"               
+[26] "unlikelihood_action_vehicle_electric_individual_difference_18"   
+[27] "unlikelihood_action_vehicle_electric_ineffective_18"             
+[28] "unlikelihood_action_vehicle_electric_costly_18"                  
+[29] "unlikelihood_action_vehicle_electric_unavailable_18"             
+[30] "unlikelihood_action_vehicle_electric_inconvenient_18"            
+[31] "unlikelihood_action_vehicle_electric_uninterested_18"            
+[32] "unlikelihood_action_vehicle_electric_other_18"                   
+[33] "unlikelihood_action_protein_alternative_confusing_18"            
+[34] "unlikelihood_action_protein_alternative_individual_difference_18"
+[35] "unlikelihood_action_protein_alternative_ineffective_18"          
+[36] "unlikelihood_action_protein_alternative_costly_18"               
+[37] "unlikelihood_action_protein_alternative_unavailable_18"          
+[38] "unlikelihood_action_protein_alternative_inconvenient_18"         
+[39] "unlikelihood_action_protein_alternative_uninterested_18"         
+[40] "unlikelihood_action_protein_alternative_other_18"                
+[41] "unlikelihood_action_reduce_waste_confusing_18"                   
+[42] "unlikelihood_action_reduce_waste_individual_difference_18"       
+[43] "unlikelihood_action_reduce_waste_ineffective_18"                 
+[44] "unlikelihood_action_reduce_waste_costly_18"                      
+[45] "unlikelihood_action_reduce_waste_unavailable_18"                 
+[46] "unlikelihood_action_reduce_waste_inconvenient_18"                
+[47] "unlikelihood_action_reduce_waste_uninterested_18"                
+[48] "unlikelihood_action_reduce_waste_other_18"                       
+[49] "unlikelihood_action_green_product_confusing_18"                  
+[50] "unlikelihood_action_green_product_individual_difference_18"      
+[51] "unlikelihood_action_green_product_ineffective_18"                
+[52] "unlikelihood_action_green_product_costly_18"                     
+[53] "unlikelihood_action_green_product_unavailable_18"                
+[54] "unlikelihood_action_green_product_inconvenient_18"               
+[55] "unlikelihood_action_green_product_uninterested_18"               
+[56] "unlikelihood_action_green_product_other_18"                      
+[57] "unlikelihood_action_short_distance_confusing_18"                 
+[58] "unlikelihood_action_short_distance_individual_difference_18"     
+[59] "unlikelihood_action_short_distance_ineffective_18"               
+[60] "unlikelihood_action_short_distance_costly_18"                    
+[61] "unlikelihood_action_short_distance_unavailable_18"               
+[62] "unlikelihood_action_short_distance_inconvenient_18"              
+[63] "unlikelihood_action_short_distance_uninterested_18"              
+[64] "unlikelihood_action_short_distance_other_18"                     
+[65] "unlikelihood_action_sort_waste_confusing_18"                     
+[66] "unlikelihood_action_sort_waste_individual_difference_18"         
+[67] "unlikelihood_action_sort_waste_ineffective_18"                   
+[68] "unlikelihood_action_sort_waste_costly_18"                        
+[69] "unlikelihood_action_sort_waste_unavailable_18"                   
+[70] "unlikelihood_action_sort_waste_inconvenient_18"                  
+[71] "unlikelihood_action_sort_waste_uninterested_18"                  
+[72] "unlikelihood_action_sort_waste_other_18" . And I want to show what percentage of the sample give which reasons. how do i create a nice neat table for these values though? 
+ChatGPT said:
+To create a neat summary table for the "unlikelihood_action" columns that includes the percentage of respondents giving each reason for not taking a specific action, you can follow these steps. The table will display the different actions and the reasons associated with them, along with the percentage of respondents who gave each reason.
+
+Here’s the approach to achieve this:
+
+Extract and reshape the data:
+
+Select columns that start with "unlikelihood_action".
+Transform the dataset to a long format.
+Group by action and reason, then calculate the frequency and percentage for each.
+Clean up the table:
+
+Create a table that shows actions and reasons in a readable format, with percentages for each reason.
+Here’s the full code to create this summary table:
+
+# 1. Select columns starting with "unlikelihood_action"
+reasons_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action"))
+
+# 2. Reshape data to long format
+reasons_summary_18 <- reasons_columns %>%
+  pivot_longer(cols = everything(), names_to = "Action_Reason", values_to = "Response") %>%
+  group_by(Action_Reason, Response) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Percentage = round((Freq / sum(Freq)) * 100, 1))  # Calculate percentage
+
+# 3. Separate the "Action_Reason" column into two parts: Action and Reason
+reasons_summary_18 <- reasons_summary_18 %>%
+  separate(Action_Reason, into = c("Action", "Reason"), sep = "_", remove = FALSE) 
+
+# 4. Calculate percentage of "Yes" responses for each Action-Reason combination
+reasons_summary_18 <- reasons_summary_18 %>%
+  filter(Response == "yes") %>%
+  select(Action, Reason, Percentage)
+
+# 5. Clean up the table and view it
+reasons_summary_18 <- reasons_summary_18 %>%
+  arrange(Action, Reason)
+
+# View the final summary table
+print(reasons_summary_18)
+Explanation of each step:
+Select columns starting with "unlikelihood_action": This filters out all the columns relevant to the actions and reasons.
+
+Reshape the data to long format: pivot_longer reshapes the data, making it easier to work with, by turning each reason for each action into rows. The Response column will hold the "yes" or "no" answers.
+
+Separate the Action and Reason: The column "Action_Reason" is split into two columns: "Action" and "Reason". This way, you can identify which action the reason is associated with (e.g., "home improvement") and the specific reason (e.g., "costly").
+
+Calculate the percentage of "Yes" responses: This calculates the percentage of people who selected "yes" for each action-reason combination. It filters to keep only the "yes" responses and calculates the percentage based on their frequency.
+
+Clean up and sort: The table is cleaned and sorted by the action and reason columns to make it more readable.
+
+Example of the Output:
+Action	Reason	Percentage
+home improvement	costly	30.1
+home improvement	confusing	15.5
+reduce hydro	unavailable	12.3
+minimize car	ineffective	5.8
+vehicle electric	inconvenient	20.7
+protein alternative	uninterested	10.0
+...	...	...
+This table will show the actions and the reasons for people being unlikely to take those actions, along with the percentage of people who selected each reason. You can adjust the code as needed to tailor it to your dataset and any specific formatting needs.
+
+
+
+
+
+
+You said:
+these are the columns: [1] "unlikelihood_action_home_improvement_confusing_18"               
+ [2] "unlikelihood_action_home_improvement_individual_difference_18"   
+ [3] "unlikelihood_action_home_improvement_ineffective_18"             
+ [4] "unlikelihood_action_home_improvement_costly_18"                  
+ [5] "unlikelihood_action_home_improvement_unavailable_18"             
+ [6] "unlikelihood_action_home_improvement_inconvenient_18"            
+ [7] "unlikelihood_action_home_improvement_uninterested_18"            
+ [8] "unlikelihood_action_home_improvement_other_18"                   
+ [9] "unlikelihood_action_reduce_hydro_confusing_18"                   
+[10] "unlikelihood_action_reduce_hydro_individual_difference_18"       
+[11] "unlikelihood_action_reduce_hydro_ineffective_18"                 
+[12] "unlikelihood_action_reduce_hydro_costly_18"                      
+[13] "unlikelihood_action_reduce_hydro_unavailable_18"                 
+[14] "unlikelihood_action_reduce_hydro_inconvenient_18"                
+[15] "unlikelihood_action_reduce_hydro_uninterested_18"                
+[16] "unlikelihood_action_reduce_hydro_other_18"                       
+[17] "unlikelihood_action_minimize_car_confusing_18"                   
+[18] "unlikelihood_action_minimize_car_individual_difference_18"       
+[19] "unlikelihood_action_minimize_car_ineffective_18"                 
+[20] "unlikelihood_action_minimize_car_costly_18"                      
+[21] "unlikelihood_action_minimize_car_unavailable_18"                 
+[22] "unlikelihood_action_minimize_car_inconvenient_18"                
+[23] "unlikelihood_action_minimize_car_uninterested_18"                
+[24] "unlikelihood_action_minimize_car_other_18"                       
+[25] "unlikelihood_action_vehicle_electric_confusing_18"               
+[26] "unlikelihood_action_vehicle_electric_individual_difference_18"   
+[27] "unlikelihood_action_vehicle_electric_ineffective_18"             
+[28] "unlikelihood_action_vehicle_electric_costly_18"                  
+[29] "unlikelihood_action_vehicle_electric_unavailable_18"             
+[30] "unlikelihood_action_vehicle_electric_inconvenient_18"            
+[31] "unlikelihood_action_vehicle_electric_uninterested_18"            
+[32] "unlikelihood_action_vehicle_electric_other_18"                   
+[33] "unlikelihood_action_protein_alternative_confusing_18"            
+[34] "unlikelihood_action_protein_alternative_individual_difference_18"
+[35] "unlikelihood_action_protein_alternative_ineffective_18"          
+[36] "unlikelihood_action_protein_alternative_costly_18"               
+[37] "unlikelihood_action_protein_alternative_unavailable_18"          
+[38] "unlikelihood_action_protein_alternative_inconvenient_18"         
+[39] "unlikelihood_action_protein_alternative_uninterested_18"         
+[40] "unlikelihood_action_protein_alternative_other_18"                
+[41] "unlikelihood_action_reduce_waste_confusing_18"                   
+[42] "unlikelihood_action_reduce_waste_individual_difference_18"       
+[43] "unlikelihood_action_reduce_waste_ineffective_18"                 
+[44] "unlikelihood_action_reduce_waste_costly_18"                      
+[45] "unlikelihood_action_reduce_waste_unavailable_18"                 
+[46] "unlikelihood_action_reduce_waste_inconvenient_18"                
+[47] "unlikelihood_action_reduce_waste_uninterested_18"                
+[48] "unlikelihood_action_reduce_waste_other_18"                       
+[49] "unlikelihood_action_green_product_confusing_18"                  
+[50] "unlikelihood_action_green_product_individual_difference_18"      
+[51] "unlikelihood_action_green_product_ineffective_18"                
+[52] "unlikelihood_action_green_product_costly_18"                     
+[53] "unlikelihood_action_green_product_unavailable_18"                
+[54] "unlikelihood_action_green_product_inconvenient_18"               
+[55] "unlikelihood_action_green_product_uninterested_18"               
+[56] "unlikelihood_action_green_product_other_18"                      
+[57] "unlikelihood_action_short_distance_confusing_18"                 
+[58] "unlikelihood_action_short_distance_individual_difference_18"     
+[59] "unlikelihood_action_short_distance_ineffective_18"               
+[60] "unlikelihood_action_short_distance_costly_18"                    
+[61] "unlikelihood_action_short_distance_unavailable_18"               
+[62] "unlikelihood_action_short_distance_inconvenient_18"              
+[63] "unlikelihood_action_short_distance_uninterested_18"              
+[64] "unlikelihood_action_short_distance_other_18"                     
+[65] "unlikelihood_action_sort_waste_confusing_18"                     
+[66] "unlikelihood_action_sort_waste_individual_difference_18"         
+[67] "unlikelihood_action_sort_waste_ineffective_18"                   
+[68] "unlikelihood_action_sort_waste_costly_18"                        
+[69] "unlikelihood_action_sort_waste_unavailable_18"                   
+[70] "unlikelihood_action_sort_waste_inconvenient_18"                  
+[71] "unlikelihood_action_sort_waste_uninterested_18"                  
+[72] "unlikelihood_action_sort_waste_other_18"    
+ChatGPT said:
+It looks like you have a long list of columns, each pertaining to various aspects of "unlikelihood" actions for different types of behaviors (such as home improvement, reducing hydro, minimizing car use, etc.) and conditions like "confusing," "costly," or "unavailable." Given the size of this list, it appears you're working with survey data or similar where multiple categories of behaviors and their associated barriers are being captured.
+
+What would you like to do with this data? Are you trying to analyze, clean, or transform it in some way? Let me know how I can assist you!
+
+
+
+
+
+
+You said:
+its not doing what i want. i want each column that starts with "unlikelihood_action" to become rows in the table, first column. in the second column i want the percentage of the sample  as whole number
+ChatGPT said:
+It sounds like you want to transform your data so that each column starting with "unlikelihood_action" becomes a row in a new table. Additionally, you'd like the second column to show the percentage of the sample for each category (calculated as a whole number).
+
+To achieve this, you can use the pivot_longer function from the tidyverse package, along with some additional calculations to get the percentages.
+
+Here's an example of how you can do this in R:
+
+library(tidyverse)
+
+# Assuming your data is stored in a data frame called df
+df_long <- df %>%
+  select(starts_with("unlikelihood_action")) %>%
+  pivot_longer(cols = everything(), names_to = "action", values_to = "response") %>%
+  group_by(action) %>%
+  summarise(percentage = round(mean(response, na.rm = TRUE) * 100, 0)) %>%
+  ungroup()
+
+# View the transformed data
+print(df_long)
+Explanation:
+select(starts_with("unlikelihood_action")): This selects all columns starting with "unlikelihood_action".
+pivot_longer(): This reshapes the data from wide format (columns for each "unlikelihood_action") to long format (one column for actions and one for the responses).
+group_by(action): This groups the data by the "action" column, so you can calculate the percentage for each action.
+summarise(): This calculates the mean (as a percentage) of the response variable. Assuming your responses are in a 0-1 scale (where 1 means yes and 0 means no or another type of binary indicator), this will give you the percentage.
+round(): This rounds the result to the nearest whole number.
+ungroup(): Removes the grouping after summarization.
+Notes:
+If the response variable is already in percentage form (i.e., between 0 and 1), multiplying by 100 gives you the actual percentage.
+If the variable response is categorical (like "yes"/"no"), you'll need to convert those into binary values (0 or 1) before calculating percentages.
+Let me know if you need help adjusting this for your specific dataset!
+
+
+
+
+
+
+You said:
+data is stored in fixed_twenty_eighteen and i want to save the table as reasons_summary_18
+
+2/2
+
+ChatGPT said:
+Given that your data is stored in fixed_twenty_eighteen and you want to save the transformed table as reasons_summary_18, here is how you can modify the code to fit your needs:
+
+library(tidyverse)
+
+# Transform the data from wide to long and calculate the percentages
+reasons_summary_18 <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action")) %>%
+  pivot_longer(cols = everything(), names_to = "action", values_to = "response") %>%
+  group_by(action) %>%
+  summarise(percentage = round(mean(response, na.rm = TRUE) * 100, 0)) %>%
+  ungroup()
+
+# Save the result as a new table
+write.csv(reasons_summary_18, "reasons_summary_18.csv", row.names = FALSE)
+
+# View the result
+print(reasons_summary_18)
+Breakdown of the steps:
+Select columns: select(starts_with("unlikelihood_action")) picks all the columns that start with "unlikelihood_action".
+Pivot to long format: pivot_longer() reshapes the data such that each "unlikelihood_action" becomes a row, with one column for the action and another for response.
+Calculate percentages: summarise() calculates the mean (as a percentage) for each action by averaging the response values, rounding to the nearest whole number.
+Save as CSV: write.csv() saves the transformed data into a file called "reasons_summary_18.csv".
+Print: print(reasons_summary_18) allows you to see the result in the console.
+This should give you the desired transformation with each action becoming a row and the percentage of the sample in the second column.
+
+Let me know if this works for you or if you need further adjustments!
+
+
+
+
+
+
+You said:
+first column is formatted correctly. I want to make the name of the first column "Action" and second column named "Percentage". The second column is not displaying as a percentage, in fact its displaying as NA <dbl>, how to fix?
+ChatGPT said:
+To fix the issues and ensure the columns are named correctly (Action and Percentage), and to also make sure the percentage values are displayed correctly, here’s an updated solution:
+
+Fix the column names: You can rename the columns after the transformation.
+Fix the issue with NA values: Ensure that the response values are properly interpreted. The NA values might arise if the response variable is not numeric. You can ensure the data is treated correctly before calculating percentages.
+Here’s the updated code:
+
+library(tidyverse)
+
+# Transform the data from wide to long and calculate the percentages
+reasons_summary_18 <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action")) %>%
+  pivot_longer(cols = everything(), names_to = "Action", values_to = "Response") %>%
+  mutate(Response = as.numeric(Response)) %>% # Ensure the 'Response' is numeric
+  group_by(Action) %>%
+  summarise(Percentage = round(mean(Response, na.rm = TRUE) * 100, 0)) %>%
+  ungroup()
+
+# Rename columns for clarity
+colnames(reasons_summary_18) <- c("Action", "Percentage")
+
+# Save the result as a new table
+write.csv(reasons_summary_18, "reasons_summary_18.csv", row.names = FALSE)
+
+# View the result
+print(reasons_summary_18)
+Key Changes:
+Renaming columns: After performing the transformation, I renamed the columns to "Action" and "Percentage".
+Converting Response to numeric: The line mutate(Response = as.numeric(Response)) ensures that the values in the Response column are treated as numeric values, which is important for calculating the mean and percentage. This avoids issues with non-numeric values or factors, which might cause the NA values.
+Column Names: After summarising the data, I renamed the columns directly using colnames() to set the names as "Action" and "Percentage".
+This should give you the correct format, where:
+
+The first column will be named "Action" (the action names).
+The second column will be named "Percentage", and it will display percentages as whole numbers, with no NA values (as long as the response values are valid numeric values).
+If you still encounter any issues:
+Double-check that the values in the Response column are numeric (after using mutate(Response = as.numeric(Response))), especially if your data has missing or unexpected values (like NA or non-numeric characters).
+Let me know how it goes!
+
+
+
+
+
+
+You said:
+the percentage column is not displaying properly. its showing up as NaN. I think this is cause the rows of the columns that start with "unlikelihood_action" - the rows are "yes" and "no". It is still possible to get the percentage of "yes" for each "unlikelihood_action" column? BUT keep the format where i am creating a table with action as one column and percentage as another column
+ChatGPT said:
+Yes, you're correct! If the rows contain "yes" and "no" responses, we need to calculate the percentage of "yes" responses for each action column. Since you're working with categorical responses like "yes" and "no", we need to count the occurrences of "yes" and divide by the total number of responses for each action column.
+
+Here’s how you can fix this:
+
+Count the "yes" responses for each action column.
+Calculate the percentage of "yes" responses relative to the total (i.e., the total number of non-NA responses in each action column).
+Keep the format where the first column is "Action" and the second is "Percentage".
+Here is the updated code to achieve this:
+
+library(tidyverse)
+
+# Transform the data and calculate the percentage of "yes" for each action column
+reasons_summary_18 <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action")) %>%
+  pivot_longer(cols = everything(), names_to = "Action", values_to = "Response") %>%
+  mutate(Response = ifelse(Response == "yes", 1, 0)) %>%  # Convert "yes" to 1 and "no" to 0
+  group_by(Action) %>%
+  summarise(Percentage = round(mean(Response, na.rm = TRUE) * 100, 0)) %>%
+  ungroup()
+
+# Rename columns for clarity
+colnames(reasons_summary_18) <- c("Action", "Percentage")
+
+# Save the result as a new table
+write.csv(reasons_summary_18, "reasons_summary_18.csv", row.names = FALSE)
+
+# View the result
+print(reasons_summary_18)
+Explanation of Key Changes:
+Convert "yes"/"no" to 1/0: The line mutate(Response = ifelse(Response == "yes", 1, 0)) converts the "yes" responses to 1 and "no" responses to 0. This is necessary for calculating the percentage.
+Calculate the percentage: The mean(Response, na.rm = TRUE) calculates the proportion of "yes" responses (since "yes" is now 1 and "no" is 0). This is then multiplied by 100 to convert it into a percentage, and round(..., 0) ensures the percentage is displayed as a whole number.
+Grouping and summarizing: The group_by(Action) groups the data by action (i.e., each column that starts with unlikelihood_action), and summarise() calculates the percentage for each action.
+Output:
+First column ("Action") will have the names of each "unlikelihood_action".
+Second column ("Percentage") will show the percentage of "yes" responses for each action, in whole numbers.
+Example:
+If one of your action columns looks like this:
+
+unlikelihood_action_home_improvement_confusing_18: yes, no, yes, yes, no
+After running the code, it will count how many "yes" responses are there (in this case, 3 out of 5), calculate the percentage (60%), and display that in the summary table.
+
+Let me know if that works!
+
+
+
+
+
+
+You said:
+ok yay this is brilliant! I am wondering if its possible to rename "unlikelihood_action_green_product_confusing_18" to be split into two columns where green_product is  in the action column and then need to add another column called "Reason" and put the "confusing". Renaming it like this for all 72 variables that start with "unlikelihood_action" would be so time consuming. is there a quick way to code this? or is this gonna be too complicated?
+ChatGPT said:
+I'm glad to hear the previous solution worked for you!
+
+Yes, it's definitely possible to automate the renaming process for all the columns that start with unlikelihood_action without doing it manually for each of the 72 variables. We can break the task into two steps:
+
+Extract the action (e.g., "green_product") and reason (e.g., "confusing") from the column names.
+Create two separate columns: one for the action and one for the reason.
+Solution:
+We can use mutate() and regular expressions to split the column names dynamically. Here's the approach:
+
+Code:
+library(tidyverse)
+
+# Extract the action and reason from the column names and reshape the data
+reasons_summary_18 <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action")) %>%
+  pivot_longer(cols = everything(), names_to = "Action_Reason", values_to = "Response") %>%
+  # Separate the Action_Reason column into two parts: Action and Reason
+  separate(Action_Reason, into = c("Action", "Reason"), sep = "_", remove = FALSE) %>%
+  mutate(
+    # Optional: Re-format the Action column to remove "unlikelihood_action" prefix
+    Action = gsub("unlikelihood_action_", "", Action)
+  ) %>%
+  mutate(Response = ifelse(Response == "yes", 1, 0)) %>%  # Convert "yes" to 1 and "no" to 0
+  group_by(Action, Reason) %>%
+  summarise(Percentage = round(mean(Response, na.rm = TRUE) * 100, 0)) %>%
+  ungroup()
+
+# Rename the columns for clarity
+colnames(reasons_summary_18) <- c("Action", "Reason", "Percentage")
+
+# Save the result as a new table
+write.csv(reasons_summary_18, "reasons_summary_18.csv", row.names = FALSE)
+
+# View the result
+print(reasons_summary_18)
+Explanation:
+separate() function: This function is key. It splits the Action_Reason column into two separate columns (Action and Reason) based on the underscore _. For example:
+
+unlikelihood_action_green_product_confusing_18 becomes green_product (action) and confusing (reason).
+Regular Expression (gsub()): If you want to remove the unlikelihood_action_ prefix from the "Action" column, you can do that using gsub("unlikelihood_action_", "", Action).
+
+Percentage calculation: The steps to calculate the percentage of "yes" responses remain the same.
+
+Output:
+You will have three columns:
+
+Action: Contains the main action (e.g., "green_product").
+Reason: Contains the reason (e.g., "confusing").
+Percentage: The percentage of "yes" responses for that specific action and reason.
+Example:
+If you have columns like:
+
+unlikelihood_action_green_product_confusing_18
+unlikelihood_action_green_product_costly_18
+The Action column will contain "green_product", and the Reason column will contain "confusing" and "costly" respectively.
+
+This approach will work dynamically for all columns starting with unlikelihood_action, and you don't have to manually rename each one.
+
+Let me know if you need any further adjustments!
+
 Alrightly, see my r code and instructions on what i want to do. please let me know if anything is unclear. #### Clean data summary 2018 dataset ####
 
 # Read the csv file

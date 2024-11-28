@@ -269,61 +269,68 @@ likelihood_summary_18 <- combined_likelihood_summary %>%
 print(likelihood_summary_18)
 
 
-#### 5. Reasons Summary ####
+## 5. Reasons Summary ##
 
-# Step 1: Select columns starting with "unlikelihood_action"
-reasons_data <- fixed_twenty_eighteen %>%
-  select(starts_with("unlikelihood_action"))
+# Transform the data and calculate the percentage of "yes" for each action column
+reasons_summary_18 <- fixed_twenty_eighteen %>%
+  select(starts_with("unlikelihood_action")) %>%
+  pivot_longer(cols = everything(), names_to = "Action", values_to = "Response") %>%
+  mutate(Response = ifelse(Response == "yes", 1, 0)) %>%  # Convert "yes" to 1 and "no" to 0
+  group_by(Action) %>%
+  summarise(Percentage = round(mean(Response, na.rm = TRUE) * 100, 0)) %>%
+  ungroup()
 
-# Step 2: Create a summary table by gathering data into long format
-reasons_summary_18 <- reasons_data %>%
-  pivot_longer(cols = everything(), 
-               names_to = "Reason", 
-               values_to = "Response") %>%
-  group_by(Reason, Response) %>%
-  summarise(Freq = n(), .groups = "drop") %>%
-  mutate(Percentage = round((Freq / sum(Freq)) * 100, 1))
+# Rename columns for clarity
+colnames(reasons_summary_18) <- c("Action", "Percentage")
 
-# Step 3: Pivot wider for better readability
-reasons_summary_18 <- reasons_summary_18 %>%
-  pivot_wider(names_from = Reason, values_from = Percentage)
-
-# Step 4: View the final table
+# View the final summary table
 print(reasons_summary_18)
 
 
-
-# Unlikelihood action summary (columns starting with "unlikelihood_action")
-reasons_summary_18 <- twenty_eighteen_raw_data %>%
-  select(starts_with("unlikelihood_action")) %>%
-  pivot_longer(cols = everything(), names_to = "unlikelihood_action", values_to = "response") %>%
-  count(unlikelihood_action, response) %>%
-  mutate(percentage = n / sample_size_2018 * 100) %>%
-  select(unlikelihood_action, response, percentage)
-
 #### 6. Communication Summary ####
 
-# Communication method not interested in receiving
-communication_summary_18 <- twenty_eighteen_raw_data %>%
-  count(delivery_method_not_interested_receiving_18) %>%
-  mutate(percentage = n / sample_size_2018 * 100) %>%
-  select(delivery_method_not_interested_receiving_18, percentage)
+# Step 1: Filter columns that start with "delivery_method"
+communication_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("delivery_method"))
+
+# Step 2: Convert to long format to aggregate all delivery methods
+communication_summary_18 <- communication_columns %>%
+  pivot_longer(cols = everything(), names_to = "Communication Method", values_to = "Response") %>%
+  group_by(`Communication Method`, Response) %>%
+  summarise(Freq = n(), .groups = "drop") %>%
+  mutate(Total = sum(Freq), .by = `Communication Method`) %>%
+  mutate(Percentage = round((Freq / Total) * 100))
+
+# Step 3: Keep only the "Yes" responses and rename the "Yes (%)" column
+communication_summary_18 <- communication_summary_18 %>%
+  filter(Response == "yes") %>%
+  select(`Communication Method`, Percentage)
+
+# Step 4: Rename the percentage column to "Percentage"
+colnames(communication_summary_18)[2] <- "Percentage"
+
+# Step 5: View the final communication summary table
+print(communication_summary_18)
+
+
 
 #### 7. Combine All Tables ####
 
 # Combine all the summary tables into one data frame
-combined_summary_18 <- bind_rows(
-  age_summary_18 %>% mutate(summary_type = "Age Group"),
-  education_summary_18 %>% mutate(summary_type = "Education Level"),
-  informed_summary_18 %>% mutate(summary_type = "Informed Extent"),
-  likelihood_summary_18 %>% mutate(summary_type = "Likelihood Action"),
-  reasons_summary_18 %>% mutate(summary_type = "Reasons for Unlikeliness"),
-  communication_summary_18 %>% mutate(summary_type = "Communication Method")
-)
+# combined_summary_18 <- bind_rows(
+  # age_summary_18 %>% mutate(summary_type = "Age Group"),
+  # education_summary_18 %>% mutate(summary_type = "Education Level"),
+  # informed_summary_18 %>% mutate(summary_type = "Informed Extent"),
+  # likelihood_summary_18 %>% mutate(summary_type = "Likelihood Action"),
+  # reasons_summary_18 %>% mutate(summary_type = "Reasons for Unlikeliness"),
+  # communication_summary_18 %>% mutate(summary_type = "Communication Method")
+# )
+
+print(combined_summary_18)
 
 #### Save 2018 summary data ####
-write_parquet(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.parquet")
-write_csv(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
+# write_parquet(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.parquet")
+# write_csv(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
 
 
 
@@ -754,9 +761,4 @@ write_csv(data_cleaned, "data/02-analysis_data/twenty_twenty_two_summary_analysi
 
 # Confirmation message
 print("Data saved successfully!")
-
-
-# I want the following columns in the following order  Age Categories, Age Percentage, Education Levels, Education Percentage, Extent Informed, Informed Percentage, Likelihood to Take Action, Likely purchase energy efficient appliances, Likely install a programmable thermostat, Likely install LED lightbulbs, Likely undertake major home renos for energy efficiency, Likely add solar panels to home, Likely get an EnerGuide home energy evaluation to identify opportunities, Likely reduce water use, Likely use public transit more, Likely cycle more, Likely walk more,  Likely purchase electric/hybrid vehicle in next 1-3 years, Likely eat less meat, Likely reduce amount of own waste, Likely purchase environmentally friendly items, Likely put effort into sorting waste into correct bins, Reasons unlikely to take action, Unlikely purchase energy efficient appliances, Unlikely install a programmable thermostat, Unlikely install LED lightbulbs, Unlikely undertake major home renos for energy efficiency, Unlikely add solar panels to home, Unlikely get an EnerGuide home energy evaluation to identify opportunities, Unlikely reduce water use, Unlikely eat less meat, Unlikely reduce amount of own waste, Unlikely purchase environmentally friendly items, Unlikely put effort into sorting waste into correct bins, City Support to Motivate, Support Percentage,  Method of Communication, Communication Percentage
-
-# sheet4_data, sheet12_data, sheet25_data, sheet70_data, sheet86_data, sheet114_data, sheet115_data
 

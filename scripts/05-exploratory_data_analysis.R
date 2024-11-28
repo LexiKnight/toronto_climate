@@ -1,37 +1,65 @@
 #### Preamble ####
-# Purpose: Models... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Exploring 2018 individual data as well as 2018 and 2021 summary data. 
+# Author: Lexi Knight
+# Date: 27 November 2024
+# Contact: lexi.knight@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: complete 01-download_data.R and 03-clean_data.R in scripts folder in order to access raw data.
 
 
 #### Workspace setup ####
+
+# install libraries 
+# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr"))
+
+# Load necessary libraries
 library(tidyverse)
-library(rstanarm)
+library(dplyr)
+library(ggplot2)
+library(here)
+library(stringr)
+library(knitr)
 
-#### Read data ####
-analysis_data <- read_csv("data/analysis_data/analysis_data.csv")
+# Read in the data from your CSV file
+individual_18 <- read_csv(here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet"))
 
-### Model data ####
-first_model <-
-  stan_glm(
-    formula = flying_time ~ length + width,
-    data = analysis_data,
-    family = gaussian(),
-    prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
-    prior_intercept = normal(location = 0, scale = 2.5, autoscale = TRUE),
-    prior_aux = exponential(rate = 1, autoscale = TRUE),
-    seed = 853
-  )
+# Create a histogram to show the distribution of age
+age_individual_plot <- ggplot(data, aes(x = age_18)) +
+  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", alpha = 0.7) +
+  labs(
+    title = "Age Distribution of Survey Respondents (2018)",
+    x = "Age",
+    y = "Frequency"
+  ) +
+  theme_minimal()
 
+# Display the plot
+print(age_individual_plot)
 
-#### Save model ####
-saveRDS(
-  first_model,
-  file = "models/first_model.rds"
+# calculate summary statistics 
+mean_age <- mean(data$age_18, na.rm = TRUE)
+median_age <- median(data$age_18, na.rm = TRUE)
+min_age <- min(data$age_18, na.rm = TRUE)
+max_age <- max(data$age_18, na.rm = TRUE)
+# R does not have built in function thus needs to be defined
+sd_age <- sd(data$age_18, na.rm = TRUE)
+mode_age <- function(x) {
+  unique_x <- unique(x)
+  unique_x[which.max(tabulate(match(x, unique_x)))]
+}
+mode_value <- mode_age(data$age_18)
+
+# Create a data frame with the summary statistics
+summary_stats_age_18 <- data.frame(
+  Statistic = c("Mean Age", "Median Age", "Mode Age", "Standard Deviation", "Minimum Age", "Maximum Age"),
+  Value = c(mean_age, median_age, mode_value, sd_age, min_age, max_age)
 )
+
+# Use kable to generate a nice table
+kable(summary_stats_age_18, 
+      caption = "Summary Statistics for Age of Survey Respondents", 
+      col.names = c("Statistic", "Value"),
+      align = c("l", "c"))
+
 
 
