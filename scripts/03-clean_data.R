@@ -269,32 +269,24 @@ write_parquet(informed_summary_18, "data/02-analysis_data/twenty_eighteen_indivi
 
 ## 4. Likelihood Action Summary ##
 
-# Rename Columns (if not already done)
-new_column_names <- c(
-  "likelihood_action_home_improvement" = "Home Improvement",
-  "likelihood_action_reduce_hydro" = "Reduce Hydro Usage",
-  "likelihood_action_minimize_car" = "Minimize Car Use",
-  "likelihood_action_vehicle_electric" = "Electric/Hybrid Vehicle",
-  "likelihood_action_protein_alternative" = "Meat Alternatives",
-  "likelihood_action_reduce_waste" = "Reduce Waste",
-  "likelihood_action_green_product" = "Purchase Green Products",
-  "likelihood_action_short_distance" = "Walk/Cycle Short Distances",
-  "likelihood_action_sort_waste" = "Sort Waste Correctly"
-)
+# Identify columns starting with "likelihood_action"
+likelihood_columns <- grep("^likelihood_action", names(twenty_eighteen), value = TRUE)
 
-# Rename only columns that exist in the data frame
-existing_column_names <- intersect(names(likelihood_summary_18), names(new_column_names))
+# Create the summary table based on the likelihood action categories
+likelihood_summary_18 <- lapply(likelihood_columns, function(col) {
+  # Create a table of counts for each action (if it's a factor or categorical variable)
+  table(twenty_eighteen[[col]])
+})
 
-likelihood_summary_18 <- likelihood_summary_18 %>%
-  rename_with(~ new_column_names[.], .cols = existing_column_names)
+# Convert the list of tables into a data frame
+likelihood_summary_18 <- as.data.frame(likelihood_summary_18)
 
-# Remove Backticks and Replace Periods with Spaces
-colnames(likelihood_summary_18) <- colnames(likelihood_summary_18) %>%
-  gsub("`", "", .) %>%  # Remove any backticks (if applicable)
-  gsub("\\.", " ", .)  # Replace periods with spaces
+# Optionally, assign column names based on the original column names (e.g., from grep result)
+names(likelihood_summary_18) <- sub("^likelihood_action_", "", likelihood_columns)
 
-# Set `check.names = FALSE` to prevent backticks
-likelihood_summary_18 <- as.data.frame(likelihood_summary_18, check.names = FALSE)
+# Remove Backticks and Replace Periods with Spaces in Column Names
+colnames(likelihood_summary_18) <- gsub("`", "", colnames(likelihood_summary_18))  # Remove any backticks (if applicable)
+colnames(likelihood_summary_18) <- gsub("\\.", " ", colnames(likelihood_summary_18))  # Replace periods with spaces
 
 # View the Cleaned Data Frame
 print(likelihood_summary_18)
@@ -304,72 +296,52 @@ write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_indi
 
 
 
-
 ## 5. Reasons Summary ##
 
+# Identify columns starting with "unlikelihood_action"
+action_columns <- grep("^unlikelihood_action", names(twenty_eighteen), value = TRUE)
 
-# Step 1: Identify columns starting with "unlikelihood_action"
-action_columns <- grep("^unlikelihood_action", names(fixed_twenty_eighteen), value = TRUE)
-
-# Step 2: Define all possible reasons
+# Define all possible reasons
 reasons <- c("Confusing", "Costly", "Inconvenient", "Individual Difference", 
              "Ineffective", "Other", "Unavailable", "Uninterested")
 
 # Initialize an empty data frame to store results
-reason_summary <- data.frame()
+reason_summary_18 <- data.frame()
 
-# Step 3: Loop through each action column and calculate percentages for each reason
+# Loop through each action column and calculate counts for each reason
 for (action in action_columns) {
-  action_data <- fixed_twenty_eighteen[[action]]
+  action_data <- twenty_eighteen[[action]]
   
-  # Calculate the total number of non-NA responses for the current action
-  total_non_na <- sum(!is.na(action_data))
-  
-  # Calculate the percentage of each reason in the action column
-  reason_percentages <- sapply(reasons, function(reason) {
-    reason_count <- sum(action_data == reason, na.rm = TRUE)
-    if (total_non_na > 0) {
-      round((reason_count / total_non_na) * 100)  # Calculate and round percentage
-    } else {
-      0  # If no responses, set percentage to 0
-    }
+  # Calculate the count of each reason in the action column
+  reason_counts <- sapply(reasons, function(reason) {
+    sum(action_data == reason, na.rm = TRUE)  # Count how many times the reason appears
   })
   
   # Create a data frame for the current action
   action_df <- data.frame(
     Reason = reasons,
-    Percentage = reason_percentages,
+    Count = reason_counts,
     Action = gsub("unlikelihood_action_", "", action)  # Remove prefix for clarity
   )
   
   # Add the action-specific data to the combined summary
-  reason_summary <- rbind(reason_summary, action_df)
+  reason_summary_18 <- rbind(reason_summary_18, action_df)
 }
 
-# Step 4: Pivot the table to create a wide-format table
-reason_summary_wide <- reason_summary %>%
-  pivot_wider(names_from = Action, values_from = Percentage, values_fill = list(Percentage = 0))
+# Pivot the table to create a wide-format table
+reason_summary_18 <- reason_summary_18 %>%
+  pivot_wider(names_from = Action, values_from = Count, values_fill = list(Count = 0))
 
-# Step 5: Rename columns for better readability
-new_column_names <- c(
-  "Reason",  # First column
-  "Home Improvement",
-  "Reduce Hydro Usage",
-  "Minimize Car Use",
-  "Electric / Hybrid Vehicle",
-  "Meat Alternatives",
-  "Reduce Waste",
-  "Purchase Green Products",
-  "Walk / Cycle Short Distances",
-  "Sort Waste Correctly"
-)
+# Dynamically rename columns based on the pivoted action column names
+# The first column will remain "Reason"
+colnames(reason_summary_18)[-1] <- gsub("unlikelihood_action_", "", action_columns)
 
-# Apply new column names (ensure lengths match)
-colnames(reason_summary_wide) <- new_column_names
+# Print the final table
+print(reason_summary_18)
 
-# Step 6: Print the final table
-print(reason_summary_wide)
-save as reasons_summary_18
+# Save as Parquet File
+write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+
 
 
 
