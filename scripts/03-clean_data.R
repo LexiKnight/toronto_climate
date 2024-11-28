@@ -311,46 +311,58 @@ print(likelihood_summary_18)
 
 
 ## 5. Reasons Summary ##
-## Step 1: Rename action columns
 
-# Create a named vector to rename columns to descriptive action names
-new_column_names <- c(
-  "unlikelihood_action_home_improvement" = "Home Improvement",
-  "unlikelihood_action_reduce_hydro" = "Reduce Hydro Usage",
-  "unlikelihood_action_minimize_car" = "Minimize Car Use",
-  "unlikelihood_action_vehicle_electric" = "Electric/Hybrid Vehicle",
-  "unlikelihood_action_protein_alternative" = "Meat Alternatives",
-  "unlikelihood_action_reduce_waste" = "Reduce Waste",
-  "unlikelihood_action_green_product" = "Purchase Green Products",
-  "unlikelihood_action_short_distance" = "Walk/Cycle Short Distances",
-  "unlikelihood_action_sort_waste" = "Sort Waste Correctly"
-)
+# Step 1: Load necessary libraries
+library(dplyr)
 
-# Rename the columns in the dataset
-fixed_twenty_eighteen <- fixed_twenty_eighteen %>%
-  rename(!!!new_column_names)
+# Step 2: Identify columns starting with "unlikelihood_action"
+action_columns <- grep("^unlikelihood_action", names(fixed_twenty_eighteen), value = TRUE)
 
+# Step 3: Count the number of non-NA values for each column (reason)
+non_na_counts <- sapply(fixed_twenty_eighteen[, action_columns], function(x) sum(!is.na(x)))
 
-## Step 2: Transform data, count reasons, and calculate percentage
+# Display the counts of non-NA values for each action column
+print(non_na_counts)
 
-# Reshape the data, filter out NAs, and replace "difference" with "individual difference"
-reasons_summary_18 <- fixed_twenty_eighteen %>%
-  pivot_longer(cols = everything(), names_to = "Action", values_to = "Reason") %>%  # Reshape data to long format
-  filter(!is.na(Reason)) %>%                                                         # Remove NA values
-  mutate(
-    Reason = ifelse(Reason == "difference", "individual difference", Reason)          # Replace "difference" with "individual difference"
-  ) %>%
-  group_by(Action, Reason) %>%                                                       # Group by Action and Reason
-  summarise(
-    Frequency = n(),                                                                 # Count occurrences of each Reason
-    Percentage = round((Frequency / nrow(fixed_twenty_eighteen)) * 100, 0)            # Calculate percentage and round to whole number
-  ) %>%
-  ungroup()
+# Step 4: Calculate percentages for each reason for each action
+# Define all possible reasons
+reasons <- c("Confusing", "Costly", "Inconvenient", "Individual Difference", 
+             "Ineffective", "Other", "Unavailable", "Uninterested")
 
-## Step 3: Display the final table
-print(reasons_summary_18)
+# Initialize a list to store the tables
+tables <- list()
 
-# but reason will not be a numerical value reason will be one of the following: confusing, difference, ineffective, costly, unavailable, inconvenient, uninterested or other. I would also like to rename the category "difference" to "individual difference". The percentage column will be a whole number
+# Step 5: Loop through each action column to calculate reason percentages
+for (action in action_columns) {
+  # Get the data for the current action
+  action_data <- fixed_twenty_eighteen[[action]]
+  
+  # Initialize a vector to store the percentage for each reason
+  reason_percentages <- numeric(length(reasons))
+  
+  # Loop through each reason to calculate the percentage
+  for (i in seq_along(reasons)) {
+    # Calculate the percentage of each reason in the action column
+    reason_count <- sum(action_data == reasons[i], na.rm = TRUE)
+    reason_percentages[i] <- (reason_count / non_na_counts[action]) * 100
+  }
+  
+  # Create a table with reasons and their corresponding percentages
+  action_table <- tibble(Reason = reasons, Percentage = reason_percentages)
+  
+  # Store the table in the list
+  tables[[action]] <- action_table
+}
+
+# Step 6: Print the tables
+for (action in names(tables)) {
+  cat("===========================\n")
+  cat("Table for:", action, "\n")
+  cat("===========================\n")
+  print(tables[[action]])
+  cat("\n")
+}
+
 
 
 
