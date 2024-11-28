@@ -162,9 +162,7 @@ twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
       starts_with("unlikelihood_action"),  # Apply to columns starting with 'unlikelihood_action'
-      ~ ifelse(!is.na(.),  # Only modify non-NA values
-               str_replace(str_extract(cur_column(), "[^_]+(?=_18$)"), "_", " "),  # Extract reason and format it
-               .)  # Keep NA as is
+      ~ ifelse(!is.na(.), "unlikely", .)  # Replace non-NA values with "unlikely", keep NA as is
     )
   )
 
@@ -203,13 +201,13 @@ write_csv(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_ana
 #### Clean data summary 2018 dataset ####
 
 # Read the csv file
-twenty_eighteen_individual <- read_csv("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv", col_names = TRUE)
+twenty_eighteen <- read_csv("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv", col_names = TRUE)
 
 
 ## 1. Age Summary ##
 
 ## Create age categories based on ranges in 2021 summary data and summarize directly
-age_summary_18 <- as.data.frame(table(cut(fixed_twenty_eighteen$age_18, 
+age_summary_18 <- as.data.frame(table(cut(twenty_eighteen$age, 
                                          breaks = c(17, 23, 39, 55, Inf), 
                                          labels = c("18-23", "24-39", "40-55", "56+"), 
                                          right = TRUE)))
@@ -224,11 +222,15 @@ age_summary_18 <- age_summary_18[, c("Age Group", "Percentage")]
 # View the final summary table
 print(age_summary_18)
 
+# save as parquet
+write_parquet(age_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+
+
 
 ## 2. Education Level Summary ##
 
 # Create the summary table based on education levels
-education_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$highest_level_educ_18))
+education_summary_18 <- as.data.frame(table(twenty_eighteen$highest_level_educ))
 
 # Rename columns and calculate the percentage
 names(education_summary_18) <- c("Education Level", "Freq")
@@ -240,11 +242,15 @@ education_summary_18 <- education_summary_18[, c("Education Level", "Percentage"
 # View the final education summary table
 print(education_summary_18)
 
+# save as parquet
+write_parquet(education_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+
+
 
 ## 3. Informed Summary ##
 
 # Create the summary table based on the informed extent categories
-informed_summary_18 <- as.data.frame(table(fixed_twenty_eighteen$extent_consider_informed_18))
+informed_summary_18 <- as.data.frame(table(twenty_eighteen$extent_consider_informed))
 
 # Rename columns and calculate the percentage
 names(informed_summary_18) <- c("Informed Level", "Freq")
@@ -256,128 +262,121 @@ informed_summary_18 <- informed_summary_18[, c("Informed Level", "Percentage")]
 # View the final informed summary table
 print(informed_summary_18)
 
+# save as parquet
+write_parquet(informed_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+
+
 
 ## 4. Likelihood Action Summary ##
 
-# Identify all columns that start with 'likelihood_action'
-likelihood_columns <- grep("^likelihood_action", colnames(fixed_twenty_eighteen), value = TRUE)
-
-# Create an empty data frame to store the combined summary
-combined_likelihood_summary <- data.frame()
-
-# Loop through each likelihood_action column, summarize, and combine
-for (col in likelihood_columns) {
-  
-  # Create a summary table for each column
-  summary_table <- as.data.frame(table(fixed_twenty_eighteen[[col]]))
-  
-  # Rename columns for clarity
-  names(summary_table) <- c("Likelihood", "Freq")
-  
-  # Calculate the percentage
-  summary_table$Percentage <- round((summary_table$Freq / sum(summary_table$Freq)) * 100)
-  
-  # Add a new column indicating the action name
-  summary_table$Action <- col
-  
-  # Append the summary table to the combined table
-  combined_likelihood_summary <- rbind(combined_likelihood_summary, summary_table)
-}
-
-# Reorder columns for clarity (Action, Likelihood, Percentage)
-combined_likelihood_summary <- combined_likelihood_summary[, c("Action", "Likelihood", "Percentage")]
-
-# Pivot the table to have Actions as columns and Likelihood categories as rows
-likelihood_summary_18 <- combined_likelihood_summary %>%
-  pivot_wider(names_from = Action, values_from = Percentage)
-
-# Create a named vector with old and new column names for renaming
+# Rename Columns (if not already done)
 new_column_names <- c(
-  "likelihood_action_home_improvement_18" = "Home Improvement",
-  "likelihood_action_reduce_hydro_18" = "Reduce Hydro Usage",
-  "likelihood_action_minimize_car_18" = "Minimize Car Use",
-  "likelihood_action_vehicle_electric_18" = "Electric/Hybrid Vehicle",
-  "likelihood_action_protein_alternative_18" = "Meat Alternatives",
-  "likelihood_action_reduce_waste_18" = "Reduce Waste",
-  "likelihood_action_green_product_18" = "Purchase Green Products",
-  "likelihood_action_short_distance_18" = "Walk/Cycle Short Distances",
-  "likelihood_action_sort_waste_18" = "Sort Waste Correctly"
+  "likelihood_action_home_improvement" = "Home Improvement",
+  "likelihood_action_reduce_hydro" = "Reduce Hydro Usage",
+  "likelihood_action_minimize_car" = "Minimize Car Use",
+  "likelihood_action_vehicle_electric" = "Electric/Hybrid Vehicle",
+  "likelihood_action_protein_alternative" = "Meat Alternatives",
+  "likelihood_action_reduce_waste" = "Reduce Waste",
+  "likelihood_action_green_product" = "Purchase Green Products",
+  "likelihood_action_short_distance" = "Walk/Cycle Short Distances",
+  "likelihood_action_sort_waste" = "Sort Waste Correctly"
 )
 
-# Check which columns are in the dataframe before renaming
+# Rename only columns that exist in the data frame
 existing_column_names <- intersect(names(likelihood_summary_18), names(new_column_names))
 
-# Only rename columns that exist in the dataframe
 likelihood_summary_18 <- likelihood_summary_18 %>%
   rename_with(~ new_column_names[.], .cols = existing_column_names)
 
-# View the renamed table
+# Remove Backticks and Replace Periods with Spaces
+colnames(likelihood_summary_18) <- colnames(likelihood_summary_18) %>%
+  gsub("`", "", .) %>%  # Remove any backticks (if applicable)
+  gsub("\\.", " ", .)  # Replace periods with spaces
+
+# Set `check.names = FALSE` to prevent backticks
+likelihood_summary_18 <- as.data.frame(likelihood_summary_18, check.names = FALSE)
+
+# View the Cleaned Data Frame
 print(likelihood_summary_18)
 
-# TO DO: remove extra single quotation mark on all columns in this table except likelihood column
+# Save as Parquet File
+write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+
 
 
 
 ## 5. Reasons Summary ##
 
-# Step 1: Load necessary libraries
-library(dplyr)
 
-# Step 2: Identify columns starting with "unlikelihood_action"
+# Step 1: Identify columns starting with "unlikelihood_action"
 action_columns <- grep("^unlikelihood_action", names(fixed_twenty_eighteen), value = TRUE)
 
-# Step 3: Count the number of non-NA values for each column (reason)
-non_na_counts <- sapply(fixed_twenty_eighteen[, action_columns], function(x) sum(!is.na(x)))
-
-# Display the counts of non-NA values for each action column
-print(non_na_counts)
-
-# Step 4: Calculate percentages for each reason for each action
-# Define all possible reasons
+# Step 2: Define all possible reasons
 reasons <- c("Confusing", "Costly", "Inconvenient", "Individual Difference", 
              "Ineffective", "Other", "Unavailable", "Uninterested")
 
-# Initialize a list to store the tables
-tables <- list()
+# Initialize an empty data frame to store results
+reason_summary <- data.frame()
 
-# Step 5: Loop through each action column to calculate reason percentages
+# Step 3: Loop through each action column and calculate percentages for each reason
 for (action in action_columns) {
-  # Get the data for the current action
   action_data <- fixed_twenty_eighteen[[action]]
   
-  # Initialize a vector to store the percentage for each reason
-  reason_percentages <- numeric(length(reasons))
+  # Calculate the total number of non-NA responses for the current action
+  total_non_na <- sum(!is.na(action_data))
   
-  # Loop through each reason to calculate the percentage
-  for (i in seq_along(reasons)) {
-    # Calculate the percentage of each reason in the action column
-    reason_count <- sum(action_data == reasons[i], na.rm = TRUE)
-    reason_percentages[i] <- (reason_count / non_na_counts[action]) * 100
-  }
+  # Calculate the percentage of each reason in the action column
+  reason_percentages <- sapply(reasons, function(reason) {
+    reason_count <- sum(action_data == reason, na.rm = TRUE)
+    if (total_non_na > 0) {
+      round((reason_count / total_non_na) * 100)  # Calculate and round percentage
+    } else {
+      0  # If no responses, set percentage to 0
+    }
+  })
   
-  # Create a table with reasons and their corresponding percentages
-  action_table <- tibble(Reason = reasons, Percentage = reason_percentages)
+  # Create a data frame for the current action
+  action_df <- data.frame(
+    Reason = reasons,
+    Percentage = reason_percentages,
+    Action = gsub("unlikelihood_action_", "", action)  # Remove prefix for clarity
+  )
   
-  # Store the table in the list
-  tables[[action]] <- action_table
+  # Add the action-specific data to the combined summary
+  reason_summary <- rbind(reason_summary, action_df)
 }
 
-# Step 6: Print the tables
-for (action in names(tables)) {
-  cat("===========================\n")
-  cat("Table for:", action, "\n")
-  cat("===========================\n")
-  print(tables[[action]])
-  cat("\n")
-}
+# Step 4: Pivot the table to create a wide-format table
+reason_summary_wide <- reason_summary %>%
+  pivot_wider(names_from = Action, values_from = Percentage, values_fill = list(Percentage = 0))
 
+# Step 5: Rename columns for better readability
+new_column_names <- c(
+  "Reason",  # First column
+  "Home Improvement",
+  "Reduce Hydro Usage",
+  "Minimize Car Use",
+  "Electric / Hybrid Vehicle",
+  "Meat Alternatives",
+  "Reduce Waste",
+  "Purchase Green Products",
+  "Walk / Cycle Short Distances",
+  "Sort Waste Correctly"
+)
+
+# Apply new column names (ensure lengths match)
+colnames(reason_summary_wide) <- new_column_names
+
+# Step 6: Print the final table
+print(reason_summary_wide)
+save as reasons_summary_18
 
 
 
 #### 6. Communication Summary ####
 
-# Step 1: Filter columns that start with "delivery_method"
-communication_columns <- fixed_twenty_eighteen %>%
+# Filter columns that start with "delivery_method"
+communication_columns <- twenty_eighteen %>%
   select(starts_with("delivery_method"))
 
 # Step 2: Convert to long format to aggregate all delivery methods
