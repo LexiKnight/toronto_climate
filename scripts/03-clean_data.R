@@ -166,6 +166,18 @@ fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
                .)  # Keep NA as is
     )
   )
+
+fixed_twenty_eighteen <- fixed_twenty_eighteen %>%
+  mutate(
+    across(
+      starts_with("delivery_method"),  # Apply to columns starting with 'delivery_method'
+      ~ ifelse(str_starts(., "NO TO:"), "no", .)  # Replace "NO TO:" with "no", leave other values unchanged
+    )
+  )
+
+
+
+
 # View the first few rows to confirm the data
 head(fixed_twenty_eighteen)
 

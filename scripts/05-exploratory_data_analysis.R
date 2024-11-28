@@ -190,49 +190,109 @@ ggplot(actions_data, aes(x = action, fill = likelihood)) +
 
 
 # Create a figure illustrating reasons why people are not taking specific action to mitigate climate change
-# Step 1: Filter only relevant columns and reshape the data
-selected_cols <- individual_18 %>%
-  select(contains("unlikelihood_action")) %>% 
-  summarise(across(everything(), ~ sum(. == "yes") > 0)) %>% 
-  select(where(~ .)) %>% 
-  names()
 
-# Step 2: Reshape the data and clean action names
-data_long <- individual_18 %>%
-  select(all_of(selected_cols)) %>%
-  pivot_longer(everything(),
-               names_to = c("action", "reason"),
-               names_pattern = "unlikelihood_action_(.*)_(.*)_18",
-               values_to = "response") %>%
-  filter(response == "yes") %>%
-  mutate(
-    # Step 3: Clean and simplify action names
-    action = case_when(
-      action == "home_improvement_individual" ~ "Home Improvement",
-      action == "reduce_waste_individual" ~ "Reduce Waste",
-      action == "short_distance_individual" ~ "Walk/Cycle Short Distances",
-      action == "valid_electric_individual" ~ "Electric/Hybrid Vehicle",
-      action == "mintimize_car_individual" ~ "Minimize Car Use",
-      action == "green_product_individual" ~ "Purchase Green Products",
-      action == "protein_alternative_individual" ~ "Meat Alternatives",
-      action == "reduce_hydro_individual" ~ "Reduce Hydro Usage",
-      TRUE ~ action  # Default case for actions already correctly named
-    )
+# Pivot to long format
+data_long <- fixed_twenty_eighteen %>%
+  pivot_longer(
+    cols = starts_with("unlikelihood_action"),  # Select all the columns starting with "unlikelihood_action"
+    names_to = c("action", "reason"),  # Separate action and reason
+    names_pattern = "unlikelihood_action_(.*)_(.*)_18",  # Extract action and reason parts from the column name
+    values_to = "response"  # Values will be stored under 'response'
   ) %>%
-  group_by(action, reason) %>%
-  summarise(count = n(), .groups = "drop") %>%
-  mutate(proportion = count / sum(count))
+  filter(!is.na(response)) %>%  # Filter out rows with NA responses
+  mutate(
+    action = case_when(  # Clean the action labels to ensure we have only 9 distinct actions
+      str_detect(action, "home_improvement") ~ "Home Improvement",
+      str_detect(action, "reduce_waste") ~ "Reduce Waste",
+      str_detect(action, "short_distance") ~ "Walk/Cycle Short Distances",
+      str_detect(action, "vehicle_electric") ~ "Electric/Hybrid Vehicle",
+      str_detect(action, "minimize_car") ~ "Minimize Car Use",
+      str_detect(action, "green_product") ~ "Purchase Green Products",
+      str_detect(action, "protein_alternative") ~ "Protein Alternatives",
+      str_detect(action, "reduce_hydro") ~ "Reduce Hydro Usage",
+      str_detect(action, "sort_waste") ~ "Sort Waste",
+      TRUE ~ action  # Default case if the action is already correctly labeled
+    )
+  )
 
-# Step 4: Plot with unique actions only
-ggplot(data_long, aes(x = action, y = proportion, fill = reason)) +
-  geom_bar(stat = "identity") +
-  labs(title = "Reasons for Unlikelihood of Taking Climate Change Actions",
-       x = "Climate Change Action",
-       y = "Proportion of 'Yes' Responses",
-       fill = "Reason") +
+# Summarize counts by action and reason (correctly count non-NA responses)
+data_summary <- data_long %>%
+  group_by(action, reason) %>%  # Group by both action and reason
+  summarise(count = n(), .groups = "drop")  # Count the frequency of each reason per action
+
+# Create a stacked bar chart
+ggplot(data_summary, aes(x = action, y = count, fill = reason)) +
+  geom_bar(stat = "identity") +  # Use 'identity' to use actual counts
+  labs(
+    title = "Reasons for Unlikelihood of Taking Climate Change Actions",
+    x = "Climate Change Action",
+    y = "Frequency of Responses",
+    fill = "Reason"
+  ) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
   scale_fill_manual(values = c(
-    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999"))
+    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999"))  # Customize colors
 
 
+# TO DO: pls come back to. the issue is that each "reason"category is appearing
+# to be the same weight.We need to look at how given a specific action (column), how we
+# count up  non-NA values (reasons). the count is displaying wrong. 
+
+
+
+
+
+
+# figure for method of communication 
+# Pivot data to long format for communication methods
+data_long <- fixed_twenty_eighteen %>%
+  pivot_longer(
+    cols = starts_with("delivery_method"),  # Select all the columns starting with "delivery_method"
+    names_to = "delivery_method",  # New column for the delivery method
+    values_to = "response"  # New column for responses (yes/no)
+  ) %>%
+  filter(response == "yes") %>%  # Filter to only include "yes" responses
+  mutate(
+    # Rename delivery_method columns to meaningful names
+    delivery_method = case_when(
+      str_detect(delivery_method, "toronto.ca_website") ~ "Toronto.ca website",
+      str_detect(delivery_method, "events") ~ "City of Toronto events",
+      str_detect(delivery_method, "twitter") ~ "Twitter",
+      str_detect(delivery_method, "facebook") ~ "Facebook",
+      str_detect(delivery_method, "instagram") ~ "Instagram",
+      str_detect(delivery_method, "enewsletter_email") ~ "City of Toronto e-newsletters / email",
+      str_detect(delivery_method, "councillor_communication") ~ "Councillor communications",
+      str_detect(delivery_method, "advertising_campaigns") ~ "Advertising campaigns",
+      str_detect(delivery_method, "brochures_pamphlets") ~ "Brochures, pamphlets",
+      str_detect(delivery_method, "other") ~ "Other",
+      str_detect(delivery_method, "not_interested_receiving") ~ "Not interested in receiving information",
+      TRUE ~ delivery_method  # Default case if something unexpected
+    )
+  )
+
+# Check the data_long structure to ensure it's pivoted and filtered correctly
+head(data_long)  # View first few rows of the pivoted data
+table(data_long$delivery_method)  # Check how many "yes" responses for each delivery method
+
+# Count the frequency of each delivery method (yes responses)
+data_summary <- data_long %>%
+  group_by(delivery_method) %>%
+  summarise(count = n(), .groups = "drop")  # Count the number of "yes" responses per method
+
+# Check the summary data to ensure counts are correct
+print(data_summary)
+
+# Create a bar chart if the summary data is correct
+ggplot(data_summary, aes(x = reorder(delivery_method, count), y = count, fill = delivery_method)) +
+  geom_bar(stat = "identity") +  # Use 'identity' to use actual counts
+  labs(
+    title = "Best Methods for the City to Deliver Information about Climate Change",
+    x = "Delivery Method",
+    y = "Frequency of 'Yes' Responses",
+    fill = "Delivery Method"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
+  scale_fill_manual(values = c(
+    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999", "#66CC99", "#FF6666"))  # Customize colors
