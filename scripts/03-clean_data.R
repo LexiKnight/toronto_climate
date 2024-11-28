@@ -160,18 +160,12 @@ renamed_twenty_eighteen <- renamed_twenty_eighteen %>%
 fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
   mutate(
     across(
-      starts_with("unlikelihood_action"), 
-      ~ ifelse(startsWith(., "NO TO"), 
-               paste(
-                 # Extract and format the action (second part of the name)
-                 str_to_title(str_extract(cur_column(), "unlikelihood_action_[^_]+_[^_]+")), 
-                 # Extract and format the reason (last part of the name)
-                 str_to_title(str_extract(cur_column(), "[^_]+$"))
-               ),
-               .)
+      starts_with("unlikelihood_action"),  # Apply to columns starting with 'unlikelihood_action'
+      ~ ifelse(!is.na(.),  # Only modify non-NA values
+               str_replace(str_extract(cur_column(), "[^_]+(?=_18$)"), "_", " "),  # Extract reason and format it
+               .)  # Keep NA as is
     )
   )
-
 # View the first few rows to confirm the data
 head(fixed_twenty_eighteen)
 
