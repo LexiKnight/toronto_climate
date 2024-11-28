@@ -248,6 +248,7 @@ informed_summary_18 <- informed_summary_18[, c("Informed Level", "Percentage")]
 # View the final informed summary table
 print(informed_summary_18)
 
+
 ## 4. Likelihood Action Summary ##
 
 # Identify all columns that start with 'likelihood_action'
@@ -282,26 +283,75 @@ combined_likelihood_summary <- combined_likelihood_summary[, c("Action", "Likeli
 likelihood_summary_18 <- combined_likelihood_summary %>%
   pivot_wider(names_from = Action, values_from = Percentage)
 
-# View the final pivoted summary table
+# Create a named vector with old and new column names for renaming
+new_column_names <- c(
+  "likelihood_action_home_improvement_18" = "Home Improvement",
+  "likelihood_action_reduce_hydro_18" = "Reduce Hydro Usage",
+  "likelihood_action_minimize_car_18" = "Minimize Car Use",
+  "likelihood_action_vehicle_electric_18" = "Electric/Hybrid Vehicle",
+  "likelihood_action_protein_alternative_18" = "Meat Alternatives",
+  "likelihood_action_reduce_waste_18" = "Reduce Waste",
+  "likelihood_action_green_product_18" = "Purchase Green Products",
+  "likelihood_action_short_distance_18" = "Walk/Cycle Short Distances",
+  "likelihood_action_sort_waste_18" = "Sort Waste Correctly"
+)
+
+# Check which columns are in the dataframe before renaming
+existing_column_names <- intersect(names(likelihood_summary_18), names(new_column_names))
+
+# Only rename columns that exist in the dataframe
+likelihood_summary_18 <- likelihood_summary_18 %>%
+  rename_with(~ new_column_names[.], .cols = existing_column_names)
+
+# View the renamed table
 print(likelihood_summary_18)
+
+# TO DO: remove extra single quotation mark on all columns in this table except likelihood column
+
 
 
 ## 5. Reasons Summary ##
+## Step 1: Rename action columns
 
-# Transform the data and calculate the percentage of "yes" for each action column
+# Create a named vector to rename columns to descriptive action names
+new_column_names <- c(
+  "unlikelihood_action_home_improvement" = "Home Improvement",
+  "unlikelihood_action_reduce_hydro" = "Reduce Hydro Usage",
+  "unlikelihood_action_minimize_car" = "Minimize Car Use",
+  "unlikelihood_action_vehicle_electric" = "Electric/Hybrid Vehicle",
+  "unlikelihood_action_protein_alternative" = "Meat Alternatives",
+  "unlikelihood_action_reduce_waste" = "Reduce Waste",
+  "unlikelihood_action_green_product" = "Purchase Green Products",
+  "unlikelihood_action_short_distance" = "Walk/Cycle Short Distances",
+  "unlikelihood_action_sort_waste" = "Sort Waste Correctly"
+)
+
+# Rename the columns in the dataset
+fixed_twenty_eighteen <- fixed_twenty_eighteen %>%
+  rename(!!!new_column_names)
+
+
+## Step 2: Transform data, count reasons, and calculate percentage
+
+# Reshape the data, filter out NAs, and replace "difference" with "individual difference"
 reasons_summary_18 <- fixed_twenty_eighteen %>%
-  select(starts_with("unlikelihood_action")) %>%
-  pivot_longer(cols = everything(), names_to = "Action", values_to = "Response") %>%
-  mutate(Response = ifelse(Response == "yes", 1, 0)) %>%  # Convert "yes" to 1 and "no" to 0
-  group_by(Action) %>%
-  summarise(Percentage = round(mean(Response, na.rm = TRUE) * 100, 0)) %>%
+  pivot_longer(cols = everything(), names_to = "Action", values_to = "Reason") %>%  # Reshape data to long format
+  filter(!is.na(Reason)) %>%                                                         # Remove NA values
+  mutate(
+    Reason = ifelse(Reason == "difference", "individual difference", Reason)          # Replace "difference" with "individual difference"
+  ) %>%
+  group_by(Action, Reason) %>%                                                       # Group by Action and Reason
+  summarise(
+    Frequency = n(),                                                                 # Count occurrences of each Reason
+    Percentage = round((Frequency / nrow(fixed_twenty_eighteen)) * 100, 0)            # Calculate percentage and round to whole number
+  ) %>%
   ungroup()
 
-# Rename columns for clarity
-colnames(reasons_summary_18) <- c("Action", "Percentage")
-
-# View the final summary table
+## Step 3: Display the final table
 print(reasons_summary_18)
+
+# but reason will not be a numerical value reason will be one of the following: confusing, difference, ineffective, costly, unavailable, inconvenient, uninterested or other. I would also like to rename the category "difference" to "individual difference". The percentage column will be a whole number
+
 
 
 #### 6. Communication Summary ####

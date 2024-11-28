@@ -245,16 +245,19 @@ ggplot(data_summary, aes(x = action, y = count, fill = reason)) +
 
 
 # figure for method of communication 
-# Pivot data to long format for communication methods
-data_long <- fixed_twenty_eighteen %>%
-  pivot_longer(
-    cols = starts_with("delivery_method"),  # Select all the columns starting with "delivery_method"
-    names_to = "delivery_method",  # New column for the delivery method
-    values_to = "response"  # New column for responses (yes/no)
-  ) %>%
-  filter(response == "yes") %>%  # Filter to only include "yes" responses
+# 1. Select columns that start with 'delivery_method' and count non-"no" values
+delivery_columns <- fixed_twenty_eighteen %>%
+  select(starts_with("delivery_method")) %>%
+  mutate(across(everything(), ~ ifelse(. == "no", NA, .)))  # Convert "no" to NA to easily count non-"no" values
+
+# 2. Count the number of non-NA (non-"no") responses for each column
+data_summary <- delivery_columns %>%
+  summarise(across(everything(), ~ sum(!is.na(.)))) %>%
+  pivot_longer(everything(), names_to = "delivery_method", values_to = "count")  # Pivot to long format
+
+# 3. Rename delivery_method columns to meaningful names
+data_summary <- data_summary %>%
   mutate(
-    # Rename delivery_method columns to meaningful names
     delivery_method = case_when(
       str_detect(delivery_method, "toronto.ca_website") ~ "Toronto.ca website",
       str_detect(delivery_method, "events") ~ "City of Toronto events",
@@ -271,28 +274,57 @@ data_long <- fixed_twenty_eighteen %>%
     )
   )
 
-# Check the data_long structure to ensure it's pivoted and filtered correctly
-head(data_long)  # View first few rows of the pivoted data
-table(data_long$delivery_method)  # Check how many "yes" responses for each delivery method
-
-# Count the frequency of each delivery method (yes responses)
-data_summary <- data_long %>%
-  group_by(delivery_method) %>%
-  summarise(count = n(), .groups = "drop")  # Count the number of "yes" responses per method
-
-# Check the summary data to ensure counts are correct
-print(data_summary)
-
-# Create a bar chart if the summary data is correct
+# 4. Create a bar chart for frequency of non-"no" responses for each delivery method
 ggplot(data_summary, aes(x = reorder(delivery_method, count), y = count, fill = delivery_method)) +
   geom_bar(stat = "identity") +  # Use 'identity' to use actual counts
   labs(
-    title = "Best Methods for the City to Deliver Information about Climate Change",
+    title = "Frequency of Non-'No' Responses for Communication Methods",
     x = "Delivery Method",
-    y = "Frequency of 'Yes' Responses",
+    y = "Frequency of Non-'No' Responses",
     fill = "Delivery Method"
   ) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
   scale_fill_manual(values = c(
-    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999", "#66CC99", "#FF6666"))  # Customize colors
+    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", 
+    "#D55E00", "#CC79A7", "#999999", "#66CC99", "#FF6666", "#8E44AD"))  
+
+# checking the count for each delivery method
+# 1. Select the columns that start with "delivery_method"
+# delivery_columns <- fixed_twenty_eighteen %>%
+  # select(starts_with("delivery_method"))
+
+# 2. Replace "no" with NA so that we can easily count non-"no" values
+# delivery_columns_clean <- delivery_columns %>%
+  # mutate(across(everything(), ~ ifelse(. == "no", NA, .)))
+
+# 3. Count the number of non-NA (non-"no") values for each column (delivery method)
+# data_summary <- delivery_columns_clean %>%
+  # summarise(across(everything(), ~ sum(!is.na(.)))) %>%
+  # pivot_longer(everything(), names_to = "delivery_method", values_to = "count")
+
+# Print the count for each delivery method
+#print(data_summary)
+
+
+
+
+
+
+
+
+### 2018 summary tables ###
+
+age_summary_18
+
+education_summary_18
+
+informed_summary_18
+
+likelihood_summary_18
+
+
+
+### 2021 summary tables ###
+
+
