@@ -157,7 +157,7 @@ fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
     ~ replace_na(., "No answer")
   ))
 
-fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
       starts_with("unlikelihood_action"),  # Apply to columns starting with 'unlikelihood_action'
@@ -167,173 +167,13 @@ fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
     )
   )
 
-fixed_twenty_eighteen <- fixed_twenty_eighteen %>%
+twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
       starts_with("delivery_method"),  # Apply to columns starting with 'delivery_method'
       ~ ifelse(str_starts(., "NO TO:"), "no", .)  # Replace "NO TO:" with "no", leave other values unchanged
     )
   )
-
-##### Clean  individual 2018 data ####
-
-# Read in the csv file
-twenty_eighteen_raw <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
-
-# Sample size information
-sample_size_2018 <- 404 # This is the sample size for the year 2018
-
-#  Select certain columns outlined below
-twenty_eighteen <- twenty_eighteen_raw %>%
-  select(HIDAGE1, Q2, Q10r1, Q10r2, Q10r3, Q10r4, Q10r5, Q10r6, Q10r7, Q10r8, Q10r9,
-  Q11_Lr1r1, Q11_Lr1r2, Q11_Lr1r3, Q11_Lr1r4, Q11_Lr1r5, Q11_Lr1r6, Q11_Lr1r7, Q11_Lr1r8,
-  Q11_Lr2r1, Q11_Lr2r2, Q11_Lr2r3, Q11_Lr2r4, Q11_Lr2r5, Q11_Lr2r6, Q11_Lr2r7, Q11_Lr2r8,
-  Q11_Lr3r1, Q11_Lr3r2, Q11_Lr3r3, Q11_Lr3r4, Q11_Lr3r5, Q11_Lr3r6, Q11_Lr3r7, Q11_Lr3r8,
-  Q11_Lr4r1, Q11_Lr4r2, Q11_Lr4r3, Q11_Lr4r4, Q11_Lr4r5, Q11_Lr4r6, Q11_Lr4r7, Q11_Lr4r8,
-  Q11_Lr5r1, Q11_Lr5r2, Q11_Lr5r3, Q11_Lr5r4, Q11_Lr5r5, Q11_Lr5r6, Q11_Lr5r7, Q11_Lr5r8,
-  Q11_Lr6r1, Q11_Lr6r2, Q11_Lr6r3, Q11_Lr6r4, Q11_Lr6r5, Q11_Lr6r6, Q11_Lr6r7, Q11_Lr6r8,
-  Q11_Lr7r1, Q11_Lr7r2, Q11_Lr7r3, Q11_Lr7r4, Q11_Lr7r5, Q11_Lr7r6, Q11_Lr7r7, Q11_Lr7r8,
-  Q11_Lr8r1, Q11_Lr8r2, Q11_Lr8r3, Q11_Lr8r4, Q11_Lr8r5, Q11_Lr8r6, Q11_Lr8r7, Q11_Lr8r8,
-  Q11_Lr9r1, Q11_Lr9r2, Q11_Lr9r3, Q11_Lr9r4, Q11_Lr9r5, Q11_Lr9r6, Q11_Lr9r7, Q11_Lr9r8,
-  Q13r1, Q13r2, Q13r3, Q13r4, Q13r5, Q13r6, Q13r7, Q13r8, Q13r9, Q13r10, Q13r11,
-  QD5)
-
-# Rename columns for clarity and meaning via rename() function
-twenty_eighteen <- twenty_eighteen %>%
-  rename(
-    age = HIDAGE1,
-    extent_consider_informed = Q2,
-    likelihood_action_home_improvement= Q10r1,
-    likelihood_action_reduce_hydro = Q10r2,
-    likelihood_action_minimize_car = Q10r3,
-    likelihood_action_vehicle_electric = Q10r4,
-    likelihood_action_protein_alternative = Q10r5,
-    likelihood_action_reduce_waste = Q10r6,
-    likelihood_action_green_product = Q10r7,
-    likelihood_action_short_distance = Q10r8,
-    likelihood_action_sort_waste = Q10r9,
-    unlikelihood_action_home_improvement_confusing = Q11_Lr1r1,
-    unlikelihood_action_home_improvement_individual_difference = Q11_Lr1r2,
-    unlikelihood_action_home_improvement_ineffective = Q11_Lr1r3,
-    unlikelihood_action_home_improvement_costly = Q11_Lr1r4,
-    unlikelihood_action_home_improvement_unavailable = Q11_Lr1r5,
-    unlikelihood_action_home_improvement_inconvenient = Q11_Lr1r6,
-    unlikelihood_action_home_improvement_uninterested = Q11_Lr1r7,
-    unlikelihood_action_home_improvement_other = Q11_Lr1r8,
-    unlikelihood_action_reduce_hydro_confusing = Q11_Lr2r1,
-    unlikelihood_action_reduce_hydro_individual_difference = Q11_Lr2r2,
-    unlikelihood_action_reduce_hydro_ineffective = Q11_Lr2r3,
-    unlikelihood_action_reduce_hydro_costly = Q11_Lr2r4,
-    unlikelihood_action_reduce_hydro_unavailable = Q11_Lr2r5,
-    unlikelihood_action_reduce_hydro_inconvenient = Q11_Lr2r6,
-    unlikelihood_action_reduce_hydro_uninterested = Q11_Lr2r7,
-    unlikelihood_action_reduce_hydro_other = Q11_Lr2r8,
-    unlikelihood_action_minimize_car_confusing = Q11_Lr3r1,
-    unlikelihood_action_minimize_car_individual_difference = Q11_Lr3r2,
-    unlikelihood_action_minimize_car_ineffective = Q11_Lr3r3,
-    unlikelihood_action_minimize_car_costly = Q11_Lr3r4,
-    unlikelihood_action_minimize_car_unavailable = Q11_Lr3r5,
-    unlikelihood_action_minimize_car_inconvenient = Q11_Lr3r6,
-    unlikelihood_action_minimize_car_uninterested = Q11_Lr3r7,
-    unlikelihood_action_minimize_car_other = Q11_Lr3r8,
-    unlikelihood_action_vehicle_electric_confusing = Q11_Lr4r1,
-    unlikelihood_action_vehicle_electric_individual_difference = Q11_Lr4r2,
-    unlikelihood_action_vehicle_electric_ineffective = Q11_Lr4r3,
-    unlikelihood_action_vehicle_electric_costly = Q11_Lr4r4,
-    unlikelihood_action_vehicle_electric_unavailable = Q11_Lr4r5,
-    unlikelihood_action_vehicle_electric_inconvenient = Q11_Lr4r6,
-    unlikelihood_action_vehicle_electric_uninterested = Q11_Lr4r7,
-    unlikelihood_action_vehicle_electric_other = Q11_Lr4r8,
-    unlikelihood_action_protein_alternative_confusing = Q11_Lr5r1,
-    unlikelihood_action_protein_alternative_individual_difference = Q11_Lr5r2,
-    unlikelihood_action_protein_alternative_ineffective = Q11_Lr5r3,
-    unlikelihood_action_protein_alternative_costly = Q11_Lr5r4,
-    unlikelihood_action_protein_alternative_unavailable = Q11_Lr5r5,
-    unlikelihood_action_protein_alternative_inconvenient = Q11_Lr5r6,
-    unlikelihood_action_protein_alternative_uninterested = Q11_Lr5r7,
-    unlikelihood_action_protein_alternative_other = Q11_Lr5r8,
-    unlikelihood_action_reduce_waste_confusing = Q11_Lr6r1,
-    unlikelihood_action_reduce_waste_individual_difference = Q11_Lr6r2,
-    unlikelihood_action_reduce_waste_ineffective = Q11_Lr6r3,
-    unlikelihood_action_reduce_waste_costly = Q11_Lr6r4,
-    unlikelihood_action_reduce_waste_unavailable = Q11_Lr6r5,
-    unlikelihood_action_reduce_waste_inconvenient = Q11_Lr6r6,
-    unlikelihood_action_reduce_waste_uninterested = Q11_Lr6r7,
-    unlikelihood_action_reduce_waste_other = Q11_Lr6r8,
-    unlikelihood_action_green_product_confusing = Q11_Lr7r1,
-    unlikelihood_action_green_product_individual_difference = Q11_Lr7r2,
-    unlikelihood_action_green_product_ineffective = Q11_Lr7r3,
-    unlikelihood_action_green_product_costly = Q11_Lr7r4,
-    unlikelihood_action_green_product_unavailable = Q11_Lr7r5,
-    unlikelihood_action_green_product_inconvenient = Q11_Lr7r6,
-    unlikelihood_action_green_product_uninterested = Q11_Lr7r7,
-    unlikelihood_action_green_product_other = Q11_Lr7r8,
-    unlikelihood_action_short_distance_confusing = Q11_Lr8r1,
-    unlikelihood_action_short_distance_individual_difference = Q11_Lr8r2,
-    unlikelihood_action_short_distance_ineffective = Q11_Lr8r3,
-    unlikelihood_action_short_distance_costly = Q11_Lr8r4,
-    unlikelihood_action_short_distance_unavailable = Q11_Lr8r5,
-    unlikelihood_action_short_distance_inconvenient = Q11_Lr8r6,
-    unlikelihood_action_short_distance_uninterested = Q11_Lr8r7,
-    unlikelihood_action_short_distance_other = Q11_Lr8r8,
-    unlikelihood_action_sort_waste_confusing = Q11_Lr9r1,
-    unlikelihood_action_sort_waste_individual_difference = Q11_Lr9r2,
-    unlikelihood_action_sort_waste_ineffective = Q11_Lr9r3,
-    unlikelihood_action_sort_waste_costly = Q11_Lr9r4,
-    unlikelihood_action_sort_waste_unavailable = Q11_Lr9r5,
-    unlikelihood_action_sort_waste_inconvenient = Q11_Lr9r6,
-    unlikelihood_action_sort_waste_uninterested = Q11_Lr9r7,
-    unlikelihood_action_sort_waste_other = Q11_Lr9r8,
-    delivery_method_toronto.ca_website = Q13r1,
-    delivery_method_events = Q13r2,
-    delivery_method_twitter = Q13r3,
-    delivery_method_facebook = Q13r4,
-    delivery_method_instagram = Q13r5,
-    delivery_method_enewsletter_email = Q13r6,
-    delivery_method_councillor_communication = Q13r7,
-    delivery_method_advertising_campaigns = Q13r8,
-    delivery_method_brochures_pamphlets = Q13r9,
-    delivery_method_other = Q13r10,
-    delivery_method_not_interested_receiving = Q13r11,
-    highest_level_educ = QD5
-  )
-# Change "NA" values to "No answer" in the relevant columns
-twenty_eighteen <- twenty_eighteen %>%
-  mutate(across(
-    c(likelihood_action_home_improvement, 
-      likelihood_action_reduce_hydro, 
-      likelihood_action_minimize_car, 
-      likelihood_action_vehicle_electric, 
-      likelihood_action_protein_alternative, 
-      likelihood_action_reduce_waste, 
-      likelihood_action_green_product, 
-      likelihood_action_short_distance, 
-      likelihood_action_sort_waste), 
-    ~ replace_na(., "No answer")
-  ))
-
-
-twenty_eighteen <- twenty_eighteen %>%
-  mutate(
-    across(
-      starts_with("unlikelihood_action"),  # Apply to columns starting with 'unlikelihood_action'
-      ~ ifelse(!is.na(.),  # Only modify non-NA values
-               str_replace(str_extract(cur_column(), "[^_]+(?=_18$)"), "_", " "),  # Extract reason and format it
-               .)  # Keep NA as is
-    )
-  )
-
-twenty_eighteen <- twenty_eighteen %>%
-  mutate(
-    across(
-      starts_with("delivery_method"),  # Apply to columns starting with 'delivery_method'
-      ~ case_when(
-        str_starts(., "NO:TO") ~ "no",  # Replace values starting with "NO:TO" with "no"
-        TRUE ~ str_replace(str_split(., "_")[[1]][3], "_", " ")  # Keep part after second underscore, replace "_" with space
-      )
-    )
-  )
-
 
 
 # View the first few rows to confirm the data
