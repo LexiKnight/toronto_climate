@@ -20,7 +20,8 @@ library(arrow) # for saving file as parquet
 library(tidyverse)
 library(tidyr)
 
-#### Clean  individual 2018 data ####
+
+#### Clean individual 2018 data ####
 
 # Read in the csv file
 twenty_eighteen_raw <- read_csv("data/01-raw_data/twenty_eighteen_raw_data.csv")
@@ -44,18 +45,18 @@ twenty_eighteen <- twenty_eighteen_raw %>%
   QD5)
 
 # Rename columns for clarity and meaning via rename() function
-renamed_twenty_eighteen <- twenty_eighteen %>%
+twenty_eighteen <- twenty_eighteen %>%
   rename(
     age = HIDAGE1,
     extent_consider_informed = Q2,
-    likelihood_action_home_improvement = Q10r1,
+    likelihood_action_home_improvement= Q10r1,
     likelihood_action_reduce_hydro = Q10r2,
     likelihood_action_minimize_car = Q10r3,
-    likelihood_action_vehicle_electric  = Q10r4,
-    likelihood_action_protein_alternative  = Q10r5,
+    likelihood_action_vehicle_electric = Q10r4,
+    likelihood_action_protein_alternative = Q10r5,
     likelihood_action_reduce_waste = Q10r6,
-    likelihood_action_green_product  = Q10r7,
-    likelihood_action_short_distance  = Q10r8,
+    likelihood_action_green_product = Q10r7,
+    likelihood_action_short_distance = Q10r8,
     likelihood_action_sort_waste = Q10r9,
     unlikelihood_action_home_improvement_confusing = Q11_Lr1r1,
     unlikelihood_action_home_improvement_individual_difference = Q11_Lr1r2,
@@ -87,7 +88,7 @@ renamed_twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_action_vehicle_electric_costly = Q11_Lr4r4,
     unlikelihood_action_vehicle_electric_unavailable = Q11_Lr4r5,
     unlikelihood_action_vehicle_electric_inconvenient = Q11_Lr4r6,
-    unlikelihood_action_vehicle_electric_uninterested_18 = Q11_Lr4r7,
+    unlikelihood_action_vehicle_electric_uninterested = Q11_Lr4r7,
     unlikelihood_action_vehicle_electric_other = Q11_Lr4r8,
     unlikelihood_action_protein_alternative_confusing = Q11_Lr5r1,
     unlikelihood_action_protein_alternative_individual_difference = Q11_Lr5r2,
@@ -143,7 +144,7 @@ renamed_twenty_eighteen <- twenty_eighteen %>%
     highest_level_educ = QD5
   )
 # Change "NA" values to "No answer" in the relevant columns
-fixed_twenty_eighteen <- renamed_twenty_eighteen %>%
+twenty_eighteen <- twenty_eighteen %>%
   mutate(across(
     c(likelihood_action_home_improvement, 
       likelihood_action_reduce_hydro, 
@@ -173,6 +174,13 @@ twenty_eighteen <- twenty_eighteen %>%
       starts_with("delivery_method"),  # Apply to columns starting with 'delivery_method'
       ~ ifelse(str_starts(., "NO TO:"), "no", .)  # Replace "NO TO:" with "no", leave other values unchanged
     )
+  ) %>%
+  mutate(
+    delivery_method_events = ifelse(delivery_method_events != "no", "events", "no"),
+    delivery_method_enewsletter_email = ifelse(delivery_method_enewsletter_email != "no", "enewsletter/email", "no"),
+    delivery_method_advertising_campaigns = ifelse(delivery_method_advertising_campaigns != "no", "advertising campaigns", "no"),
+    delivery_method_brochures_pamphlets = ifelse(delivery_method_brochures_pamphlets != "no", "brochures/pamphlets", "no"),
+    delivery_method_other = ifelse(delivery_method_other != "no", "other", "no")
   )
 
 
@@ -182,6 +190,8 @@ head(twenty_eighteen)
 #### Save 2018 individual data ####
 write_parquet(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
 write_csv(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv")
+
+
 
 
 
