@@ -344,39 +344,44 @@ action_categories <- c(
   "Sort Waste Correctly"
 )
 
-# Loop through each action column and count the number of "unlikely" occurrences
-for (action in action_columns) {
-  # Get the reason from the column name by removing the prefix and reason part
-  reason_part <- gsub("^unlikelihood_action_", "", action)
-  reason_part <- gsub(paste(reasons, collapse = "|"), "", reason_part)  # Remove reason from the action name
+# Loop through each reason and action column to count "unlikely" occurrences
+for (reason in reasons) {
+  # Initialize a list to store counts for each action category
+  reason_counts <- list()
   
-  # Count the number of "unlikely" occurrences in the current action column
-  action_data <- twenty_eighteen[[action]]
-  unlikely_count <- sum(tolower(trimws(action_data)) == "unlikely", na.rm = TRUE)
+  for (action in action_columns) {
+    # Check if the column contains the reason in its name
+    if (grepl(reason, action)) {
+      # Get the action name by removing the prefix and reason part
+      action_name <- gsub("^unlikelihood_action_", "", action)
+      action_name <- gsub(paste0("_", reason), "", action_name)  # Remove the reason part from the action name
+      
+      # Count the number of "unlikely" occurrences in the current action column
+      action_data <- twenty_eighteen[[action]]
+      unlikely_count <- sum(tolower(trimws(action_data)) == "unlikely", na.rm = TRUE)
+      
+      # Add the count to the reason_counts list for the current action category
+      reason_counts[[action_name]] <- unlikely_count
+    }
+  }
   
-  # Add the count to a data frame with the reason (the cleaned action name) and the corresponding action
-  action_df <- data.frame(
-    Reason = reason_part,  # Renaming "unlikely" with the cleaned action name
-    Count = unlikely_count,
-    Action = gsub("unlikelihood_action_", "", action)  # Clean the action name
-  )
+  # Combine the reason and its corresponding counts for all actions
+  reason_summary_row <- c(Reason = reason, reason_counts)
   
-  # Add the action-specific data to the combined summary
-  reason_summary_18 <- rbind(reason_summary_18, action_df)
+  # Add the row to the final reason summary data frame
+  reason_summary_18 <- rbind(reason_summary_18, reason_summary_row)
 }
 
-# Pivot the table to create a wide-format table
+# Convert the result into a tibble for better formatting
+reason_summary_18 <- as_tibble(reason_summary_18)
+
+# Ensure the column order matches the expected order
 reason_summary_18 <- reason_summary_18 %>%
-  pivot_wider(names_from = Action, values_from = Count, values_fill = list(Count = 0))
+  select(Reason, action_categories)
 
-# Rename columns to match the desired action categories
-colnames(reason_summary_18)[-1] <- action_categories
-
-# Print the final table
+# Print the summary table
 print(reason_summary_18)
 
-# Save as Parquet File (optional)
-write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_summary.parquet")
 
 
 
