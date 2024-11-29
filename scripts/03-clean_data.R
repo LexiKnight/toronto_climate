@@ -267,31 +267,55 @@ write_parquet(informed_summary_18, "data/02-analysis_data/twenty_eighteen_indivi
 
 
 
+
+
 ## 4. Likelihood Action Summary ##
 
 # Identify columns starting with "likelihood_action"
 likelihood_columns <- grep("^likelihood_action", names(twenty_eighteen), value = TRUE)
 
-# Create the summary table based on the likelihood action categories
+# Subset only the first 9 columns/actions (based on the actions you specified)
+likelihood_columns <- likelihood_columns[1:9]
+
+# Define the new names for the columns based on the actions you described
+action_names <- c(
+  "Home Improvement",
+  "Reduce Hydro Use",
+  "Minimize Car Use",
+  "Electric / Hybrid Vehicle",
+  "Meat Alternative",
+  "Reduce Waste",
+  "Purchase Green Product",
+  "Walk / Cycle Short Distance",
+  "Sort Waste Correctly"
+)
+
+# Create the summary table based on the likelihood action categories and convert to percentages
 likelihood_summary_18 <- lapply(likelihood_columns, function(col) {
-  # Create a table of counts for each action (if it's a factor or categorical variable)
-  table(twenty_eighteen[[col]])
+  counts <- table(twenty_eighteen[[col]])
+  percentages <- round(100 * counts / sum(counts))  # Convert counts to percentages, round to whole numbers
+  return(percentages)
 })
 
 # Convert the list of tables into a data frame
-likelihood_summary_18 <- as.data.frame(likelihood_summary_18)
+likelihood_summary_18 <- as.data.frame(do.call(cbind, likelihood_summary_18))
 
-# Optionally, assign column names based on the original column names (e.g., from grep result)
-names(likelihood_summary_18) <- sub("^likelihood_action_", "", likelihood_columns)
+# Add "Likelihood" as a new first column with factor labels (extracting from row names)
+likelihood_summary_18 <- cbind(Likelihood = rownames(likelihood_summary_18), likelihood_summary_18)
 
-# Remove Backticks and Replace Periods with Spaces in Column Names
-colnames(likelihood_summary_18) <- gsub("`", "", colnames(likelihood_summary_18))  # Remove any backticks (if applicable)
-colnames(likelihood_summary_18) <- gsub("\\.", " ", colnames(likelihood_summary_18))  # Replace periods with spaces
+# Rename "Already doing this or have done this" to "Doing / have done"
+likelihood_summary_18$Likelihood <- sub("Already doing this or have done this", "Doing / have done", likelihood_summary_18$Likelihood)
 
-# View the Cleaned Data Frame
+# Assign correct column names (Likelihood + action names) to the data frame
+colnames(likelihood_summary_18) <- c("Likelihood", action_names)
+
+# Ensure row names are not mistakenly treated as data, and remove row names for clean export
+rownames(likelihood_summary_18) <- NULL
+
+# Print the cleaned data frame to verify the structure
 print(likelihood_summary_18)
 
-# Save as Parquet File
+# Save as Parquet File (Ensure data is written as a data frame, not matrix)
 write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
 
 
@@ -308,20 +332,33 @@ reasons <- c("Confusing", "Costly", "Inconvenient", "Individual Difference",
 # Initialize an empty data frame to store results
 reason_summary_18 <- data.frame()
 
-# Loop through each action column and calculate counts for each reason
+# Define the action categories (the names of the columns you're interested in)
+action_categories <- c(
+  "Home Improvement", 
+  "Reduce Hydro Use", 
+  "Electric / Hybrid Car", 
+  "Meat Alternative", 
+  "Reduce Waste", 
+  "Purchase Green Products", 
+  "Walk / Cycle Short Distance", 
+  "Sort Waste Correctly"
+)
+
+# Loop through each action column and count the number of "unlikely" occurrences
 for (action in action_columns) {
+  # Get the reason from the column name by removing the prefix and reason part
+  reason_part <- gsub("^unlikelihood_action_", "", action)
+  reason_part <- gsub(paste(reasons, collapse = "|"), "", reason_part)  # Remove reason from the action name
+  
+  # Count the number of "unlikely" occurrences in the current action column
   action_data <- twenty_eighteen[[action]]
+  unlikely_count <- sum(tolower(trimws(action_data)) == "unlikely", na.rm = TRUE)
   
-  # Calculate the count of each reason in the action column
-  reason_counts <- sapply(reasons, function(reason) {
-    sum(action_data == reason, na.rm = TRUE)  # Count how many times the reason appears
-  })
-  
-  # Create a data frame for the current action
+  # Add the count to a data frame with the reason (the cleaned action name) and the corresponding action
   action_df <- data.frame(
-    Reason = reasons,
-    Count = reason_counts,
-    Action = gsub("unlikelihood_action_", "", action)  # Remove prefix for clarity
+    Reason = reason_part,  # Renaming "unlikely" with the cleaned action name
+    Count = unlikely_count,
+    Action = gsub("unlikelihood_action_", "", action)  # Clean the action name
   )
   
   # Add the action-specific data to the combined summary
@@ -332,15 +369,14 @@ for (action in action_columns) {
 reason_summary_18 <- reason_summary_18 %>%
   pivot_wider(names_from = Action, values_from = Count, values_fill = list(Count = 0))
 
-# Dynamically rename columns based on the pivoted action column names
-# The first column will remain "Reason"
-colnames(reason_summary_18)[-1] <- gsub("unlikelihood_action_", "", action_columns)
+# Rename columns to match the desired action categories
+colnames(reason_summary_18)[-1] <- action_categories
 
 # Print the final table
 print(reason_summary_18)
 
-# Save as Parquet File
-write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+# Save as Parquet File (optional)
+write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_summary.parquet")
 
 
 
@@ -369,26 +405,6 @@ colnames(communication_summary_18)[2] <- "Percentage"
 
 # Step 5: View the final communication summary table
 print(communication_summary_18)
-
-
-
-#### 7. Combine All Tables ####
-
-# Combine all the summary tables into one data frame
-# combined_summary_18 <- bind_rows(
-  # age_summary_18 %>% mutate(summary_type = "Age Group"),
-  # education_summary_18 %>% mutate(summary_type = "Education Level"),
-  # informed_summary_18 %>% mutate(summary_type = "Informed Extent"),
-  # likelihood_summary_18 %>% mutate(summary_type = "Likelihood Action"),
-  # reasons_summary_18 %>% mutate(summary_type = "Reasons for Unlikeliness"),
-  # communication_summary_18 %>% mutate(summary_type = "Communication Method")
-# )
-
-print(combined_summary_18)
-
-#### Save 2018 summary data ####
-# write_parquet(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.parquet")
-# write_csv(combined_summary_18, "data/02-analysis_data/twenty_eighteen_summary_analysis_data.csv")
 
 
 
