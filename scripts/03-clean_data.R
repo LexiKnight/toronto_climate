@@ -9,8 +9,7 @@
 
 #### Workspace setup ####
 # install necessary packages
-# install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow","tidyverse", "tidyr", "stringr"))
-install.packages("tinytable")
+# install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow","tidyverse", "tidyr", "stringr", "tinytable"))
 
 # load necessary packages
 library(readr)
@@ -202,10 +201,6 @@ write_csv(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_ana
 
 
 
-
-
-
-
 #### Clean data summary 2018 dataset ####
 
 # Read the csv file
@@ -267,11 +262,11 @@ write_parquet(education_summary_18, "data/02-analysis_data/twenty_eighteen_indiv
 informed_summary_18 <- as.data.frame(table(twenty_eighteen$extent_consider_informed))
 
 # Rename columns and calculate the percentage
-names(informed_summary_18) <- c("Informed Level", "Freq")
+names(informed_summary_18) <- c("Extent Informed", "Freq")
 informed_summary_18$Percentage <- round((informed_summary_18$Freq / sum(informed_summary_18$Freq)) * 100)
 
 # Keep only the informed level and percentage columns
-informed_summary_18 <- informed_summary_18[, c("Informed Level", "Percentage")]
+informed_summary_18 <- informed_summary_18[, c("Extent Informed", "Percentage")]
 
 # Create the table using tinytable
 informed_summary_18_table <- tt(informed_summary_18)
@@ -317,14 +312,14 @@ likelihood_summary_18 <- lapply(likelihood_columns, function(col) {
 # Convert the list of tables into a data frame
 likelihood_summary_18 <- as.data.frame(do.call(cbind, likelihood_summary_18))
 
-# Add "Likelihood" as a new first column with factor labels (extracting from row names)
-likelihood_summary_18 <- cbind(Likelihood = rownames(likelihood_summary_18), likelihood_summary_18)
+# Add "Likelihood to Take Action" as a new first column with factor labels (extracting from row names)
+likelihood_summary_18 <- cbind(Likelihood_to_Take_Action = rownames(likelihood_summary_18), likelihood_summary_18)
 
 # Rename "Already doing this or have done this" to "Doing / have done"
-likelihood_summary_18$Likelihood <- sub("Already doing this or have done this", "Doing / have done", likelihood_summary_18$Likelihood)
+likelihood_summary_18$Likelihood_to_Take_Action <- sub("Already doing this or have done this", "Doing / have done", likelihood_summary_18$Likelihood_to_Take_Action)
 
-# Assign correct column names (Likelihood + action names) to the data frame
-colnames(likelihood_summary_18) <- c("Likelihood", action_names)
+# Assign correct column names (Likelihood to Take Action + action names) to the data frame
+colnames(likelihood_summary_18) <- c("Likelihood to Take Action", action_names)
 
 # Ensure row names are not mistakenly treated as data, and remove row names for clean export
 rownames(likelihood_summary_18) <- NULL
@@ -344,10 +339,10 @@ write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_indi
 
 
 
-
 ## 5. Reasons Summary ##
 # TO DO: column headers are not showing up properly. the count seems messed up as well :(
 # TO DO: use tinytable
+# TO DO: change first column in new table to be "Reasons unlikely to take action"
 
 # Reshape data from wide to long format
 twenty_eighteen_long <- twenty_eighteen %>%
@@ -401,9 +396,6 @@ write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_
 
 
 
-
-
-
 ## 6. Delivery Summary ##
 
 # Select all columns starting with "delivery_method"
@@ -431,12 +423,12 @@ delivery_summary_18 <- delivery_summary_18 %>%
                                   "not_interested_receiving" = "Not Interested in Receiving"),
          Percentage = round(Percentage)) %>%
   filter(Delivery_Method != "total_rows") %>%
-  rename("Delivery Method" = Delivery_Method)  # Rename column
+  rename("Communication Method" = Delivery_Method)  # Rename column to "Communication Method"
 
 # Create the table using tinytable (similar to age and education examples)
 delivery_summary_18_table <- tinytable::tt(delivery_summary_18, 
                                            row.names = FALSE, 
-                                           col.names = c("Delivery Method", "Percentage"), 
+                                           col.names = c("Communication Method", "Percentage"), 
                                            escape = FALSE)
 
 # Print the table
@@ -448,10 +440,14 @@ write_parquet(delivery_summary_18, "data/02-analysis_data/delivery_summary_18.pa
 
 
 
+
+
+
+
 #### Clean data 2021 ####
 
 # File path to the saved workbook
-file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
+twenty_twenty_one <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
 
 # Sample size information
 sample_size_2021 <- 1401 # This is the sample size for the year 2021
@@ -459,7 +455,7 @@ sample_size_2021 <- 1401 # This is the sample size for the year 2021
 ## Age - sheet 3 ##
 
 # Extract data from Sheet 3 + 1 (accounting for the index sheet)
-sheet4_data <- read_excel(file_path, sheet = 4)
+sheet4_data <- read_excel(twenty_twenty_one, sheet = 4)
 
 # Define rows and columns for Sheet 3 that want extract 
 rows_A <- c(7, 10, 13, 16)  # Categories in column A (age categories)
@@ -489,10 +485,21 @@ age_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(age_summary_21) <- c("Age Group", "Age Percentage")
+colnames(age_summary_21) <- c("Age Group", "Percentage")
 
-# Print the consolidated data to check
-print(age_summary_21)
+# Create the table using tinytable
+age_summary_21_table <- tt(age_summary_21)
+
+# Print the styled table
+age_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("age_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(age_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Age Group", "Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
 
 
 
@@ -501,7 +508,7 @@ print(age_summary_21)
 ## education - sheet 11 ##
 
 # Extract data from Sheet 11 + 1 (accounting for the index sheet)
-sheet12_data <- read_excel(file_path, sheet = 12)
+sheet12_data <- read_excel(twenty_twenty_one, sheet = 12)
 
 # Define rows and columns for Sheet 11 that want extract 
 rows_A <- c(7, 10, 13, 16, 19, 22)  # Categories in column A (education categories)
@@ -531,10 +538,21 @@ education_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(education_summary_21) <- c("Education Level", "Education Percentage")
+colnames(education_summary_21) <- c("Education Level", "Percentage")
 
-# Print the consolidated data to check
-print(education_summary_21)
+# Create the table using tinytable
+education_summary_21_table <- tt(education_summary_21)
+
+# Print the styled table
+education_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("education_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(education_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Education Level", "Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
 
 
 
@@ -543,7 +561,7 @@ print(education_summary_21)
 ## Extent Informed - sheet 34 ##
 
 # Extract data from Sheet 34 + 1 (accounting for the index sheet)
-sheet35_data <- read_excel(file_path, sheet = 35)
+sheet35_data <- read_excel(twenty_twenty_one, sheet = 35)
 
 # Define rows and columns for Sheet 11 that want extract 
 rows_A <- c(7, 10, 13, 16)  # Categories in column A (extent informed categories)
@@ -573,10 +591,21 @@ informed_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(informed_summary_21) <- c("Extent Informed", "Informed Percentage")
+colnames(informed_summary_21) <- c("Extent Informed", "Percentage")
 
-# Print the consolidated data to check
-print(informed_summary_21)
+# Create the table using tinytable
+informed_summary_21_table <- tt(informed_summary_21)
+
+# Print the styled table
+informed_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("informed_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(informed_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Extent Informed", "Informed Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
 
 
 
@@ -585,7 +614,7 @@ print(informed_summary_21)
 ## Likelihood Take Action - sheet 69 ##
 
 # Extract data from Sheet 69 + 1 (accounting for the index sheet)
-sheet70_data <- read_excel(file_path, sheet = 70)
+sheet70_data <- read_excel(twenty_twenty_one, sheet = 70)
 
 # Define rows and columns for Sheet 11 that want extract 
 rows_A <- c(5, 7, 9, 11, 13, 15, 17)  # Categories in column A (likelihood categories)
@@ -627,37 +656,67 @@ likelihood_summary_21 <- data.frame(
   percentage_list
 )
 
+# Remove the row with "Unsure"
+likelihood_summary_21 <- likelihood_summary_21 %>%
+  filter(Category != "Unsure")
+
+# Update column names
 colnames(likelihood_summary_21) <- c(
   "Likelihood to Take Action",
-  "Likely purchase energy efficient appliances",
-  "Likely install a programmable thermostat",
-  "Likely install LED lightbulbs",
-  "Likely undertake major home renos for energy efficiency",
-  "Likely add solar panels to home",
-  "Likely get an EnerGuide home energy evaluation to identify opportunities",
-  "Likely reduce water use",
-  "Likely use public transit more",
-  "Likely cycle more",
-  "Likely walk more",
-  "Likely purchase electric/hybrid vehicle in next 1-3 years",
-  "Likely eat less meat",
-  "Likely reduce amount of own waste",
-  "Likely purchase environmentally friendly items",
-  "Likely put effort into sorting waste into correct bins"
+  "Purchase energy efficient appliances",
+  "Install a programmable thermostat",
+  "Install LED lightbulbs",
+  "Major home renovations",
+  "Add solar panels to home",
+  "Get EnerGuide home energy evaluation",
+  "Reduce water use",
+  "Use public transit more",
+  "Cycle more",
+  "Walk more",
+  "Purchase electric/hybrid vehicle in next 1-3 years",
+  "Reduce meat consumption",
+  "Reduce own waste",
+  "Purchase environmentally friendly items",
+  "Sorting waste into correct bins"
 )
 
-# Print the consolidated data to check
-print("Likelihood Summary:")
-print(likelihood_summary_21)
+# Create the table using tinytable
+likelihood_summary_21_table <- tt(likelihood_summary_21)
+
+# Print the styled table
+likelihood_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("likelihood_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(likelihood_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Likelihood to Take Action", 
+                            "Purchase energy efficient appliances",
+                            "Install a programmable thermostat",
+                            "Install LED lightbulbs",
+                            "Major home renovations",
+                            "Add solar panels to home",
+                            "Get EnerGuide home energy evaluation",
+                            "Reduce water use",
+                            "Use public transit more",
+                            "Cycle more",
+                            "Walk more",
+                            "Purchase electric/hybrid vehicle in next 1-3 years",
+                            "Reduce meat consumption",
+                            "Reduce own waste",
+                            "Purchase environmentally friendly items",
+                            "Sort waste into correct bins"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
 
 
 
-
+              
 
 ## Reason Unlikely to Take Action - sheet 85 ##
 
 # Extract data from Sheet 85 + 1 (accounting for the index sheet)
-sheet86_data <- read_excel(file_path, sheet = 86)
+sheet86_data <- read_excel(twenty_twenty_one, sheet = 86)
 
 # Define rows and columns for Sheet 11 that want extract 
 rows_A <- c(5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33)  # Categories in column A (reason categories)
@@ -694,33 +753,84 @@ reasons_summary_21 <- data.frame(
   percentage_list
 )
 
-colnames(reasons_summary_21) <- c(
-  "Reasons unlikely to take action",
-  "Unlikely purchase energy efficient appliances",
-  "Unlikely install a programmable thermostat",
-  "Unlikely install LED lightbulbs",
-  "Unlikely undertake major home renos for energy efficiency",
-  "Unlikely add solar panels to home",
-  "Unlikely get an EnerGuide home energy evaluation to identify opportunities",
-  "Unlikely reduce water use",
-  "Unlikely eat less meat",
-  "Unlikely reduce amount of own waste",
-  "Unlikely purchase environmentally friendly items",
-  "Unlikely put effort into sorting waste into correct bins"
+# Define shorter names for the "Reasons unlikely to take action" categories
+shorter_categories <- c(
+  "Don't know enough",         # I don't know enough about this
+  "No individual difference",  # I don't think my individual actions will make a difference
+  "Not effective",             # I don't believe this is effective for addressing climate change
+  "Too expensive",             # This is too expensive for me
+  "Unavailable",               # This is not available for me to do
+  "Inconvenient",              # This is not convenient for me to do
+  "Not interested",            # I'm not interested in making this change
+  "Can't do this",             # I can’t do this
+  "Health concerns",           # Health concerns
+  "Hardly do/use",             # I hardly do/use/consume it
+  "Not vegetarian/vegan",      # I am not vegetarian/vegan/ I like meat
+  "Already do/have",           # I (already) do/have this
+  "Live in condo",             # I live in a condo
+  "Nothing",                   # Nothing
+  "Other"                      # Other
 )
 
-# Print the consolidated data to check
-print("Reasons Summary:")
-print(reasons_summary_21)
+# Check if the lengths match (in case there's a mismatch)
+if (length(shorter_categories) == length(reasons_summary_21$Category)) {
+  # Assign the shorter names to the 'Category' column in the reasons_summary_21 data frame
+  reasons_summary_21$Category <- shorter_categories
+} else {
+  warning("The number of shorter categories does not match the number of entries in the Category column.")
+}
+
+# Rename the column headers
+colnames(reasons_summary_21) <- c(
+  "Reasons unlikely to take action",
+  "Purchase energy efficient appliances",
+  "Install a programmable thermostat",
+  "Install LED lightbulbs",
+  "Major home renovations",
+  "Add solar panels to home",
+  "Get EnerGuide home energy evaluation",
+  "Reduce water use",
+  "Reduce meat consumption",
+  "Reduce own waste",
+  "Purchase environmentally friendly items",
+  "Sort waste into correct bins"
+)
+
+# Create the table using tinytable
+reasons_summary_21_table <- tt(reasons_summary_21)
+
+# Print the styled table
+reasons_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("reasons_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(reasons_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Reasons unlikely to take action", 
+                            "Purchase energy efficient appliances",
+                            "Install a programmable thermostat",
+                            "Install LED lightbulbs",
+                            "Major home renovations",
+                            "Add solar panels to home",
+                            "Get EnerGuide home energy evaluation",
+                            "Reduce water use",
+                            "Reduce meat consumption",
+                            "Reduce own waste",
+                            "Purchase environmentally friendly items",
+                            "Sort waste into correct bins"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
+
 
 
 
 
 
 ## City support - sheet 113 ##
+# Unsure if going to use this information
 
 # Extract data from Sheet 113 + 1 (accounting for the index sheet)
-sheet114_data <- read_excel(file_path, sheet = 114)
+sheet114_data <- read_excel(twenty_twenty_one, sheet = 114)
 
 # Define rows and columns for Sheet 113 that want extract 
 rows_A <- c(7, 10, 13, 16, 19,22, 25, 28, 31,34, 37,40, 43, 46, 49, 52, 55, 58,
@@ -755,10 +865,21 @@ support_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(support_summary_21) <- c("City Support to Motivate", "Support Percentage")
+colnames(support_summary_21) <- c("City Support to Motivate", "Percentage")
 
-# Print the consolidated data to check
-print(support_summary_21)
+# Create the table using tinytable
+support_summary_21_table <- tt(support_summary_21)
+
+# Print the styled table
+support_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("support_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(support_summary_21, 
+              row.names = FALSE, 
+              col.names = c("City Support to Motivate", "Support Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
 
 
 
@@ -768,7 +889,7 @@ print(support_summary_21)
 ## Methods of communication - sheet 114 ##
 
 # Extract data from Sheet 113 + 1 (accounting for the index sheet)
-sheet115_data <- read_excel(file_path, sheet = 115)
+sheet115_data <- read_excel(twenty_twenty_one, sheet = 115)
 
 # Define rows and columns for Sheet 113 that want extract 
 rows_A <- c(7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49)
@@ -803,10 +924,21 @@ communication_summary_21 <- data.frame(
 )
 
 # Rename the column headers
-colnames(communication_summary_21) <- c("Method of Communication", "Communication Percentage")
+colnames(communication_summary_21) <- c("Communication Method", "Percentage")
 
-# Print the consolidated data to check
-print(communication_summary_21)
+# Create the table using tinytable
+communication_summary_21_table <- tt(communication_summary_21)
+
+# Print the styled table
+communication_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("communication_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(communication_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Method of Communication", "Communication Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
 
 
 

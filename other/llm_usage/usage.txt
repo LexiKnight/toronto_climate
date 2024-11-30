@@ -24541,3 +24541,1009 @@ Let me know if you need further adjustments!
 
 LLM: ChatGPT-4.
 Date: 30 November 2024 
+
+User:
+do i need to save this to file_path? Can i do something more meaningful? #### Clean data 2021 ####
+
+# File path to the saved workbook
+file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
+ChatGPT said:
+When working with a file path, it’s good practice to use a meaningful or dynamic naming convention, especially when working on different datasets or versions. If you don't need to store the file path explicitly, you can directly reference the file in the code where it's used (e.g., when reading or saving data). However, using a variable like file_path can make your code cleaner and easier to maintain, especially if the file path might change or if you're reusing
+
+
+
+
+
+
+You said:
+great advice, thank you. Based on this code, can you save the table using tinytable? #### Clean data 2021 ####
+
+# File path to the saved workbook
+file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
+ChatGPT said:
+To save the table using tinytable based on your provided code, I assume that the data has already been cleaned or processed and that you want to output the table to a file (e.g., LaTeX, HTML, or directly as a .tex file). Here is how you can integrate tinytable to save the cleaned data to a file:
+
+# File path to the saved workbook
+file_path <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
+
+# Assuming you already have cleaned or processed data, for example:
+# Assuming 'cleaned_data_2021' is the cleaned data you want to save in a LaTeX table format
+
+# Example cleaned data (replace this with your actual cleaned data)
+cleaned_data_2021 <- read.xlsx(file_path)  # Load data if you need it
+
+# Save the table to a LaTeX file using tinytable
+sink("cleaned_data_2021_table.tex")  # Redirecting output to a file
+tinytable::tt(cleaned_data_2021, 
+              row.names = FALSE, 
+              col.names = TRUE,   # Use TRUE to include column names
+              escape = FALSE)     # Set to FALSE if you want to avoid escaping LaTeX special characters
+sink()  # Stop redirecting output to file
+Steps in the code:
+File path variable: You’ve defined the file path where the original data is located (file_path).
+Load your data: You can load or process the data from the provided file path.
+Tinytable output: The tinytable::tt() function is used to output the table from cleaned_data_2021 to a LaTeX file (cleaned_data_2021_table.tex in this case).
+sink(): This function redirects the output to a file, so the table is saved into a .tex file rather than being printed to the console.
+If you don’t want to save to a file and instead want to view the table directly in your R console, you can remove the sink() part and just call tinytable::tt() on the data.
+
+Let me know if you need any further refinements!
+
+
+
+
+
+
+You said:
+I like the way you saved the table wiht tinytable in this code chunk: ## 3. Informed Summary ##
+
+# Create the summary table based on the informed extent categories
+informed_summary_18 <- as.data.frame(table(twenty_eighteen$extent_consider_informed))
+
+# Rename columns and calculate the percentage
+names(informed_summary_18) <- c("Informed Level", "Freq")
+informed_summary_18$Percentage <- round((informed_summary_18$Freq / sum(informed_summary_18$Freq)) * 100)
+
+# Keep only the informed level and percentage columns
+informed_summary_18 <- informed_summary_18[, c("Informed Level", "Percentage")]
+
+# Create the table using tinytable
+informed_summary_18_table <- tt(informed_summary_18)
+
+# Print the styled table
+informed_summary_18_table
+
+# Save as Parquet
+write_parquet(informed_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet"). Can you save age_summary_21 in a similar way? also instead of file_path, im renaming the data to twenty_twenty_one for consistency
+ChatGPT said:
+Absolutely! Below is how you can save age_summary_21 in a similar way to how you did the informed_summary_18_table. I've renamed the dataset to twenty_twenty_one as requested, and the table will be printed using tinytable as in your previous code chunk.
+
+## 1. Age Summary ##
+
+# Create age categories based on ranges in 2021 summary data and summarize directly
+age_summary_21 <- as.data.frame(table(cut(twenty_twenty_one$age, 
+                                         breaks = c(17, 23, 39, 55, Inf), 
+                                         labels = c("18-23", "24-39", "40-55", "56+"), 
+                                         right = TRUE)))
+
+# Rename columns and calculate the percentage
+names(age_summary_21) <- c("Age Group", "Freq")
+age_summary_21$Percentage <- round((age_summary_21$Freq / sum(age_summary_21$Freq)) * 100)
+
+# Keep only the age group and percentage columns
+age_summary_21 <- age_summary_21[, c("Age Group", "Percentage")]
+
+# Create the table using tinytable
+age_summary_21_table <- tt(age_summary_21)
+
+# Print the styled table
+age_summary_21_table
+
+# Save as Parquet
+write_parquet(age_summary_21, "data/02-analysis_data/twenty_twenty_one_individual_analysis_data.parquet")
+Explanation:
+Age Summary Data: The age_summary_21 table is created by categorizing age into the specified age groups and calculating the frequency and percentage.
+Tinytable Styling: The table is styled using tt(age_summary_21) to print the table in a readable format directly in your R console.
+Saving as Parquet: The processed age_summary_21 table is saved as a Parquet file for further use, just like you did for the other tables.
+Let me know if you need further adjustments!
+
+
+
+
+
+
+You said:
+ok but this code works i just need to save the table with tinytext please
+ChatGPT said:
+Got it! To save the table using tinytable and ensure that it is saved as a .tex file (which is typically how LaTeX tables are saved using tinytable), you can adjust the code like this:
+
+## 1. Age Summary ##
+
+# Create age categories based on ranges in 2021 summary data and summarize directly
+age_summary_21 <- as.data.frame(table(cut(twenty_twenty_one$age, 
+                                         breaks = c(17, 23, 39, 55, Inf), 
+                                         labels = c("18-23", "24-39", "40-55", "56+"), 
+                                         right = TRUE)))
+
+# Rename columns and calculate the percentage
+names(age_summary_21) <- c("Age Group", "Freq")
+age_summary_21$Percentage <- round((age_summary_21$Freq / sum(age_summary_21$Freq)) * 100)
+
+# Keep only the age group and percentage columns
+age_summary_21 <- age_summary_21[, c("Age Group", "Percentage")]
+
+# Create the table using tinytable
+age_summary_21_table <- tt(age_summary_21)
+
+# Print the styled table
+age_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("age_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(age_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Age Group", "Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
+Key Changes:
+Saving to LaTeX File: The sink() function is used to redirect the output of tinytable::tt() to a .tex file, so the table is saved in LaTeX format.
+escape = FALSE: This ensures that any special characters in the table are not escaped, which is often necessary for LaTeX tables.
+This will create a file named age_summary_21_table.tex in your working directory, which can then be used in a LaTeX document. Let me know if you'd like any further adjustments!
+
+
+
+
+
+
+You said:
+and creating table with tinytable : ## education - sheet 11 ##
+
+# Extract data from Sheet 11 + 1 (accounting for the index sheet)
+sheet12_data <- read_excel(file_path, sheet = 12)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(7, 10, 13, 16, 19, 22)  # Categories in column A (education categories)
+rows_B <- c(8, 11, 14, 17, 20, 23)  # Data in column B
+
+# Extract the education categories from column A
+categories <- sheet12_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet12_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- round(raw_data_B_numeric * 100)
+
+## Save the education_summary_21 ##
+
+# Combine categories and percentages into a data frame
+education_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(education_summary_21) <- c("Education Level", "Percentage")
+
+# Print the consolidated data to check
+print(education_summary_21)
+ChatGPT said:
+To create the table using tinytable and save it as a LaTeX file for the education_summary_21 data, you can follow a similar approach as we did before. Here's the adjusted code:
+
+## Education - Sheet 11 ##
+
+# Extract data from Sheet 11 + 1 (accounting for the index sheet)
+sheet12_data <- read_excel(file_path, sheet = 12)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(7, 10, 13, 16, 19, 22)  # Categories in column A (education categories)
+rows_B <- c(8, 11, 14, 17, 20, 23)  # Data in column B
+
+# Extract the education categories from column A
+categories <- sheet12_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet12_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- round(raw_data_B_numeric * 100)
+
+## Save the education_summary_21 ##
+
+# Combine categories and percentages into a data frame
+education_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(education_summary_21) <- c("Education Level", "Percentage")
+
+# Create the table using tinytable
+education_summary_21_table <- tt(education_summary_21)
+
+# Print the styled table
+education_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("education_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(education_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Education Level", "Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
+Key Adjustments:
+Create the table using tinytable: As in the previous example, we create the LaTeX table with tt().
+Saving to a LaTeX file: The sink() function is used to redirect the output into a .tex file (education_summary_21_table.tex).
+Columns Renaming: The table is printed with the relevant column names: "Education Level" and "Percentage".
+This will create a LaTeX file (education_summary_21_table.tex) that contains the table based on your extracted data from Sheet 12. Let me know if you need further adjustments!
+
+
+
+
+
+
+You said:
+and for this one? ## Extent Informed - sheet 34 ##
+
+# Extract data from Sheet 34 + 1 (accounting for the index sheet)
+sheet35_data <- read_excel(file_path, sheet = 35)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(7, 10, 13, 16)  # Categories in column A (extent informed categories)
+rows_B <- c(8, 11, 14, 17)  # Data in column B
+
+# Extract the extent informed categories from column A
+categories <- sheet35_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet35_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- round(raw_data_B_numeric * 100)
+
+## Save the informed_summary_21 ##
+
+# Combine categories and percentages into a data frame
+informed_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(informed_summary_21) <- c("Extent Informed", "Informed Percentage")
+
+# Print the consolidated data to check
+print(informed_summary_21)
+ChatGPT said:
+To create and save the table using tinytable for the informed_summary_21 data from Sheet 35, here's how you can modify the code:
+
+## Extent Informed - sheet 34 ##
+
+# Extract data from Sheet 34 + 1 (accounting for the index sheet)
+sheet35_data <- read_excel(file_path, sheet = 35)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(7, 10, 13, 16)  # Categories in column A (extent informed categories)
+rows_B <- c(8, 11, 14, 17)  # Data in column B
+
+# Extract the extent informed categories from column A
+categories <- sheet35_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet35_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- round(raw_data_B_numeric * 100)
+
+## Save the informed_summary_21 ##
+
+# Combine categories and percentages into a data frame
+informed_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(informed_summary_21) <- c("Extent Informed", "Informed Percentage")
+
+# Create the table using tinytable
+informed_summary_21_table <- tt(informed_summary_21)
+
+# Print the styled table
+informed_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("informed_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(informed_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Extent Informed", "Informed Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
+Key Adjustments:
+Creating the table using tinytable: The tt() function is used to generate the LaTeX table.
+Saving the table: The sink() function is used to redirect the table output to a .tex file named informed_summary_21_table.tex.
+Column names: The final table will have column names "Extent Informed" and "Informed Percentage."
+This code will generate a LaTeX table from your informed_summary_21 data and save it as informed_summary_21_table.tex. You can now use the generated .tex file in your LaTeX document. Let me know if you need any further adjustments!
+
+
+
+
+
+
+You said:
+and for: 
+## Likelihood Take Action - sheet 69 ##
+
+# Extract data from Sheet 69 + 1 (accounting for the index sheet)
+sheet70_data <- read_excel(twenty_twenty_one, sheet = 70)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(5, 7, 9, 11, 13, 15, 17)  # Categories in column A (likelihood categories)
+rows_B_to_P <- c(6, 8, 10, 12, 14, 16, 18)  # Rows for data in columns B through P
+
+# Extract the likelihood take action categories from column A
+categories <- sheet70_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Rename the 13th category (index 5 in rows_A) to "Already doing/done in past year"
+categories[5] <- "Already doing/done in past year"
+# Rename the 17th category (index 7 in rows_A) to "Unsure"
+categories[7] <- "Unsure"
+
+# Initialize a list to store data for columns B through P
+percentage_list <- list()
+
+# Loop through columns B to P and extract corresponding data
+for (col_index in 2:16) {  # Columns B (2) to P (16) in R indexing
+  raw_data <- sheet70_data[rows_B_to_P, col_index]
+  
+  # Convert raw data to character, replace "-" with "0", then convert to numeric
+  raw_data_cleaned <- as.character(raw_data[[1]])
+  raw_data_cleaned[raw_data_cleaned == "-"] <- "0"
+  
+  # Convert the cleaned data to numeric and multiply by 100 (if conversion succeeded)
+  numeric_data <- round(as.numeric(raw_data_cleaned) * 100)
+  percentage_list[[paste0("Col_", LETTERS[col_index])]] <- numeric_data
+}
+
+# Ensure values are rounded to whole numbers and formatted correctly
+percentages <- format(percentages, nsmall = 0)  # No decimal places
+
+# Combine categories and percentages into a data frame
+likelihood_summary_21 <- data.frame(
+  Category = categories,
+  percentage_list
+)
+
+colnames(likelihood_summary_21) <- c(
+  "Likelihood to Take Action",
+  "Likely purchase energy efficient appliances",
+  "Likely install a programmable thermostat",
+  "Likely install LED lightbulbs",
+  "Likely undertake major home renos for energy efficiency",
+  "Likely add solar panels to home",
+  "Likely get an EnerGuide home energy evaluation to identify opportunities",
+  "Likely reduce water use",
+  "Likely use public transit more",
+  "Likely cycle more",
+  "Likely walk more",
+  "Likely purchase electric/hybrid vehicle in next 1-3 years",
+  "Likely eat less meat",
+  "Likely reduce amount of own waste",
+  "Likely purchase environmentally friendly items",
+  "Likely put effort into sorting waste into correct bins"
+)
+
+# Print the consolidated data to check
+print("Likelihood Summary:")
+print(likelihood_summary_21)
+
+
+
+ChatGPT said:
+To save the likelihood_summary_21 table using tinytable, you can follow the same approach as with the other tables. Here's how you can modify the code:
+
+## Likelihood Take Action - sheet 69 ##
+
+# Extract data from Sheet 69 + 1 (accounting for the index sheet)
+sheet70_data <- read_excel(twenty_twenty_one, sheet = 70)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(5, 7, 9, 11, 13, 15, 17)  # Categories in column A (likelihood categories)
+rows_B_to_P <- c(6, 8, 10, 12, 14, 16, 18)  # Rows for data in columns B through P
+
+# Extract the likelihood take action categories from column A
+categories <- sheet70_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Rename the 13th category (index 5 in rows_A) to "Already doing/done in past year"
+categories[5] <- "Already doing/done in past year"
+# Rename the 17th category (index 7 in rows_A) to "Unsure"
+categories[7] <- "Unsure"
+
+# Initialize a list to store data for columns B through P
+percentage_list <- list()
+
+# Loop through columns B to P and extract corresponding data
+for (col_index in 2:16) {  # Columns B (2) to P (16) in R indexing
+  raw_data <- sheet70_data[rows_B_to_P, col_index]
+  
+  # Convert raw data to character, replace "-" with "0", then convert to numeric
+  raw_data_cleaned <- as.character(raw_data[[1]])
+  raw_data_cleaned[raw_data_cleaned == "-"] <- "0"
+  
+  # Convert the cleaned data to numeric and multiply by 100 (if conversion succeeded)
+  numeric_data <- round(as.numeric(raw_data_cleaned) * 100)
+  percentage_list[[paste0("Col_", LETTERS[col_index])]] <- numeric_data
+}
+
+# Combine categories and percentages into a data frame
+likelihood_summary_21 <- data.frame(
+  Category = categories,
+  percentage_list
+)
+
+# Rename the column headers
+colnames(likelihood_summary_21) <- c(
+  "Likelihood to Take Action",
+  "Likely purchase energy efficient appliances",
+  "Likely install a programmable thermostat",
+  "Likely install LED lightbulbs",
+  "Likely undertake major home renos for energy efficiency",
+  "Likely add solar panels to home",
+  "Likely get an EnerGuide home energy evaluation to identify opportunities",
+  "Likely reduce water use",
+  "Likely use public transit more",
+  "Likely cycle more",
+  "Likely walk more",
+  "Likely purchase electric/hybrid vehicle in next 1-3 years",
+  "Likely eat less meat",
+  "Likely reduce amount of own waste",
+  "Likely purchase environmentally friendly items",
+  "Likely put effort into sorting waste into correct bins"
+)
+
+# Create the table using tinytable
+likelihood_summary_21_table <- tt(likelihood_summary_21)
+
+# Print the styled table
+likelihood_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("likelihood_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(likelihood_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Likelihood to Take Action", 
+                            "Likely purchase energy efficient appliances",
+                            "Likely install a programmable thermostat",
+                            "Likely install LED lightbulbs",
+                            "Likely undertake major home renos for energy efficiency",
+                            "Likely add solar panels to home",
+                            "Likely get an EnerGuide home energy evaluation to identify opportunities",
+                            "Likely reduce water use",
+                            "Likely use public transit more",
+                            "Likely cycle more",
+                            "Likely walk more",
+                            "Likely purchase electric/hybrid vehicle in next 1-3 years",
+                            "Likely eat less meat",
+                            "Likely reduce amount of own waste",
+                            "Likely purchase environmentally friendly items",
+                            "Likely put effort into sorting waste into correct bins"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
+Explanation of Changes:
+Create the table: We use tt() to generate the table from the likelihood_summary_21 data frame.
+Redirect output to .tex file: We use sink() to save the table as a LaTeX file (likelihood_summary_21_table.tex).
+Column names: Each of the categories in your dataset is included as a column header.
+Escaping: The escape = FALSE argument is used to prevent special characters (such as &, %, or _) from being escaped in the LaTeX output.
+The result will be a LaTeX file named likelihood_summary_21_table.tex containing your table. You can then include this LaTeX table in your document. Let me know if you need further adjustments!
+
+
+
+
+
+
+You said:
+and this code: ## Reason Unlikely to Take Action - sheet 85 ##
+
+# Extract data from Sheet 85 + 1 (accounting for the index sheet)
+sheet86_data <- read_excel(twenty_twenty_one, sheet = 86)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33)  # Categories in column A (reason categories)
+rows_B_to_P <- c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34)  # Rows for data in columns B through P
+
+# Extract the likelihood take action categories from column A
+categories <- sheet86_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Initialize a list to store data for columns B through L
+percentage_list <- list()
+
+# Loop through columns B to L and extract corresponding data
+for (col_index in 2:12) {  # Columns B (2) to L (12) in R indexing
+  raw_data <- sheet86_data[rows_B_to_P, col_index]
+  
+  # Convert raw data to character, replace "-" with "0", then convert to numeric
+  raw_data_cleaned <- as.character(raw_data[[1]])
+  raw_data_cleaned[raw_data_cleaned == "-"] <- "0"
+  
+  # Convert the cleaned data to numeric and multiply by 100 (if conversion succeeded)
+  numeric_data <- round(as.numeric(raw_data_cleaned) * 100)
+  percentage_list[[paste0("Col_", LETTERS[col_index])]] <- numeric_data
+}
+
+# Ensure values are rounded to whole numbers and formatted correctly
+percentages <- format(percentages, nsmall = 0)  # No decimal places
+
+# Combine categories and percentages into a data frame
+reasons_summary_21 <- data.frame(
+  Category = categories,
+  percentage_list
+)
+
+colnames(reasons_summary_21) <- c(
+  "Reasons unlikely to take action",
+  "Purchase energy efficient appliances",
+  "Install a programmable thermostat",
+  "Install LED lightbulbs",
+  "Major home renovations",
+  "Add solar panels to home",
+  "Get EnerGuide home energy evaluation",
+  "Reduce water use",
+  "Reduce meat consumption",
+  "Reduce own waste",
+  "Purchase environmentally friendly items",
+  "Sort waste into correct bins"
+)
+
+# Print the consolidated data to check
+print("Reasons Summary:")
+print(reasons_summary_21)
+
+
+2/2
+
+ChatGPT said:
+To save the reasons_summary_21 table using the tinytable package, follow the approach below:
+
+## Reason Unlikely to Take Action - sheet 85 ##
+
+# Extract data from Sheet 85 + 1 (accounting for the index sheet)
+sheet86_data <- read_excel(twenty_twenty_one, sheet = 86)
+
+# Define rows and columns for Sheet 11 that want extract 
+rows_A <- c(5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33)  # Categories in column A (reason categories)
+rows_B_to_P <- c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34)  # Rows for data in columns B through P
+
+# Extract the likelihood take action categories from column A
+categories <- sheet86_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Initialize a list to store data for columns B through L
+percentage_list <- list()
+
+# Loop through columns B to L and extract corresponding data
+for (col_index in 2:12) {  # Columns B (2) to L (12) in R indexing
+  raw_data <- sheet86_data[rows_B_to_P, col_index]
+  
+  # Convert raw data to character, replace "-" with "0", then convert to numeric
+  raw_data_cleaned <- as.character(raw_data[[1]])
+  raw_data_cleaned[raw_data_cleaned == "-"] <- "0"
+  
+  # Convert the cleaned data to numeric and multiply by 100 (if conversion succeeded)
+  numeric_data <- round(as.numeric(raw_data_cleaned) * 100)
+  percentage_list[[paste0("Col_", LETTERS[col_index])]] <- numeric_data
+}
+
+# Combine categories and percentages into a data frame
+reasons_summary_21 <- data.frame(
+  Category = categories,
+  percentage_list
+)
+
+# Rename the column headers
+colnames(reasons_summary_21) <- c(
+  "Reasons unlikely to take action",
+  "Purchase energy efficient appliances",
+  "Install a programmable thermostat",
+  "Install LED lightbulbs",
+  "Major home renovations",
+  "Add solar panels to home",
+  "Get EnerGuide home energy evaluation",
+  "Reduce water use",
+  "Reduce meat consumption",
+  "Reduce own waste",
+  "Purchase environmentally friendly items",
+  "Sort waste into correct bins"
+)
+
+# Create the table using tinytable
+reasons_summary_21_table <- tt(reasons_summary_21)
+
+# Print the styled table
+reasons_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("reasons_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(reasons_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Reasons unlikely to take action", 
+                            "Purchase energy efficient appliances",
+                            "Install a programmable thermostat",
+                            "Install LED lightbulbs",
+                            "Major home renovations",
+                            "Add solar panels to home",
+                            "Get EnerGuide home energy evaluation",
+                            "Reduce water use",
+                            "Reduce meat consumption",
+                            "Reduce own waste",
+                            "Purchase environmentally friendly items",
+                            "Sort waste into correct bins"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
+Explanation of Changes:
+Table Creation: The tt() function from tinytable is used to generate the LaTeX table from the reasons_summary_21 data frame.
+Redirect Output: sink() is used to redirect the output to a .tex file named reasons_summary_21_table.tex.
+Column Names: We set the column names to match the descriptions of the actions and reasons.
+Escaping Characters: The escape = FALSE argument ensures that special characters in LaTeX (like &, %, and _) are not escaped.
+This will save the formatted table in LaTeX format for easy inclusion in your report. If you need further adjustments, feel free to let me know!
+
+
+
+
+
+
+You said:
+and this code please: ## City support - sheet 113 ##
+# Unsure if going to use this information
+
+# Extract data from Sheet 113 + 1 (accounting for the index sheet)
+sheet114_data <- read_excel(twenty_twenty_one, sheet = 114)
+
+# Define rows and columns for Sheet 113 that want extract 
+rows_A <- c(7, 10, 13, 16, 19,22, 25, 28, 31,34, 37,40, 43, 46, 49, 52, 55, 58,
+            61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91, 94, 97, 100, 103, 106,
+            109, 112,115, 118) # Categories in column A (city support categories)
+rows_B <- c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59,
+           62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107,
+           110, 113, 116, 119) # Data in column B
+
+# Extract the city support categories from column A
+categories <- sheet114_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet114_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- round(raw_data_B_numeric * 100)
+
+
+## Save the informed_summary_21 ##
+
+# Combine categories and percentages into a data frame
+support_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(support_summary_21) <- c("City Support to Motivate", "Support Percentage")
+
+# Print the consolidated data to check
+print(support_summary_21)
+
+3/3
+
+ChatGPT said:
+To save the support_summary_21 table using the tinytable package and save it as a LaTeX file, here's the updated code:
+
+## City support - sheet 113 ##
+# Unsure if going to use this information
+
+# Extract data from Sheet 113 + 1 (accounting for the index sheet)
+sheet114_data <- read_excel(twenty_twenty_one, sheet = 114)
+
+# Define rows and columns for Sheet 113 that want extract 
+rows_A <- c(7, 10, 13, 16, 19,22, 25, 28, 31,34, 37,40, 43, 46, 49, 52, 55, 58,
+            61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91, 94, 97, 100, 103, 106,
+            109, 112,115, 118) # Categories in column A (city support categories)
+rows_B <- c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59,
+           62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107,
+           110, 113, 116, 119) # Data in column B
+
+# Extract the city support categories from column A
+categories <- sheet114_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet114_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- round(raw_data_B_numeric * 100)
+
+## Save the support_summary_21 ##
+
+# Combine categories and percentages into a data frame
+support_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(support_summary_21) <- c("City Support to Motivate", "Support Percentage")
+
+# Print the consolidated data to check
+print(support_summary_21)
+
+# Create the table using tinytable
+support_summary_21_table <- tt(support_summary_21)
+
+# Print the styled table
+support_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("support_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(support_summary_21, 
+              row.names = FALSE, 
+              col.names = c("City Support to Motivate", "Support Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
+Explanation:
+Table Creation: The tt() function from tinytable is used to create a LaTeX table from the support_summary_21 data frame.
+Redirecting Output: sink() is used to save the output directly into a .tex file (support_summary_21_table.tex).
+Column Naming: The column names are defined as "City Support to Motivate" and "Support Percentage".
+Escaping Characters: The escape = FALSE argument ensures special LaTeX characters like &, %, and _ aren't escaped, making the table display correctly in LaTeX.
+This will save the table in a LaTeX format for you to use in your report. Let me know if you need any further changes!
+
+
+
+
+
+
+You said:
+and this one too: ## Methods of communication - sheet 114 ##
+
+# Extract data from Sheet 113 + 1 (accounting for the index sheet)
+sheet115_data <- read_excel(file_path, sheet = 115)
+
+# Define rows and columns for Sheet 113 that want extract 
+rows_A <- c(7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49)
+# Categories in column A (methods of communication)
+rows_B <- c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50) 
+# Data in column B
+
+# Extract the city support categories from column A
+categories <- sheet115_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Rename the 8th category (index 8 in rows_A)
+categories[8] <- "Advertising campaigns"
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet115_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- round(raw_data_B_numeric * 100)
+
+## Save the informed_summary_21 ##
+
+# Combine categories and percentages into a data frame
+communication_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(communication_summary_21) <- c("Method of Communication", "Communication Percentage")
+
+# Print the consolidated data to check
+print(communication_summary_21)
+ChatGPT said:
+To save the communication_summary_21 table as a LaTeX file using the tinytable package, here's the updated code:
+
+## Methods of communication - sheet 114 ##
+# Extract data from Sheet 113 + 1 (accounting for the index sheet)
+sheet115_data <- read_excel(file_path, sheet = 115)
+
+# Define rows and columns for Sheet 113 that want extract 
+rows_A <- c(7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49)
+# Categories in column A (methods of communication)
+rows_B <- c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50) 
+# Data in column B
+
+# Extract the city support categories from column A
+categories <- sheet115_data %>%
+  slice(rows_A) %>%
+  pull(1) %>%  # Pull the first column (A) as a vector
+  trimws()  # Remove unexpected whitespace
+
+# Rename the 8th category (index 8 in rows_A)
+categories[8] <- "Advertising campaigns"
+
+# Extract the percentage raw data from column B 
+raw_data_B <- sheet115_data[rows_B, 2]
+
+# Convert raw data from tibble to character and then to numeric
+raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
+
+# Multiply by 100 to convert to percentages (if the conversion succeeded)
+percentages <- round(raw_data_B_numeric * 100)
+
+## Save the communication_summary_21 ##
+
+# Combine categories and percentages into a data frame
+communication_summary_21 <- data.frame(
+  Category = categories,
+  Percentage = percentages
+)
+
+# Rename the column headers
+colnames(communication_summary_21) <- c("Method of Communication", "Communication Percentage")
+
+# Print the consolidated data to check
+print(communication_summary_21)
+
+# Create the table using tinytable
+communication_summary_21_table <- tt(communication_summary_21)
+
+# Print the styled table
+communication_summary_21_table
+
+# Save as a LaTeX file using tinytable
+sink("communication_summary_21_table.tex")  # Redirect output to a .tex file
+tinytable::tt(communication_summary_21, 
+              row.names = FALSE, 
+              col.names = c("Method of Communication", "Communication Percentage"), 
+              escape = FALSE)  # Prevent escaping characters
+sink()  # Stop redirecting output to file
+Explanation:
+Table Creation: The tt() function from tinytable is used to create a LaTeX table from the communication_summary_21 data frame.
+Redirecting Output: The sink() function is used to save the LaTeX output directly into a .tex file (communication_summary_21_table.tex).
+Column Naming: The column names are defined as "Method of Communication" and "Communication Percentage".
+Escaping Characters: The escape = FALSE argument ensures special LaTeX characters are not escaped, so the table renders correctly in LaTeX.
+This will save the table as a LaTeX file for you to use in your report. Let me know if you need any further adjustments!
+
+
+
+
+
+
+You said:
+how to i rename the column name for delivery_summary18 from "Delivery Method" to "Communication Method" in the following code: ## 6. Delivery Summary ##
+
+# Select all columns starting with "delivery_method"
+delivery_summary_18 <- twenty_eighteen %>%
+  select(starts_with("delivery_method"))
+
+# Calculate percentage of non-"no" occurrences
+delivery_summary_18 <- delivery_summary_18 %>%
+  summarise(across(everything(), ~ sum(. != "no") / n() * 100)) %>%
+  pivot_longer(cols = everything(), 
+               names_to = "Delivery_Method", 
+               values_to = "Percentage") %>%
+  mutate(Delivery_Method = gsub("delivery_method_", "", Delivery_Method),  # Remove prefix
+         Delivery_Method = recode(Delivery_Method,
+                                  "toronto.ca_website" = "Toronto.ca Website",
+                                  "events" = "Events",
+                                  "twitter" = "Twitter",
+                                  "facebook" = "Facebook",
+                                  "instagram" = "Instagram",
+                                  "enewsletter_email" = "E-newsletter / Email",
+                                  "councillor_communication" = "Councillor Communication",
+                                  "advertising_campaigns" = "Advertising Campaigns",
+                                  "brochures_pamphlets" = "Brochures/Pamphlets",
+                                  "other" = "Other",
+                                  "not_interested_receiving" = "Not Interested in Receiving"),
+         Percentage = round(Percentage)) %>%
+  filter(Delivery_Method != "total_rows") %>%
+  rename("Delivery Method" = Delivery_Method)  # Rename column
+
+# Create the table using tinytable (similar to age and education examples)
+delivery_summary_18_table <- tinytable::tt(delivery_summary_18, 
+                                           row.names = FALSE, 
+                                           col.names = c("Delivery Method", "Percentage"), 
+                                           escape = FALSE)
+
+# Print the table
+print(delivery_summary_18_table)
+
+# Save the data as Parquet
+write_parquet(delivery_summary_18, "data/02-analysis_data/delivery_summary_18.parquet")
+ChatGPT said:
+To rename the column from "Delivery Method" to "Communication Method", you simply need to modify the rename() function in your code. Here's how to do it:
+
+## 6. Delivery Summary ##
+
+# Select all columns starting with "delivery_method"
+delivery_summary_18 <- twenty_eighteen %>%
+  select(starts_with("delivery_method"))
+
+# Calculate percentage of non-"no" occurrences
+delivery_summary_18 <- delivery_summary_18 %>%
+  summarise(across(everything(), ~ sum(. != "no") / n() * 100)) %>%
+  pivot_longer(cols = everything(), 
+               names_to = "Delivery_Method", 
+               values_to = "Percentage") %>%
+  mutate(Delivery_Method = gsub("delivery_method_", "", Delivery_Method),  # Remove prefix
+         Delivery_Method = recode(Delivery_Method,
+                                  "toronto.ca_website" = "Toronto.ca Website",
+                                  "events" = "Events",
+                                  "twitter" = "Twitter",
+                                  "facebook" = "Facebook",
+                                  "instagram" = "Instagram",
+                                  "enewsletter_email" = "E-newsletter / Email",
+                                  "councillor_communication" = "Councillor Communication",
+                                  "advertising_campaigns" = "Advertising Campaigns",
+                                  "brochures_pamphlets" = "Brochures/Pamphlets",
+                                  "other" = "Other",
+                                  "not_interested_receiving" = "Not Interested in Receiving"),
+         Percentage = round(Percentage)) %>%
+  filter(Delivery_Method != "total_rows") %>%
+  rename("Communication Method" = Delivery_Method)  # Rename column to "Communication Method"
+
+# Create the table using tinytable (similar to age and education examples)
+delivery_summary_18_table <- tinytable::tt(delivery_summary_18, 
+                                           row.names = FALSE, 
+                                           col.names = c("Communication Method", "Percentage"), 
+                                           escape = FALSE)
+
+# Print the table
+print(delivery_summary_18_table)
+
+# Save the data as Parquet
+write_parquet(delivery_summary_18, "data/02-analysis_data/delivery_summary_18.parquet")
+Key Change:
+In the rename() function, I've changed "Delivery Method" to "Communication Method":
+rename("Communication Method" = Delivery_Method)
+This will now rename the column Delivery_Method to Communication Method in the resulting delivery_summary_18 data frame. Additionally, I've also updated the column name in the col.names argument of tinytable::tt to reflect this change.
+
+
