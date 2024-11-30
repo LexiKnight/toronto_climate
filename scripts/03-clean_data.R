@@ -325,68 +325,65 @@ write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_indi
 
 
 
-## Reasons Summary##
+## 5. Reasons Summary##
 
-# Define all possible reasons
-reasons <- c("Confusing", "Costly", "Inconvenient", "Individual Difference", 
-             "Ineffective", "Other", "Unavailable", "Uninterested")
+# Define the reasons as lowercase (from the column name)
+reasons <- tolower(c("confusing", "costly", "inconvenient", "individual_difference", 
+                     "ineffective", "other", "unavailable", "uninterested"))
 
-# Identify columns starting with "unlikelihood_action"
-action_columns <- grep("^unlikelihood_action", names(twenty_eighteen), value = TRUE)
+# Select all columns that start with "unlikelihood_action"
+action_columns <- grep("^unlikelihood_action_", colnames(twenty_eighteen), value = TRUE)
 
-# Create an empty data frame for storing results
-reason_summary_18 <- data.frame()
+# Initialize an empty data frame for the reason summary
+reason_summary_18 <- data.frame(Reason = character(), Action = character(), Count = numeric(), stringsAsFactors = FALSE)
 
 # Loop through each action column
 for (col in action_columns) {
-  # Extract the matching reason from the column name
-  reason_name <- reasons[which(sapply(reasons, function(r) grepl(r, col, ignore.case = TRUE)))]
+  # Extract the reason (the last part of the column name)
+  reason_name <- sub(".*_", "", col) |> tolower()
   
-  # Proceed only if a reason is found
-  if (length(reason_name) == 1) {
-    # Extract action name by removing prefix and suffix
-    action_name <- gsub(paste0("^unlikelihood_action_|_", reason_name, "$"), "", col)
+  # Check if the reason is valid
+  if (reason_name %in% reasons) {
     
-    # Count occurrences of "unlikely" in the column
-    unlikely_count <- sum(tolower(trimws(twenty_eighteen[[col]])) == "unlikely", na.rm = TRUE)
+    # Extract the action part of the column name (remove the prefix and the reason)
+    action_name <- sub("^unlikelihood_action_", "", col)  # Remove the prefix
+    action_name <- sub(paste0("_", reason_name, "$"), "", action_name)  # Remove the reason from the end
     
-    # Append the result to the summary table
-    reason_summary_18 <- rbind(reason_summary_18, data.frame(
-      Reason = reason_name,
-      Action = action_name,
-      Count = unlikely_count
-    ))
-  } else {
-    # Print a message if no reason is found for debugging
-    message(paste("No reason found for column:", col))
+    # Count occurrences of the reason in the column (replacing "unlikely" with reason)
+    reason_count <- sum(twenty_eighteen[[col]] == "unlikely", na.rm = TRUE)
+    
+    # Update the reason_summary_18 dataframe with the count for each action
+    reason_summary_18 <- reason_summary_18 %>%
+      add_row(Reason = reason_name, Action = action_name, Count = reason_count)
   }
 }
 
-# Pivot the summary to a wide format with actions as columns and reasons as rows
-reason_summary_18 <- reason_summary_18 %>%
+# Pivot the data into the desired format: first column is reason, followed by actions
+reason_summary_18_pivot <- reason_summary_18 %>%
   pivot_wider(names_from = Action, values_from = Count, values_fill = list(Count = 0))
 
-# Rename columns to match the specified action categories
-colnames(reason_summary_18)[-1] <- c(
-  "Home Improvement", 
-  "Reduce Hydro Use", 
-  "Electric / Hybrid Car", 
-  "Meat Alternative", 
-  "Reduce Waste", 
-  "Purchase Green Products", 
-  "Walk / Cycle Short Distance", 
-  "Sort Waste Correctly"
+# Action mapping to rename the actions columns in the new table
+action_mapping <- c(
+  "home_improvement" = "Home Improvement",
+  "reduce_hydro" = "Reduce Hydro Use",
+  "minimize_car" = "Electric / Hybrid Car",
+  "vehicle_electric" = "Electric / Hybrid Car",
+  "protein_alternative" = "Meat Alternative",
+  "reduce_waste" = "Reduce Waste",
+  "green_product" = "Purchase Green Products",
+  "short_distance" = "Walk / Cycle Short Distance",
+  "sort_waste" = "Sort Waste Correctly"
 )
 
+# Rename the columns in the pivot table according to the action_mapping
+reason_summary_18_pivot <- reason_summary_18_pivot %>%
+  rename_with(~ action_mapping[.], .cols = -Reason)  # Rename all columns except the 'Reason' column
+
 # Print the final reason summary table
-print(reason_summary_18)
+print(reason_summary_18_pivot)
 
-# Save as Parquet File (optional)
+# Save as a Parquet file
 write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_summary.parquet")
-
-
-
-
 
 
 
