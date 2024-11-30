@@ -27,18 +27,27 @@ library(forcats) # for reordering factor levels
 # Read in the data 
 individual_18 <- read_parquet(here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet"))
 
-# Create a histogram to show the distribution of age
-age_individual_plot <- ggplot(individual_18, aes(x = age_18)) + 
+# Calculate mean and median of age
+mean_age <- mean(individual_18$age, na.rm = TRUE)
+median_age <- median(individual_18$age, na.rm = TRUE)
+
+# Create a histogram to show the distribution of age with mean and median lines
+age_individual_plot <- ggplot(individual_18, aes(x = age)) + 
   geom_histogram(binwidth = 5, fill = "skyblue", color = "black", alpha = 0.7) + 
+  geom_vline(aes(xintercept = mean_age), color = "blue", linetype = "dashed", size = 1, 
+             show.legend = TRUE) +  # Mean line
+  geom_vline(aes(xintercept = median_age), color = "forestgreen", linetype = "dotted", size = 1, 
+             show.legend = TRUE) +  # Median line
   labs(
     title = "Age Distribution of Survey Respondents (2018)",
     x = "Age",
-    y = "Frequency"
+    y = "Frequency",
+    caption = "Blue dashed line = Mean | Green dotted line = Median"  # Legend explanation
   ) + 
   theme_minimal() +
   scale_x_continuous(
-    breaks = seq(0, max(individual_18$age_18, na.rm = TRUE), by = 20),  # Set ticks every 20 years
-    limits = c(0, max(individual_18$age_18, na.rm = TRUE))               # Optional: adjust x-axis limits if needed
+    breaks = seq(15, max(individual_18$age, na.rm = TRUE), by = 15),  # Set ticks every 20 years starting at 15
+    limits = c(15, max(individual_18$age, na.rm = TRUE))               # Adjust x-axis limits to start at 15
   )
 
 # Print the plot
@@ -46,13 +55,9 @@ print(age_individual_plot)
 
 
 
-
-
-
-
 # Create a histogram to show the distribution of highest level of education attained
 # Convert the column to a factor
-individual_18_raw$highest_level_educ_18 <- factor(individual_18_raw$highest_level_educ_18, 
+individual_18$highest_level_educ <- factor(individual_18$highest_level_educ, 
                                                   levels = c("High school or less", 
                                                              "Some community college, vocational, trade school",
                                                              "Completed community college, vocational, trade school", 
@@ -62,7 +67,7 @@ individual_18_raw$highest_level_educ_18 <- factor(individual_18_raw$highest_leve
                                                              "Prefer not to answer"))
 
 # Create the plot with adjustments
-educ_individual_plot <- ggplot(individual_18_raw, aes(x = highest_level_educ_18, fill = highest_level_educ_18)) +
+educ_individual_plot <- ggplot(individual_18, aes(x = highest_level_educ, fill = highest_level_educ)) +
   geom_bar(color = "black", alpha = 0.7) + 
   labs(
     title = "Education Distribution of Survey Respondents (2018)",
@@ -71,11 +76,11 @@ educ_individual_plot <- ggplot(individual_18_raw, aes(x = highest_level_educ_18,
   ) + 
   theme_minimal() +
   scale_x_discrete(
-    breaks = levels(individual_18_raw$highest_level_educ_18), # Set breaks according to the factor levels
-    labels = str_wrap(levels(individual_18_raw$highest_level_educ_18), width = 20)  # Wrap x-axis labels to 20 characters
+    breaks = levels(individual_18$highest_level_educ), # Set breaks according to the factor levels
+    labels = str_wrap(levels(individual_18$highest_level_educ), width = 20)  # Wrap x-axis labels to 20 characters
   ) +
   scale_y_continuous(
-    breaks = seq(0, max(table(individual_18_raw$highest_level_educ_18)), by = 25)  # Add y-axis ticks every 25
+    breaks = seq(0, max(table(individual_18$highest_level_educ)), by = 25)  # Add y-axis ticks every 25
   ) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels by 45 degrees
@@ -100,15 +105,16 @@ print(educ_individual_plot)
 
 
 # Create a histogram to show the distribution of extent informed
+# TO DO: renaming OG data - bad
 # Convert the 'extent_consider_informed_18' column to a factor with specified levels in the desired order
-individual_18_raw$extent_consider_informed_18 <- factor(individual_18_raw$extent_consider_informed_18,
+individual_18$extent_consider_informed <- factor(individual_18$extent_consider_informed,
                                                         levels = c("Extremely informed", 
                                                                    "Very informed", 
                                                                    "Not very informed", 
                                                                    "Not at all informed"))
 
 # Create the plot with adjusted y-axis range
-informed_plot <- ggplot(individual_18_raw, aes(x = extent_consider_informed_18, fill = extent_consider_informed_18)) +
+informed_plot <- ggplot(individual_18, aes(x = extent_consider_informed, fill = extent_consider_informed)) +
   geom_bar(color = "black", alpha = 0.7) + 
   labs(
     title = "Distribution of Self-Reported Climate Change Knowledge (2018)",
@@ -117,8 +123,8 @@ informed_plot <- ggplot(individual_18_raw, aes(x = extent_consider_informed_18, 
   ) + 
   theme_minimal() +
   scale_x_discrete(
-    breaks = levels(individual_18_raw$extent_consider_informed_18), # Set breaks according to the factor levels
-    labels = str_wrap(levels(individual_18_raw$extent_consider_informed_18), width = 20)  # Wrap x-axis labels to 20 characters
+    breaks = levels(individual_18$extent_consider_informed), # Set breaks according to the factor levels
+    labels = str_wrap(levels(individual_18$extent_consider_informed), width = 20)  # Wrap x-axis labels to 20 characters
   ) +
   scale_y_continuous(
     limits = c(0, 250),  # Set y-axis range from 0 to 250
@@ -144,29 +150,30 @@ print(informed_plot)
 
 
 # Create a figure for likelihood of taking actions to address climate change
+# TO DO : need to figure out issue with two addtional likelihood categories appearing in figure (grey colors)
 # Create a tidy data frame for easier plotting
-actions_data <- individual_18_raw %>%
-  select(likelihood_action_home_improvement_18, 
-         likelihood_action_reduce_hydro_18, 
-         likelihood_action_minimize_car_18, 
-         likelihood_action_vehicle_electric_18, 
-         likelihood_action_protein_alternative_18, 
-         likelihood_action_reduce_waste_18, 
-         likelihood_action_green_product_18, 
-         likelihood_action_short_distance_18, 
-         likelihood_action_sort_waste_18) %>%
+actions_data <- individual_18 %>%
+  select(likelihood_action_home_improvement, 
+         likelihood_action_reduce_hydro, 
+         likelihood_action_minimize_car, 
+         likelihood_action_vehicle_electric, 
+         likelihood_action_protein_alternative, 
+         likelihood_action_reduce_waste, 
+         likelihood_action_green_product, 
+         likelihood_action_short_distance, 
+         likelihood_action_sort_waste) %>%
   pivot_longer(cols = everything(), names_to = "action", values_to = "likelihood") %>%
   # Recode the action column to readable labels
   mutate(action = recode(action, 
-                         "likelihood_action_home_improvement_18" = "Home Improvement",
-                         "likelihood_action_reduce_hydro_18" = "Reduce Hydro Usage",
-                         "likelihood_action_minimize_car_18" = "Minimize Car Use",
-                         "likelihood_action_vehicle_electric_18" = "Electric/Hybrid Vehicle",
-                         "likelihood_action_protein_alternative_18" = "Meat Alternatives",
-                         "likelihood_action_reduce_waste_18" = "Reduce Waste",
-                         "likelihood_action_green_product_18" = "Purchase Green Products",
-                         "likelihood_action_short_distance_18" = "Walk/Cycle Short Distances",
-                         "likelihood_action_sort_waste_18" = "Sort Waste Correctly"
+                         "likelihood_action_home_improvement" = "Home Improvement",
+                         "likelihood_action_reduce_hydro" = "Reduce Hydro Usage",
+                         "likelihood_action_minimize_car" = "Minimize Car Use",
+                         "likelihood_action_vehicle_electric" = "Electric/Hybrid Vehicle",
+                         "likelihood_action_protein_alternative" = "Meat Alternatives",
+                         "likelihood_action_reduce_waste" = "Reduce Waste",
+                         "likelihood_action_green_product" = "Purchase Green Products",
+                         "likelihood_action_short_distance" = "Walk/Cycle Short Distances",
+                         "likelihood_action_sort_waste" = "Sort Waste Correctly"
   ))
 
 # Plot stacked bar chart
@@ -190,13 +197,17 @@ ggplot(actions_data, aes(x = action, fill = likelihood)) +
 
 
 # Create a figure illustrating reasons why people are not taking specific action to mitigate climate change
+# TO DO: pls come back to. the issue is that each "reason"category is appearing
+# to be the same weight.We need to look at how given a specific action (column), how we
+# count up  non-NA values (reasons). the count is displaying wrong. 
+# TO DO: renaming OG data - bad
 
 # Pivot to long format
-data_long <- fixed_twenty_eighteen %>%
+data_long <- twenty_eighteen %>%
   pivot_longer(
-    cols = starts_with("unlikelihood_action"),  # Select all the columns starting with "unlikelihood_action"
+    cols = starts_with("unlikelihood"),  # Select all the columns starting with "unlikelihood"
     names_to = c("action", "reason"),  # Separate action and reason
-    names_pattern = "unlikelihood_action_(.*)_(.*)_18",  # Extract action and reason parts from the column name
+    names_pattern = "unlikelihood_(.*)_(.*)_18",  # Extract action and reason parts from the column name
     values_to = "response"  # Values will be stored under 'response'
   ) %>%
   filter(!is.na(response)) %>%  # Filter out rows with NA responses
@@ -235,10 +246,6 @@ ggplot(data_summary, aes(x = action, y = count, fill = reason)) +
     "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999"))  # Customize colors
 
 
-# TO DO: pls come back to. the issue is that each "reason"category is appearing
-# to be the same weight.We need to look at how given a specific action (column), how we
-# count up  non-NA values (reasons). the count is displaying wrong. 
-
 
 
 
@@ -246,7 +253,7 @@ ggplot(data_summary, aes(x = action, y = count, fill = reason)) +
 
 # figure for method of communication 
 # 1. Select columns that start with 'delivery_method' and count non-"no" values
-delivery_columns <- fixed_twenty_eighteen %>%
+delivery_columns <- twenty_eighteen %>%
   select(starts_with("delivery_method")) %>%
   mutate(across(everything(), ~ ifelse(. == "no", NA, .)))  # Convert "no" to NA to easily count non-"no" values
 
@@ -312,19 +319,46 @@ ggplot(data_summary, aes(x = reorder(delivery_method, count), y = count, fill = 
 
 
 
+ 
+### 2018 summary tables + graphs ###
 
-### 2018 summary tables ###
+age_summary_18_table
 
-age_summary_18
+education_summary_18_table
 
-education_summary_18
+informed_summary_18_table
 
-informed_summary_18
+likelihood_summary_18_table
 
-likelihood_summary_18
+reason_summary_18_table
+# TO DO: not functioning yet
+
+communication_summary_18_table
+
+#TO DO: decide which graphs to do 
 
 
 
-### 2021 summary tables ###
+### 2021 summary tables + graphs ###
 
+age_summary_21_table
+
+education_summary_21_table
+
+informed_summary_21_table
+
+likelihood_summary_21_table
+
+reasons_summary_21_table
+
+communication_summary_21_table
+
+# TO DO: decide which graphs to do 
+
+
+
+
+#### 2018 vs. 2021 summary graph ####
+
+# TO DO: decide on comparison graphs
 

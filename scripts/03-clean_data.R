@@ -396,7 +396,7 @@ write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_
 
 
 
-## 6. Delivery Summary ##
+## 6. Communication Summary ##
 
 # Select all columns starting with "delivery_method"
 delivery_summary_18 <- twenty_eighteen %>%
@@ -426,16 +426,16 @@ delivery_summary_18 <- delivery_summary_18 %>%
   rename("Communication Method" = Delivery_Method)  # Rename column to "Communication Method"
 
 # Create the table using tinytable (similar to age and education examples)
-delivery_summary_18_table <- tinytable::tt(delivery_summary_18, 
+communication_summary_18_table <- tinytable::tt(delivery_summary_18, 
                                            row.names = FALSE, 
                                            col.names = c("Communication Method", "Percentage"), 
                                            escape = FALSE)
 
 # Print the table
-print(delivery_summary_18_table)
+print(communication_summary_18_table)
 
 # Save the data as Parquet
-write_parquet(delivery_summary_18, "data/02-analysis_data/delivery_summary_18.parquet")
+write_parquet(communication_summary_18, "data/02-analysis_data/delivery_summary_18.parquet")
 
 
 
