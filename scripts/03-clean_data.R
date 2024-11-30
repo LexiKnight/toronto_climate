@@ -51,15 +51,15 @@ twenty_eighteen <- twenty_eighteen %>%
   rename(
     age = HIDAGE1,
     extent_consider_informed = Q2,
-    likelihood_action_home_improvement= Q10r1,
-    likelihood_action_reduce_hydro = Q10r2,
-    likelihood_action_minimize_car = Q10r3,
-    likelihood_action_vehicle_electric = Q10r4,
-    likelihood_action_protein_alternative = Q10r5,
-    likelihood_action_reduce_waste = Q10r6,
-    likelihood_action_green_product = Q10r7,
-    likelihood_action_short_distance = Q10r8,
-    likelihood_action_sort_waste = Q10r9,
+    likelihood_home_improvement= Q10r1,
+    likelihood_reduce_hydro = Q10r2,
+    likelihood_minimize_car = Q10r3,
+    likelihood_vehicle_electric = Q10r4,
+    likelihood_protein_alternative = Q10r5,
+    likelihood_reduce_waste = Q10r6,
+    likelihood_green_product = Q10r7,
+    likelihood_short_distance = Q10r8,
+    likelihood_sort_waste = Q10r9,
     unlikelihood_home_improvement_confusing = Q11_Lr1r1,
     unlikelihood_home_improvement_individual_difference = Q11_Lr1r2,
     unlikelihood_home_improvement_ineffective = Q11_Lr1r3,
@@ -145,22 +145,16 @@ twenty_eighteen <- twenty_eighteen %>%
     delivery_method_not_interested_receiving = Q13r11,
     highest_level_educ = QD5
   )
-# Change "NA" values to "No answer" in the relevant columns
+
+# Update columns starting with "likelihood"
 twenty_eighteen <- twenty_eighteen %>%
   mutate(across(
-    c(likelihood_action_home_improvement, 
-      likelihood_action_reduce_hydro, 
-      likelihood_action_minimize_car, 
-      likelihood_action_vehicle_electric, 
-      likelihood_action_protein_alternative, 
-      likelihood_action_reduce_waste, 
-      likelihood_action_green_product, 
-      likelihood_action_short_distance, 
-      likelihood_action_sort_waste), 
-    ~ replace_na(., "No answer")
+    starts_with("likelihood"),  # Select columns that start with "likelihood"
+    ~ str_replace_all(.x, "verylikely", "very likely")  # Replace "verylikely" with "very likely"
   ))
 
-# clean rows in unlikelihood_action columns
+
+# Clean columns starting with  "unlikelihood"_action columns"
 twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
@@ -172,12 +166,12 @@ twenty_eighteen <- twenty_eighteen %>%
     )
   )
 
-
+# Clean columns starting with "delivery"
 twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
-      starts_with("delivery_method"),  # Apply to columns starting with 'delivery_method'
-      ~ ifelse(str_starts(., "NO TO:"), "no", .)  # Replace "NO TO:" with "no", leave other values unchanged
+      starts_with("delivery_method"), 
+      ~ ifelse(str_starts(., "NO TO:"), "no", .)  # Replace "NO TO:" with "no"
     )
   ) %>%
   mutate(
@@ -284,7 +278,7 @@ write_parquet(informed_summary_18, "data/02-analysis_data/twenty_eighteen_indivi
 ## 4. Likelihood Action Summary ##
 
 # Identify columns starting with "likelihood_action"
-likelihood_columns <- grep("^likelihood_action", names(twenty_eighteen), value = TRUE)
+likelihood_columns <- grep("^likelihood", names(twenty_eighteen), value = TRUE)
 
 # Subset only the first 9 columns/actions (based on the actions you specified)
 likelihood_columns <- likelihood_columns[1:9]

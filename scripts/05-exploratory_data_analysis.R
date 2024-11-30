@@ -27,10 +27,10 @@ library(forcats) # for reordering factor levels
 # Read in the data 
 individual_18 <- read_parquet(here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet"))
 
+## Age ##
 # Calculate mean and median of age
 mean_age <- mean(individual_18$age, na.rm = TRUE)
 median_age <- median(individual_18$age, na.rm = TRUE)
-
 # Create a histogram to show the distribution of age with mean and median lines
 age_individual_plot <- ggplot(individual_18, aes(x = age)) + 
   geom_histogram(binwidth = 5, fill = "skyblue", color = "black", alpha = 0.7) + 
@@ -49,12 +49,11 @@ age_individual_plot <- ggplot(individual_18, aes(x = age)) +
     breaks = seq(15, max(individual_18$age, na.rm = TRUE), by = 15),  # Set ticks every 20 years starting at 15
     limits = c(15, max(individual_18$age, na.rm = TRUE))               # Adjust x-axis limits to start at 15
   )
-
 # Print the plot
 print(age_individual_plot)
 
 
-
+## Education ##
 # Create a histogram to show the distribution of highest level of education attained
 # Convert the column to a factor
 individual_18$highest_level_educ <- factor(individual_18$highest_level_educ, 
@@ -65,7 +64,6 @@ individual_18$highest_level_educ <- factor(individual_18$highest_level_educ,
                                                              "Completed undergraduate degree", 
                                                              "Post graduate/professional school",
                                                              "Prefer not to answer"))
-
 # Create the plot with adjustments
 educ_individual_plot <- ggplot(individual_18, aes(x = highest_level_educ, fill = highest_level_educ)) +
   geom_bar(color = "black", alpha = 0.7) + 
@@ -99,32 +97,27 @@ educ_individual_plot <- ggplot(individual_18, aes(x = highest_level_educ, fill =
 print(educ_individual_plot)
 
 
-
-
-
-
-
+## Informed ##
 # Create a histogram to show the distribution of extent informed
-# TO DO: renaming OG data - bad
-# Convert the 'extent_consider_informed_18' column to a factor with specified levels in the desired order
-individual_18$extent_consider_informed <- factor(individual_18$extent_consider_informed,
-                                                        levels = c("Extremely informed", 
-                                                                   "Very informed", 
-                                                                   "Not very informed", 
-                                                                   "Not at all informed"))
-
+# Create a new variable informed_18_plot to store the processed data for plotting
+informed_18_plot <- individual_18 %>%
+  mutate(extent_consider_informed = factor(extent_consider_informed, 
+                                           levels = c("Extremely informed", 
+                                                      "Very informed", 
+                                                      "Not very informed", 
+                                                      "Not at all informed")))
 # Create the plot with adjusted y-axis range
-informed_plot <- ggplot(individual_18, aes(x = extent_consider_informed, fill = extent_consider_informed)) +
+informed_18_plot <- ggplot(informed_18_plot, aes(x = extent_consider_informed, fill = extent_consider_informed)) +
   geom_bar(color = "black", alpha = 0.7) + 
   labs(
     title = "Distribution of Self-Reported Climate Change Knowledge (2018)",
-    x = "Extent of Being Informed about Climate Change",
+    x = "Extent Informed about Climate Change",
     y = "Frequency"
   ) + 
   theme_minimal() +
   scale_x_discrete(
-    breaks = levels(individual_18$extent_consider_informed), # Set breaks according to the factor levels
-    labels = str_wrap(levels(individual_18$extent_consider_informed), width = 20)  # Wrap x-axis labels to 20 characters
+    breaks = levels(informed_18_plot$extent_consider_informed), # Set breaks according to the factor levels
+    labels = str_wrap(levels(informed_18_plot$extent_consider_informed), width = 20)  # Wrap x-axis labels to 20 characters
   ) +
   scale_y_continuous(
     limits = c(0, 250),  # Set y-axis range from 0 to 250
@@ -141,42 +134,35 @@ informed_plot <- ggplot(individual_18, aes(x = extent_consider_informed, fill = 
   guides(fill = guide_legend(title = NULL))  # Hide the legend title
 
 # Display the plot
-print(informed_plot)
+print(informed_18_plot)
 
 
 
-
-
-
-
+## Likelihood ##
 # Create a figure for likelihood of taking actions to address climate change
 # TO DO : need to figure out issue with two addtional likelihood categories appearing in figure (grey colors)
-# Create a tidy data frame for easier plotting
-actions_data <- individual_18 %>%
-  select(likelihood_action_home_improvement, 
-         likelihood_action_reduce_hydro, 
-         likelihood_action_minimize_car, 
-         likelihood_action_vehicle_electric, 
-         likelihood_action_protein_alternative, 
-         likelihood_action_reduce_waste, 
-         likelihood_action_green_product, 
-         likelihood_action_short_distance, 
-         likelihood_action_sort_waste) %>%
-  pivot_longer(cols = everything(), names_to = "action", values_to = "likelihood") %>%
-  # Recode the action column to readable labels
+# Remove NA values from the 'likelihood' column and fix any inconsistent categories (e.g., "Verylikely" should be "Very likely")
+actions_data <- twenty_eighteen %>%
+  pivot_longer(cols = all_of(likelihood_columns), names_to = "action", values_to = "likelihood") %>%
   mutate(action = recode(action, 
-                         "likelihood_action_home_improvement" = "Home Improvement",
-                         "likelihood_action_reduce_hydro" = "Reduce Hydro Usage",
-                         "likelihood_action_minimize_car" = "Minimize Car Use",
-                         "likelihood_action_vehicle_electric" = "Electric/Hybrid Vehicle",
-                         "likelihood_action_protein_alternative" = "Meat Alternatives",
-                         "likelihood_action_reduce_waste" = "Reduce Waste",
-                         "likelihood_action_green_product" = "Purchase Green Products",
-                         "likelihood_action_short_distance" = "Walk/Cycle Short Distances",
-                         "likelihood_action_sort_waste" = "Sort Waste Correctly"
-  ))
+                         "likelihood_home_improvement" = "Home Improvement",
+                         "likelihood_reduce_hydro" = "Reduce Hydro Usage",
+                         "likelihood_minimize_car" = "Minimize Car Use",
+                         "likelihood_vehicle_electric" = "Electric / Hybrid Vehicle",
+                         "likelihood_protein_alternative" = "Meat Alternatives",
+                         "likelihood_reduce_waste" = "Reduce Waste",
+                         "likelihood_green_product" = "Purchase Green Products",
+                         "likelihood_short_distance" = "Walk / Cycle Short Distances",
+                         "likelihood_sort_waste" = "Sort Waste Correctly")) %>%
+  # Remove rows where likelihood is NA and fix category names if necessary
+  filter(!is.na(likelihood)) %>%
+  mutate(likelihood = recode(likelihood,
+                             "Verylikely" = "Very likely"))  # Correcting the category name
 
-# Plot stacked bar chart
+# Check the unique values to confirm that the NA has been removed and the category names are fixed
+unique(actions_data$likelihood)
+
+# Now, plot the data
 ggplot(actions_data, aes(x = action, fill = likelihood)) +
   geom_bar(position = "fill") +  # Positioning bars to stack
   labs(title = "Likelihood of Taking Climate Change Actions",
@@ -190,9 +176,6 @@ ggplot(actions_data, aes(x = action, fill = likelihood)) +
                                "Somewhat likely" = "yellow",
                                "Somewhat unlikely" = "orange",
                                "Very unlikely" = "red"))
-
-
-
 
 
 
