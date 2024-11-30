@@ -10,6 +10,7 @@
 #### Workspace setup ####
 # install necessary packages
 # install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow", "tidyverse", "tidyr"))
+install.packages("stringr")
 
 # load necessary packages
 library(readr)
@@ -19,6 +20,7 @@ library(readxl)
 library(arrow) # for saving file as parquet
 library(tidyverse)
 library(tidyr)
+library(stringr)
 
 
 #### Clean individual 2018 data ####
@@ -320,20 +322,52 @@ write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_indi
 
 
 
-## 5. Reasons Summary ##
 
-# Identify columns starting with "unlikelihood_action"
-action_columns <- grep("^unlikelihood_action", names(twenty_eighteen), value = TRUE)
+
+
+## Reasons Summary##
 
 # Define all possible reasons
 reasons <- c("Confusing", "Costly", "Inconvenient", "Individual Difference", 
              "Ineffective", "Other", "Unavailable", "Uninterested")
 
-# Initialize an empty data frame to store results
+# Identify columns starting with "unlikelihood_action"
+action_columns <- grep("^unlikelihood_action", names(twenty_eighteen), value = TRUE)
+
+# Create an empty data frame for storing results
 reason_summary_18 <- data.frame()
 
-# Define the action categories (the names of the columns you're interested in)
-action_categories <- c(
+# Loop through each action column
+for (col in action_columns) {
+  # Extract the matching reason from the column name
+  reason_name <- reasons[which(sapply(reasons, function(r) grepl(r, col, ignore.case = TRUE)))]
+  
+  # Proceed only if a reason is found
+  if (length(reason_name) == 1) {
+    # Extract action name by removing prefix and suffix
+    action_name <- gsub(paste0("^unlikelihood_action_|_", reason_name, "$"), "", col)
+    
+    # Count occurrences of "unlikely" in the column
+    unlikely_count <- sum(tolower(trimws(twenty_eighteen[[col]])) == "unlikely", na.rm = TRUE)
+    
+    # Append the result to the summary table
+    reason_summary_18 <- rbind(reason_summary_18, data.frame(
+      Reason = reason_name,
+      Action = action_name,
+      Count = unlikely_count
+    ))
+  } else {
+    # Print a message if no reason is found for debugging
+    message(paste("No reason found for column:", col))
+  }
+}
+
+# Pivot the summary to a wide format with actions as columns and reasons as rows
+reason_summary_18 <- reason_summary_18 %>%
+  pivot_wider(names_from = Action, values_from = Count, values_fill = list(Count = 0))
+
+# Rename columns to match the specified action categories
+colnames(reason_summary_18)[-1] <- c(
   "Home Improvement", 
   "Reduce Hydro Use", 
   "Electric / Hybrid Car", 
@@ -344,43 +378,14 @@ action_categories <- c(
   "Sort Waste Correctly"
 )
 
-# Loop through each reason and action column to count "unlikely" occurrences
-for (reason in reasons) {
-  # Initialize a list to store counts for each action category
-  reason_counts <- list()
-  
-  for (action in action_columns) {
-    # Check if the column contains the reason in its name
-    if (grepl(reason, action)) {
-      # Get the action name by removing the prefix and reason part
-      action_name <- gsub("^unlikelihood_action_", "", action)
-      action_name <- gsub(paste0("_", reason), "", action_name)  # Remove the reason part from the action name
-      
-      # Count the number of "unlikely" occurrences in the current action column
-      action_data <- twenty_eighteen[[action]]
-      unlikely_count <- sum(tolower(trimws(action_data)) == "unlikely", na.rm = TRUE)
-      
-      # Add the count to the reason_counts list for the current action category
-      reason_counts[[action_name]] <- unlikely_count
-    }
-  }
-  
-  # Combine the reason and its corresponding counts for all actions
-  reason_summary_row <- c(Reason = reason, reason_counts)
-  
-  # Add the row to the final reason summary data frame
-  reason_summary_18 <- rbind(reason_summary_18, reason_summary_row)
-}
-
-# Convert the result into a tibble for better formatting
-reason_summary_18 <- as_tibble(reason_summary_18)
-
-# Ensure the column order matches the expected order
-reason_summary_18 <- reason_summary_18 %>%
-  select(Reason, action_categories)
-
-# Print the summary table
+# Print the final reason summary table
 print(reason_summary_18)
+
+# Save as Parquet File (optional)
+write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_summary.parquet")
+
+
+
 
 
 
