@@ -9,8 +9,8 @@
 
 #### Workspace setup ####
 # install necessary packages
-# install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow", "tidyverse", "tidyr"))
-install.packages("stringr")
+# install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow","tidyverse", "tidyr", "stringr"))
+install.packages("tinytable")
 
 # load necessary packages
 library(readr)
@@ -21,6 +21,7 @@ library(arrow) # for saving file as parquet
 library(tidyverse)
 library(tidyr)
 library(stringr)
+library(tinytable)
 
 
 #### Clean individual 2018 data ####
@@ -60,78 +61,78 @@ twenty_eighteen <- twenty_eighteen %>%
     likelihood_action_green_product = Q10r7,
     likelihood_action_short_distance = Q10r8,
     likelihood_action_sort_waste = Q10r9,
-    unlikelihood_action_home_improvement_confusing = Q11_Lr1r1,
-    unlikelihood_action_home_improvement_individual_difference = Q11_Lr1r2,
-    unlikelihood_action_home_improvement_ineffective = Q11_Lr1r3,
-    unlikelihood_action_home_improvement_costly = Q11_Lr1r4,
-    unlikelihood_action_home_improvement_unavailable = Q11_Lr1r5,
-    unlikelihood_action_home_improvement_inconvenient = Q11_Lr1r6,
-    unlikelihood_action_home_improvement_uninterested = Q11_Lr1r7,
-    unlikelihood_action_home_improvement_other = Q11_Lr1r8,
-    unlikelihood_action_reduce_hydro_confusing = Q11_Lr2r1,
-    unlikelihood_action_reduce_hydro_individual_difference = Q11_Lr2r2,
-    unlikelihood_action_reduce_hydro_ineffective = Q11_Lr2r3,
-    unlikelihood_action_reduce_hydro_costly = Q11_Lr2r4,
-    unlikelihood_action_reduce_hydro_unavailable = Q11_Lr2r5,
-    unlikelihood_action_reduce_hydro_inconvenient = Q11_Lr2r6,
-    unlikelihood_action_reduce_hydro_uninterested = Q11_Lr2r7,
-    unlikelihood_action_reduce_hydro_other = Q11_Lr2r8,
-    unlikelihood_action_minimize_car_confusing = Q11_Lr3r1,
-    unlikelihood_action_minimize_car_individual_difference = Q11_Lr3r2,
-    unlikelihood_action_minimize_car_ineffective = Q11_Lr3r3,
-    unlikelihood_action_minimize_car_costly = Q11_Lr3r4,
-    unlikelihood_action_minimize_car_unavailable = Q11_Lr3r5,
-    unlikelihood_action_minimize_car_inconvenient = Q11_Lr3r6,
-    unlikelihood_action_minimize_car_uninterested = Q11_Lr3r7,
-    unlikelihood_action_minimize_car_other = Q11_Lr3r8,
-    unlikelihood_action_vehicle_electric_confusing = Q11_Lr4r1,
-    unlikelihood_action_vehicle_electric_individual_difference = Q11_Lr4r2,
-    unlikelihood_action_vehicle_electric_ineffective = Q11_Lr4r3,
-    unlikelihood_action_vehicle_electric_costly = Q11_Lr4r4,
-    unlikelihood_action_vehicle_electric_unavailable = Q11_Lr4r5,
-    unlikelihood_action_vehicle_electric_inconvenient = Q11_Lr4r6,
-    unlikelihood_action_vehicle_electric_uninterested = Q11_Lr4r7,
-    unlikelihood_action_vehicle_electric_other = Q11_Lr4r8,
-    unlikelihood_action_protein_alternative_confusing = Q11_Lr5r1,
-    unlikelihood_action_protein_alternative_individual_difference = Q11_Lr5r2,
-    unlikelihood_action_protein_alternative_ineffective = Q11_Lr5r3,
-    unlikelihood_action_protein_alternative_costly = Q11_Lr5r4,
-    unlikelihood_action_protein_alternative_unavailable = Q11_Lr5r5,
-    unlikelihood_action_protein_alternative_inconvenient = Q11_Lr5r6,
-    unlikelihood_action_protein_alternative_uninterested = Q11_Lr5r7,
-    unlikelihood_action_protein_alternative_other = Q11_Lr5r8,
-    unlikelihood_action_reduce_waste_confusing = Q11_Lr6r1,
-    unlikelihood_action_reduce_waste_individual_difference = Q11_Lr6r2,
-    unlikelihood_action_reduce_waste_ineffective = Q11_Lr6r3,
-    unlikelihood_action_reduce_waste_costly = Q11_Lr6r4,
-    unlikelihood_action_reduce_waste_unavailable = Q11_Lr6r5,
-    unlikelihood_action_reduce_waste_inconvenient = Q11_Lr6r6,
-    unlikelihood_action_reduce_waste_uninterested = Q11_Lr6r7,
-    unlikelihood_action_reduce_waste_other = Q11_Lr6r8,
-    unlikelihood_action_green_product_confusing = Q11_Lr7r1,
-    unlikelihood_action_green_product_individual_difference = Q11_Lr7r2,
-    unlikelihood_action_green_product_ineffective = Q11_Lr7r3,
-    unlikelihood_action_green_product_costly = Q11_Lr7r4,
-    unlikelihood_action_green_product_unavailable = Q11_Lr7r5,
-    unlikelihood_action_green_product_inconvenient = Q11_Lr7r6,
-    unlikelihood_action_green_product_uninterested = Q11_Lr7r7,
-    unlikelihood_action_green_product_other = Q11_Lr7r8,
-    unlikelihood_action_short_distance_confusing = Q11_Lr8r1,
-    unlikelihood_action_short_distance_individual_difference = Q11_Lr8r2,
-    unlikelihood_action_short_distance_ineffective = Q11_Lr8r3,
-    unlikelihood_action_short_distance_costly = Q11_Lr8r4,
-    unlikelihood_action_short_distance_unavailable = Q11_Lr8r5,
-    unlikelihood_action_short_distance_inconvenient = Q11_Lr8r6,
-    unlikelihood_action_short_distance_uninterested = Q11_Lr8r7,
-    unlikelihood_action_short_distance_other = Q11_Lr8r8,
-    unlikelihood_action_sort_waste_confusing = Q11_Lr9r1,
-    unlikelihood_action_sort_waste_individual_difference = Q11_Lr9r2,
-    unlikelihood_action_sort_waste_ineffective = Q11_Lr9r3,
-    unlikelihood_action_sort_waste_costly = Q11_Lr9r4,
-    unlikelihood_action_sort_waste_unavailable = Q11_Lr9r5,
-    unlikelihood_action_sort_waste_inconvenient = Q11_Lr9r6,
-    unlikelihood_action_sort_waste_uninterested = Q11_Lr9r7,
-    unlikelihood_action_sort_waste_other = Q11_Lr9r8,
+    unlikelihood_home_improvement_confusing = Q11_Lr1r1,
+    unlikelihood_home_improvement_individual_difference = Q11_Lr1r2,
+    unlikelihood_home_improvement_ineffective = Q11_Lr1r3,
+    unlikelihood_home_improvement_costly = Q11_Lr1r4,
+    unlikelihood_home_improvement_unavailable = Q11_Lr1r5,
+    unlikelihood_home_improvement_inconvenient = Q11_Lr1r6,
+    unlikelihood_home_improvement_uninterested = Q11_Lr1r7,
+    unlikelihood_home_improvement_other = Q11_Lr1r8,
+    unlikelihood_reduce_hydro_confusing = Q11_Lr2r1,
+    unlikelihood_reduce_hydro_individual_difference = Q11_Lr2r2,
+    unlikelihood_reduce_hydro_ineffective = Q11_Lr2r3,
+    unlikelihood_reduce_hydro_costly = Q11_Lr2r4,
+    unlikelihood_reduce_hydro_unavailable = Q11_Lr2r5,
+    unlikelihood_reduce_hydro_inconvenient = Q11_Lr2r6,
+    unlikelihood_reduce_hydro_uninterested = Q11_Lr2r7,
+    unlikelihood_reduce_hydro_other = Q11_Lr2r8,
+    unlikelihood_minimize_car_confusing = Q11_Lr3r1,
+    unlikelihood_minimize_car_individual_difference = Q11_Lr3r2,
+    unlikelihood_minimize_car_ineffective = Q11_Lr3r3,
+    unlikelihood_minimize_car_costly = Q11_Lr3r4,
+    unlikelihood_minimize_car_unavailable = Q11_Lr3r5,
+    unlikelihood_minimize_car_inconvenient = Q11_Lr3r6,
+    unlikelihood_minimize_car_uninterested = Q11_Lr3r7,
+    unlikelihood_minimize_car_other = Q11_Lr3r8,
+    unlikelihood_vehicle_electric_confusing = Q11_Lr4r1,
+    unlikelihood_vehicle_electric_individual_difference = Q11_Lr4r2,
+    unlikelihood_vehicle_electric_ineffective = Q11_Lr4r3,
+    unlikelihood_vehicle_electric_costly = Q11_Lr4r4,
+    unlikelihood_vehicle_electric_unavailable = Q11_Lr4r5,
+    unlikelihood_vehicle_electric_inconvenient = Q11_Lr4r6,
+    unlikelihood_vehicle_electric_uninterested = Q11_Lr4r7,
+    unlikelihood_vehicle_electric_other = Q11_Lr4r8,
+    unlikelihood_meat_alternative_confusing = Q11_Lr5r1,
+    unlikelihood_meat_alternative_individual_difference = Q11_Lr5r2,
+    unlikelihood_meat_alternative_ineffective = Q11_Lr5r3,
+    unlikelihood_meat_alternative_costly = Q11_Lr5r4,
+    unlikelihood_meat_alternative_unavailable = Q11_Lr5r5,
+    unlikelihood_meat_alternative_inconvenient = Q11_Lr5r6,
+    unlikelihood_meat_alternative_uninterested = Q11_Lr5r7,
+    unlikelihood_meat_alternative_other = Q11_Lr5r8,
+    unlikelihood_reduce_waste_confusing = Q11_Lr6r1,
+    unlikelihood_reduce_waste_individual_difference = Q11_Lr6r2,
+    unlikelihood_reduce_waste_ineffective = Q11_Lr6r3,
+    unlikelihood_reduce_waste_costly = Q11_Lr6r4,
+    unlikelihood_reduce_waste_unavailable = Q11_Lr6r5,
+    unlikelihood_reduce_waste_inconvenient = Q11_Lr6r6,
+    unlikelihood_reduce_waste_uninterested = Q11_Lr6r7,
+    unlikelihood_reduce_waste_other = Q11_Lr6r8,
+    unlikelihood_green_product_confusing = Q11_Lr7r1,
+    unlikelihood_green_product_individual_difference = Q11_Lr7r2,
+    unlikelihood_green_product_ineffective = Q11_Lr7r3,
+    unlikelihood_green_product_costly = Q11_Lr7r4,
+    unlikelihood_green_product_unavailable = Q11_Lr7r5,
+    unlikelihood_green_product_inconvenient = Q11_Lr7r6,
+    unlikelihood_green_product_uninterested = Q11_Lr7r7,
+    unlikelihood_green_product_other = Q11_Lr7r8,
+    unlikelihood_short_distance_confusing = Q11_Lr8r1,
+    unlikelihood_short_distance_individual_difference = Q11_Lr8r2,
+    unlikelihood_short_distance_ineffective = Q11_Lr8r3,
+    unlikelihood_short_distance_costly = Q11_Lr8r4,
+    unlikelihood_short_distance_unavailable = Q11_Lr8r5,
+    unlikelihood_short_distance_inconvenient = Q11_Lr8r6,
+    unlikelihood_short_distance_uninterested = Q11_Lr8r7,
+    unlikelihood_short_distance_other = Q11_Lr8r8,
+    unlikelihood_sort_waste_confusing = Q11_Lr9r1,
+    unlikelihood_sort_waste_individual_difference = Q11_Lr9r2,
+    unlikelihood_sort_waste_ineffective = Q11_Lr9r3,
+    unlikelihood_sort_waste_costly = Q11_Lr9r4,
+    unlikelihood_sort_waste_unavailable = Q11_Lr9r5,
+    unlikelihood_sort_waste_inconvenient = Q11_Lr9r6,
+    unlikelihood_sort_waste_uninterested = Q11_Lr9r7,
+    unlikelihood_sort_waste_other = Q11_Lr9r8,
     delivery_method_toronto.ca_website = Q13r1,
     delivery_method_events = Q13r2,
     delivery_method_twitter = Q13r3,
@@ -160,13 +161,18 @@ twenty_eighteen <- twenty_eighteen %>%
     ~ replace_na(., "No answer")
   ))
 
+# clean rows in unlikelihood_action columns
 twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
-      starts_with("unlikelihood_action"),  # Apply to columns starting with 'unlikelihood_action'
-      ~ ifelse(!is.na(.), "unlikely", .)  # Replace non-NA values with "unlikely", keep NA as is
+      starts_with("unlikelihood"),  # Apply to columns starting with 'unlikelihood_action'
+      ~ ifelse(!is.na(.), 
+               # Extract the reason from the column name and assign it to non-NA values
+               sub(".*_", "", cur_column()) |> tolower(), 
+               .)  # Keep NA as is
     )
   )
+
 
 twenty_eighteen <- twenty_eighteen %>%
   mutate(
@@ -210,9 +216,9 @@ twenty_eighteen <- read_csv("data/02-analysis_data/twenty_eighteen_individual_an
 
 ## Create age categories based on ranges in 2021 summary data and summarize directly
 age_summary_18 <- as.data.frame(table(cut(twenty_eighteen$age, 
-                                         breaks = c(17, 23, 39, 55, Inf), 
-                                         labels = c("18-23", "24-39", "40-55", "56+"), 
-                                         right = TRUE)))
+                                          breaks = c(17, 23, 39, 55, Inf), 
+                                          labels = c("18-23", "24-39", "40-55", "56+"), 
+                                          right = TRUE)))
 
 # Rename columns and calculate the percentage
 names(age_summary_18) <- c("Age Group", "Freq")
@@ -221,10 +227,13 @@ age_summary_18$Percentage <- round((age_summary_18$Freq / sum(age_summary_18$Fre
 # Keep only the age group and percentage columns
 age_summary_18 <- age_summary_18[, c("Age Group", "Percentage")]
 
-# View the final summary table
-print(age_summary_18)
+# Create the table using tinytable
+age_summary_18_table <- tt(age_summary_18)
 
-# save as parquet
+# Print the table
+print(age_summary_18_table)
+
+# Save as Parquet
 write_parquet(age_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
 
 
@@ -241,10 +250,13 @@ education_summary_18$Percentage <- round((education_summary_18$Freq / sum(educat
 # Keep only the education level and percentage columns
 education_summary_18 <- education_summary_18[, c("Education Level", "Percentage")]
 
-# View the final education summary table
-print(education_summary_18)
+# Create the table using tinytable
+education_summary_18_table <- tt(education_summary_18)
 
-# save as parquet
+# Print the table
+print(education_summary_18_table)
+
+# Save as Parquet
 write_parquet(education_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
 
 
@@ -261,10 +273,13 @@ informed_summary_18$Percentage <- round((informed_summary_18$Freq / sum(informed
 # Keep only the informed level and percentage columns
 informed_summary_18 <- informed_summary_18[, c("Informed Level", "Percentage")]
 
-# View the final informed summary table
-print(informed_summary_18)
+# Create the table using tinytable
+informed_summary_18_table <- tt(informed_summary_18)
 
-# save as parquet
+# Print the styled table
+informed_summary_18_table
+
+# Save as Parquet
 write_parquet(informed_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
 
 
@@ -314,8 +329,11 @@ colnames(likelihood_summary_18) <- c("Likelihood", action_names)
 # Ensure row names are not mistakenly treated as data, and remove row names for clean export
 rownames(likelihood_summary_18) <- NULL
 
-# Print the cleaned data frame to verify the structure
-print(likelihood_summary_18)
+# Create the table using tinytable
+likelihood_summary_18_table <- tt(likelihood_summary_18)
+
+# Print the table to the console (this is where you would see a neat, compact table)
+print(likelihood_summary_18_table)
 
 # Save as Parquet File (Ensure data is written as a data frame, not matrix)
 write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
@@ -325,100 +343,107 @@ write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_indi
 
 
 
-## 5. Reasons Summary##
 
-# Define the reasons as lowercase (from the column name)
-reasons <- tolower(c("confusing", "costly", "inconvenient", "individual_difference", 
-                     "ineffective", "other", "unavailable", "uninterested"))
 
-# Select all columns that start with "unlikelihood_action"
-action_columns <- grep("^unlikelihood_action_", colnames(twenty_eighteen), value = TRUE)
+## 5. Reasons Summary ##
+# TO DO: column headers are not showing up properly. the count seems messed up as well :(
+# TO DO: use tinytable
 
-# Initialize an empty data frame for the reason summary
-reason_summary_18 <- data.frame(Reason = character(), Action = character(), Count = numeric(), stringsAsFactors = FALSE)
+# Reshape data from wide to long format
+twenty_eighteen_long <- twenty_eighteen %>%
+  pivot_longer(
+    cols = starts_with("unlikelihood"),              # Select all 'unlikelihood_' columns
+    names_to = c("Action", "Reason"),                # Split names into Action and Reason
+    names_pattern = "unlikelihood_([^_]+(?:_[^_]+)*)_(\\w+)$",  # Match entire multi-word action and single-word reason
+    values_to = "Value"                              # New column containing the counts
+  )
 
-# Loop through each action column
-for (col in action_columns) {
-  # Extract the reason (the last part of the column name)
-  reason_name <- sub(".*_", "", col) |> tolower()
-  
-  # Check if the reason is valid
-  if (reason_name %in% reasons) {
-    
-    # Extract the action part of the column name (remove the prefix and the reason)
-    action_name <- sub("^unlikelihood_action_", "", col)  # Remove the prefix
-    action_name <- sub(paste0("_", reason_name, "$"), "", action_name)  # Remove the reason from the end
-    
-    # Count occurrences of the reason in the column (replacing "unlikely" with reason)
-    reason_count <- sum(twenty_eighteen[[col]] == "unlikely", na.rm = TRUE)
-    
-    # Update the reason_summary_18 dataframe with the count for each action
-    reason_summary_18 <- reason_summary_18 %>%
-      add_row(Reason = reason_name, Action = action_name, Count = reason_count)
-  }
-}
+# Replace non-NA values with the corresponding reason (keep NA values as is)
+twenty_eighteen_long <- twenty_eighteen_long %>%
+  mutate(Value = ifelse(!is.na(Value), 1, NA))       # Replace values with 1 to indicate reason presence
 
-# Pivot the data into the desired format: first column is reason, followed by actions
-reason_summary_18_pivot <- reason_summary_18 %>%
-  pivot_wider(names_from = Action, values_from = Count, values_fill = list(Count = 0))
+# Group by Action and Reason, and count occurrences of each reason
+twenty_eighteen_filtered <- twenty_eighteen_long %>%
+  filter(!is.na(Value)) %>%                          # Keep only rows where a reason is present
+  group_by(Action, Reason) %>%                       # Group by Action and Reason
+  summarise(Count = sum(Value), .groups = 'drop')    # Sum occurrences of each reason
 
-# Action mapping to rename the actions columns in the new table
-action_mapping <- c(
-  "home_improvement" = "Home Improvement",
-  "reduce_hydro" = "Reduce Hydro Use",
-  "minimize_car" = "Electric / Hybrid Car",
-  "vehicle_electric" = "Electric / Hybrid Car",
-  "protein_alternative" = "Meat Alternative",
-  "reduce_waste" = "Reduce Waste",
-  "green_product" = "Purchase Green Products",
-  "short_distance" = "Walk / Cycle Short Distance",
-  "sort_waste" = "Sort Waste Correctly"
-)
+# Pivot the data to wide format (Reasons as rows and Actions as columns)
+reason_summary_18 <- twenty_eighteen_filtered %>%
+  pivot_wider(
+    names_from = Action,            # Make actions the columns
+    values_from = Count,            # Fill with counts of each reason
+    values_fill = list(Count = 0)   # Replace missing values with 0
+  )
 
-# Rename the columns in the pivot table according to the action_mapping
-reason_summary_18_pivot <- reason_summary_18_pivot %>%
-  rename_with(~ action_mapping[.], .cols = -Reason)  # Rename all columns except the 'Reason' column
+# Rename the action columns for readability
+reason_summary_18 <- reason_summary_18 %>%
+  rename_with(
+    ~ recode(.,                    # Recode action names
+             "green_product" = "Purchase Green Products",
+             "home_improvement" = "Home Improvement",
+             "reduce_hydro" = "Reduce Hydro Use",
+             "minimize_car" = "Minimize Car Use",
+             "vehicle_electric" = "Electric / Hybrid Car",
+             "protein_alternative" = "Meat Alternative",
+             "reduce_waste" = "Reduce Waste",
+             "short_distance" = "Walk / Cycle Short Distance",
+             "sort_waste" = "Sort Waste Correctly"
+    )
+  )
 
-# Print the final reason summary table
-print(reason_summary_18_pivot)
+# Step 6: Print the final reason summary table
+print(reason_summary_18)
 
-# Save as a Parquet file
+# Save as a CSV or Parquet file 
 write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_summary.parquet")
 
 
 
 
-#### 6. Communication Summary ####
 
-# Filter columns that start with "delivery_method"
-communication_columns <- twenty_eighteen %>%
+
+
+## 6. Delivery Summary ##
+
+# Select all columns starting with "delivery_method"
+delivery_summary_18 <- twenty_eighteen %>%
   select(starts_with("delivery_method"))
 
-# Step 2: Convert to long format to aggregate all delivery methods
-communication_summary_18 <- communication_columns %>%
-  pivot_longer(cols = everything(), names_to = "Communication Method", values_to = "Response") %>%
-  group_by(`Communication Method`, Response) %>%
-  summarise(Freq = n(), .groups = "drop") %>%
-  mutate(Total = sum(Freq), .by = `Communication Method`) %>%
-  mutate(Percentage = round((Freq / Total) * 100))
+# Calculate percentage of non-"no" occurrences
+delivery_summary_18 <- delivery_summary_18 %>%
+  summarise(across(everything(), ~ sum(. != "no") / n() * 100)) %>%
+  pivot_longer(cols = everything(), 
+               names_to = "Delivery_Method", 
+               values_to = "Percentage") %>%
+  mutate(Delivery_Method = gsub("delivery_method_", "", Delivery_Method),  # Remove prefix
+         Delivery_Method = recode(Delivery_Method,
+                                  "toronto.ca_website" = "Toronto.ca Website",
+                                  "events" = "Events",
+                                  "twitter" = "Twitter",
+                                  "facebook" = "Facebook",
+                                  "instagram" = "Instagram",
+                                  "enewsletter_email" = "E-newsletter / Email",
+                                  "councillor_communication" = "Councillor Communication",
+                                  "advertising_campaigns" = "Advertising Campaigns",
+                                  "brochures_pamphlets" = "Brochures/Pamphlets",
+                                  "other" = "Other",
+                                  "not_interested_receiving" = "Not Interested in Receiving"),
+         Percentage = round(Percentage)) %>%
+  filter(Delivery_Method != "total_rows") %>%
+  rename("Delivery Method" = Delivery_Method)  # Rename column
 
-# Step 3: Keep only the "Yes" responses and rename the "Yes (%)" column
-communication_summary_18 <- communication_summary_18 %>%
-  filter(Response == "yes") %>%
-  select(`Communication Method`, Percentage)
+# Create the table using tinytable (similar to age and education examples)
+delivery_summary_18_table <- tinytable::tt(delivery_summary_18, 
+                                           row.names = FALSE, 
+                                           col.names = c("Delivery Method", "Percentage"), 
+                                           escape = FALSE)
 
-# Step 4: Rename the percentage column to "Percentage"
-colnames(communication_summary_18)[2] <- "Percentage"
+# Print the table
+print(delivery_summary_18_table)
 
-# Step 5: View the final communication summary table
-print(communication_summary_18)
-
-
-
-
-
-
-
+# Save the data as Parquet
+write_parquet(delivery_summary_18, "data/02-analysis_data/delivery_summary_18.parquet")
 
 
 
