@@ -10,7 +10,8 @@
 #### Workspace setup ####
 # install necessary packages
 # install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow","tidyverse", "tidyr", "stringr", "tinytable"))
-install.packages("readr")
+
+
 # load necessary packages
 library(readr)
 library(dplyr) # for combining data frames
@@ -170,13 +171,29 @@ for (col in unlikelihood_columns) {
 # Handle "delivery_method" columns
 delivery_method_columns <- grep("^delivery_method", names(twenty_eighteen), value = TRUE)
 
+# Loop through each delivery_method column
 for (col in delivery_method_columns) {
   twenty_eighteen[[col]] <- sapply(twenty_eighteen[[col]], function(x) {
     if (grepl("^NO TO", x)) {
-      return("no")
+      return("no")  # Change to "no" if it starts with "NO TO"
     } else {
-      # Remove prefix and replace underscores with spaces, then lowercase
-      return(tolower(sub("delivery_method_", "", gsub("_", " ", x))))
+      # Handle specific renaming for non-"no" values
+      if (col == "delivery_method_events") {
+        return("events")
+      } else if (col == "delivery_method_enewsletter_email") {
+        return("enewsletter / email")
+      } else if (col == "delivery_method_advertising_campaigns") {
+        return("advertising campaigns")
+      } else if (col == "delivery_method_brochures_pamphlets") {
+        return("brochures / pamphlets")
+      } else if (col == "delivery_method_other") {
+        return("other")
+      } else if (col == "delivery_method_not_interested_receiving") {
+        return("not interested")
+      } else {
+        # Otherwise, remove prefix, replace underscores with spaces, and lowercase
+        return(tolower(sub("delivery_method_", "", gsub("_", " ", x))))
+      }
     }
   })
 }
