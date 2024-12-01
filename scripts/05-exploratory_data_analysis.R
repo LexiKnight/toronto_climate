@@ -139,21 +139,12 @@ print(informed_18_plot)
 
 
 
+
 ## Likelihood ##
-# Create a figure for likelihood of taking actions to address climate chang
-# Define a new color palette
-color_palette <- brewer.pal(5, "RdYlGn")  # Red to Green, with 5 colors
-
-# Define likelihood columns 
-likelihood_columns <- c("likelihood_home_improvement", "likelihood_reduce_hydro", 
-                        "likelihood_minimize_car", "likelihood_vehicle_electric",
-                        "likelihood_protein_alternative", "likelihood_reduce_waste", 
-                        "likelihood_green_product", "likelihood_short_distance",
-                        "likelihood_sort_waste")
-
 # Create a figure for likelihood of taking actions to address climate change
-actions_data <- individual_18 %>%
-  pivot_longer(cols = all_of(likelihood_columns), 
+# Assign the data manipulation steps to likelihood_18_plot
+likelihood_18_plot <- individual_18 %>%
+  pivot_longer(cols = starts_with("likelihood_"), 
                names_to = "action", 
                values_to = "likelihood") %>%
   mutate(action = recode(action, 
@@ -166,26 +157,42 @@ actions_data <- individual_18 %>%
                          "likelihood_green_product" = "Purchase Green Products",
                          "likelihood_short_distance" = "Walk / Cycle Short Distances",
                          "likelihood_sort_waste" = "Sort Waste Correctly")) %>%
-  filter(!is.na(likelihood))
-
-# Check the unique values to confirm that NA has been removed
-unique(actions_data$likelihood)
-
-# Now, plot the data
-ggplot(actions_data, aes(x = action, fill = likelihood)) +
-  geom_bar(position = "fill") +
-  labs(title = "Likelihood of Taking Climate Change Actions",
-       x = "Actions",
-       y = "Proportion",
-       fill = "Likelihood") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(values = setNames(color_palette, 
-                                      c("Already doing this or have done this", 
+  filter(!is.na(likelihood)) %>%
+  # Set the factor levels for likelihood categories to ensure correct order
+  mutate(likelihood = factor(likelihood, 
+                             levels = c("Already doing this or have done this", 
                                         "Very likely", 
                                         "Somewhat likely", 
                                         "Somewhat unlikely", 
                                         "Very unlikely")))
+
+# Calculate percentages for each likelihood category
+likelihood_18_plot_percent <- likelihood_18_plot %>%
+  group_by(action, likelihood) %>%
+  tally() %>%
+  group_by(action) %>%
+  mutate(percentage = n / sum(n) * 100)
+
+# Create the plot and assign to likelihood_18_plot
+likelihood_18_plot <- ggplot(likelihood_18_plot_percent, aes(x = action, fill = likelihood, y = percentage)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Likelihood of Taking Climate Change Actions",
+       x = "Actions", y = "Percentage", fill = "Likelihood") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(
+    values = c("Already doing this or have done this" = "forestgreen", 
+               "Very likely" = "green", 
+               "Somewhat likely" = "yellow", 
+               "Somewhat unlikely" = "orange", 
+               "Very unlikely" = "red")
+  ) +
+  geom_text(aes(label = paste0(round(percentage), "%")),  # Whole number percentages
+            position = position_stack(vjust = 0.5), size = 3)
+
+# Print the plot
+print(likelihood_18_plot)
+
 
 
 
