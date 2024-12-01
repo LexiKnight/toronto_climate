@@ -80,13 +80,10 @@ This two-step approach allowed for a comprehensive understanding: a detailed exp
 #| echo: false
 #| message: false
 #| label: fig-one
-#| fig-cap: The histogram shows the distribution of age given the 2018 survey  respondants.
+#| fig-cap: The histogram shows the distribution of age given the 2018 survey respondents.
 
+knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 
-# Read in the data 
-individual_18 <- read_parquet(here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet"))
-
-age_individual_plot
 ```
 
 The age variable was assessed to understand how climate change perceptions and actions vary across different age groups. The 2018 data shows that younger individuals, particularly those in the 18-34 age range, are more likely to feel informed about climate change and express a greater willingness to take action. In contrast, older age groups (55+) were less likely to feel as informed or engage in climate action, highlighting generational differences in awareness and response.
@@ -94,12 +91,45 @@ The age variable was assessed to understand how climate change perceptions and a
 
 ### Highest Level of Education Completed
 Education level was analyzed to determine if there is a correlation between education and attitudes toward climate change. The 2018 data suggests that individuals with higher levels of education (university degree or higher) are more likely to feel informed about climate change and are more inclined to take action. Conversely, individuals with lower education levels expressed lower awareness and action towards climate change, indicating the role of education in shaping environmental engagement.
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-education
+#| fig-cap: The histogram shows the distribution of education levels of 2018 survey respondents.
+
+knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
+
+```
+
 
 ### Extent Feel Informed
 This variable assessed individuals’ perceptions of how informed they feel about climate change. The 2018 data revealed that while a significant proportion of the population felt somewhat or very informed, there was a noticeable gap in knowledge, especially among older and less educated groups. Comparing this with the 2021 summary data helped track whether the perceived knowledge of climate change improved over the three years, showing some progress in public awareness.
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-informed
+#| fig-cap: The histogram shows the distribution of self-reported climate change knowledge among 2018 survey respondents.
+
+knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.png"))
+
+```
+
 
 ### Likelihood Taking Action
 The likelihood of taking action against climate change was explored by assessing individuals' intentions and behaviors. In the 2018 data, younger individuals and those with higher educational attainment were more likely to report taking action, such as reducing carbon emissions or supporting climate policies. The 2021 data confirmed this trend, although slight shifts in attitudes were observed, with more people in the 35-54 age range indicating increased willingness to act.
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-likelihood
+#| fig-cap: The stacked bar plot shows the likelihood of survey respondents taking various actions to address climate change.
+
+knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot.png"))
+
+```
+
 
 ### Barriers Taking Action
 TO DO: cant actually get this section to work

@@ -53,6 +53,14 @@ age_individual_plot <- ggplot(individual_18, aes(x = age)) +
 # Print the plot
 print(age_individual_plot)
 
+# Save the plot to data/03-figures_data
+ggsave(
+  filename = here("data/03-figures_data", "age_individual_plot.png"),  # Specify the correct path and filename
+  plot = age_individual_plot,
+  width = 8, height = 6
+)
+
+
 
 ## Education ##
 # Create a histogram to show the distribution of highest level of education attained
@@ -96,6 +104,13 @@ educ_individual_plot <- ggplot(individual_18, aes(x = highest_level_educ, fill =
 
 # Display the plot
 print(educ_individual_plot)
+# Save the education plot to data/03-figures_data
+ggsave(
+  filename = here("data/03-figures_data", "educ_individual_plot.png"),  # Saving as a PNG file
+  plot = educ_individual_plot,
+  width = 8, height = 6
+)
+
 
 
 ## Informed ##
@@ -136,14 +151,20 @@ informed_18_plot <- ggplot(informed_18_plot, aes(x = extent_consider_informed, f
 
 # Display the plot
 print(informed_18_plot)
+# Save the informed plot to data/03-figures_data
+ggsave(
+  filename = here("data/03-figures_data", "informed_individual_plot.png"),  # Saving as a PNG file
+  plot = informed_18_plot,
+  width = 8, height = 6 
+)
 
 
 
 
 ## Likelihood ##
 # Create a figure for likelihood of taking actions to address climate change
-# Assign the data manipulation steps to likelihood_18_plot
-likelihood_18_plot <- individual_18 %>%
+# Manipulate individual_18 but assign to a new variable
+likelihood_data <- individual_18 %>%
   pivot_longer(cols = starts_with("likelihood_"), 
                names_to = "action", 
                values_to = "likelihood") %>%
@@ -158,22 +179,20 @@ likelihood_18_plot <- individual_18 %>%
                          "likelihood_short_distance" = "Walk / Cycle Short Distances",
                          "likelihood_sort_waste" = "Sort Waste Correctly")) %>%
   filter(!is.na(likelihood)) %>%
-  # Set the factor levels for likelihood categories to ensure correct order
   mutate(likelihood = factor(likelihood, 
                              levels = c("Already doing this or have done this", 
                                         "Very likely", 
                                         "Somewhat likely", 
                                         "Somewhat unlikely", 
                                         "Very unlikely")))
-
-# Calculate percentages for each likelihood category
-likelihood_18_plot_percent <- likelihood_18_plot %>%
+# Calculate percentages
+likelihood_18_plot_percent <- likelihood_data %>%
   group_by(action, likelihood) %>%
   tally() %>%
   group_by(action) %>%
   mutate(percentage = n / sum(n) * 100)
 
-# Create the plot and assign to likelihood_18_plot
+# Create the likelihood plot
 likelihood_18_plot <- ggplot(likelihood_18_plot_percent, aes(x = action, fill = likelihood, y = percentage)) +
   geom_bar(stat = "identity", position = "stack") +
   labs(title = "Likelihood of Taking Climate Change Actions",
@@ -187,11 +206,18 @@ likelihood_18_plot <- ggplot(likelihood_18_plot_percent, aes(x = action, fill = 
                "Somewhat unlikely" = "orange", 
                "Very unlikely" = "red")
   ) +
-  geom_text(aes(label = paste0(round(percentage), "%")),  # Whole number percentages
+  geom_text(aes(label = paste0(round(percentage), "%")),
             position = position_stack(vjust = 0.5), size = 3)
 
 # Print the plot
 print(likelihood_18_plot)
+# Save the likelihood plot to data/03-figures_data
+ggsave(
+  filename = here("data/03-figures_data", "likelihood_individual_plot.png"),  # Saving as a PNG file
+  plot = likelihood_18_plot,
+  width = 8, height = 6
+)
+
 
 
 
@@ -204,7 +230,7 @@ print(likelihood_18_plot)
 # TO DO: renaming OG data - bad
 
 # Pivot to long format
-data_long <- twenty_eighteen %>%
+data_long <- individual_18 %>%
   pivot_longer(
     cols = starts_with("unlikelihood"),  # Select all the columns starting with "unlikelihood"
     names_to = c("action", "reason"),  # Separate action and reason
@@ -253,17 +279,17 @@ ggplot(data_summary, aes(x = action, y = count, fill = reason)) +
 
 
 # figure for method of communication 
-# 1. Select columns that start with 'delivery_method' and count non-"no" values
-delivery_columns <- twenty_eighteen %>%
+# Select columns that start with 'delivery_method' and count non-"no" values
+delivery_columns <- individual_18 %>%
   select(starts_with("delivery_method")) %>%
   mutate(across(everything(), ~ ifelse(. == "no", NA, .)))  # Convert "no" to NA to easily count non-"no" values
 
-# 2. Count the number of non-NA (non-"no") responses for each column
+# Count the number of non-NA (non-"no") responses for each column
 data_summary <- delivery_columns %>%
   summarise(across(everything(), ~ sum(!is.na(.)))) %>%
   pivot_longer(everything(), names_to = "delivery_method", values_to = "count")  # Pivot to long format
 
-# 3. Rename delivery_method columns to meaningful names
+# Rename delivery_method columns to meaningful names
 data_summary <- data_summary %>%
   mutate(
     delivery_method = case_when(
@@ -282,7 +308,7 @@ data_summary <- data_summary %>%
     )
   )
 
-# 4. Create a bar chart for frequency of non-"no" responses for each delivery method
+# Create a bar chart for frequency of non-"no" responses for each delivery method
 ggplot(data_summary, aes(x = reorder(delivery_method, count), y = count, fill = delivery_method)) +
   geom_bar(stat = "identity") +  # Use 'identity' to use actual counts
   labs(
@@ -299,20 +325,20 @@ ggplot(data_summary, aes(x = reorder(delivery_method, count), y = count, fill = 
 
 # checking the count for each delivery method
 # 1. Select the columns that start with "delivery_method"
-# delivery_columns <- fixed_twenty_eighteen %>%
-  # select(starts_with("delivery_method"))
+delivery_columns <- twenty_eighteen %>%
+  select(starts_with("delivery_method"))
 
 # 2. Replace "no" with NA so that we can easily count non-"no" values
-# delivery_columns_clean <- delivery_columns %>%
-  # mutate(across(everything(), ~ ifelse(. == "no", NA, .)))
+delivery_columns_clean <- delivery_columns %>%
+  mutate(across(everything(), ~ ifelse(. == "no", NA, .)))
 
 # 3. Count the number of non-NA (non-"no") values for each column (delivery method)
-# data_summary <- delivery_columns_clean %>%
-  # summarise(across(everything(), ~ sum(!is.na(.)))) %>%
-  # pivot_longer(everything(), names_to = "delivery_method", values_to = "count")
+data_summary <- delivery_columns_clean %>%
+  summarise(across(everything(), ~ sum(!is.na(.)))) %>%
+  pivot_longer(everything(), names_to = "delivery_method", values_to = "count")
 
 # Print the count for each delivery method
-#print(data_summary)
+print(data_summary)
 
 
 

@@ -159,18 +159,9 @@ twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
       starts_with("unlikelihood"),  # Apply to columns starting with 'unlikelihood'
-      ~ ifelse(is.na(.), 0, 1)      # Replace NA with 0 and non-NA with 1
+      ~ ifelse(is.na(.), 0, 1)      # Replace NA with 0 and non-NA with 1 for each value
     )
   )
-
-# Process the unlikelihood columns as individual columns
-for (col in grep("^unlikelihood", names(twenty_eighteen), value = TRUE)) {
-  # Replace NA with 0 and non-NA with 1 for each column
-  twenty_eighteen[[col]] <- ifelse(is.na(twenty_eighteen[[col]]), 0, 1)
-}
-
-# After this, `twenty_eighteen` should have 0s and 1s instead of NA values in the unlikelihood columns
-
 
 
 # Clean columns starting with "delivery"
@@ -178,12 +169,14 @@ twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
       starts_with("delivery_method"), 
-      ~ ifelse(!is.na(.),
-               # Replace the value with a cleaned version of the delivery method
-               sub("delivery_method_", "", cur_column()) |> str_replace("_", " ") |> tolower(),
-               .)  # Keep NA as is
+      ~ ifelse(
+        !is.na(.),  # Check if the value is not NA
+        sub("delivery_method_", "", cur_column()) |> str_replace("_", " ") |> tolower(),  # Clean the value
+        NA_character_  # Ensure that NA values remain NA
+      )
     )
   )
+
 
 
 # View the first few rows to confirm the data
