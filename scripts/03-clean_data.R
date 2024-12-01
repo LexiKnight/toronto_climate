@@ -337,6 +337,9 @@ write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_indi
 
 
 ## 5. Reasons Summary ##
+# TO DO: column headers are not showing up properly. the count seems messed up as well :(
+# TO DO: use tinytable
+# TO DO: change first column in new table to be "Reasons unlikely to take action"
 
 ## Home Improvements ##
 
@@ -372,22 +375,7 @@ count_table_tt
 # Check the sum for the specific column
 sum(twenty_eighteen$unlikelihood_home_improvement_confusing)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# TO DO: column headers are not showing up properly. the count seems messed up as well :(
-# TO DO: use tinytable
-# TO DO: change first column in new table to be "Reasons unlikely to take action"
+######################
 
 # Reshape data from wide to long format
 twenty_eighteen_long <- twenty_eighteen %>%
@@ -442,13 +430,14 @@ write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_
 
 
 ## 6. Communication Summary ##
+# TO DO: need to fix - all values to 100 :(
 
 # Select all columns starting with "delivery_method"
-delivery_summary_18 <- twenty_eighteen %>%
+communication_summary_18 <- twenty_eighteen %>%
   select(starts_with("delivery_method"))
 
 # Calculate percentage of non-"no" occurrences
-delivery_summary_18 <- delivery_summary_18 %>%
+communication_summary_18 <- communication_summary_18 %>%
   summarise(across(everything(), ~ sum(. != "no") / n() * 100)) %>%
   pivot_longer(cols = everything(), 
                names_to = "Delivery_Method", 
@@ -471,7 +460,7 @@ delivery_summary_18 <- delivery_summary_18 %>%
   rename("Communication Method" = Delivery_Method)  # Rename column to "Communication Method"
 
 # Create the table using tinytable (similar to age and education examples)
-communication_summary_18_table <- tinytable::tt(delivery_summary_18, 
+communication_summary_18_table <- tinytable::tt(communication_summary_18, 
                                            row.names = FALSE, 
                                            col.names = c("Communication Method", "Percentage"), 
                                            escape = FALSE)

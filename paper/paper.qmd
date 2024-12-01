@@ -1,6 +1,6 @@
 ---
-title: "Overcoming Hurdles to Green Living: Insights for Community Climate Action"
-subtitle: "Understanding What Stops Sustainable Behaviors and How to Tackle It"
+title: "Barriers to Green Living: Insights from 2018 and 2021 Toronto Climate Perception Surveys"
+subtitle: "Uncovering What Stops Sustainable Behaviors and How Communities Can Overcome Them"
 author: 
   - Lexi Knight
 thanks: "Code and data are available at: [https://github.com/LexiKnight/toronto_climate/tree/main](https://github.com/LexiKnight/toronto_climate/tree/main)."
@@ -30,12 +30,49 @@ The remainder of this paper is structured as follows: @sec-data presents the met
  
 
 # Data {#sec-data}
-
 ## Software and R-packages
+This project was conducted using the statistical software `R` [@citeR]. Data cleaning and manipulation were primarily facilitated by the `tidyverse` package [@tidyverse], which encompasses various essential tools. Within this suite, `dplyr` [@dplyr] was employed for data manipulation tasks such as filtering, summarizing, and joining datasets, while `readr` [@readr] provided efficient functionality for reading and writing rectangular text data. Specifically, the `write_csv` function from `tidyverse` was used to save the raw 2018 dataset. To handle Excel files, we incorporated the `httr` package for downloading files directly from online sources and `readxl` [@readxl], which enabled us to read Excel files seamlessly. Additionally, the `openxlsx` package was utilized to create a new Excel workbook with multiple sheets, allowing us to store the 2021 dataset in a structured format.
+
+The `arrow` package was employed to handle large datasets efficiently, ensuring smooth data processing, while `forcats` was used for reordering factor levels to facilitate more insightful analyses and visualizations. In terms of data tidying, the `tidyr` and `stringr` packages allowed us to reshape and clean the data by managing character strings and handling missing values. For the final documentation and report generation, the `knitr` package was instrumental in integrating R code and outputs into a cohesive and reproducible report format. This suite of R packages collectively enabled us to conduct thorough data management, manipulation, and analysis, ultimately contributing to the successful completion of the project.
+
 ## Methodology 
 ### Data Collection
+The data for this analysis comes from two surveys commissioned by the City of Toronto to assess residents' perceptions of climate change and their willingness to take community action. In 2018, Environics Research conducted n=404 online interviews with Toronto residents aged 18 and older between October 11 and October 18. Each interview lasted approximately 10 minutes. The sample was drawn from an online panel, with quotas set by region, age, and gender to reflect the city’s population based on the 2016 Census, and minor weighting was applied. Due to the non-random nature of the online survey, no margin of error was assigned, though a random sample of this size would typically have a margin of ±4.9 percentage points, 19 times out of 20.
+
+In 2021, a second survey was conducted by Ipsos, a global market research company. This survey included n=1,400 Toronto residents aged 18 and older and used a mixed-method approach. The sample consisted of 1,000 respondents from an online panel, 300 recruited via cell phone and landline, and 100 online interviews conducted in Mandarin, Cantonese, and Punjabi. This combination of methods aimed to enhance the survey's representativeness. For analysis, Version 2 of the 2021 dataset, which presents responses in a numeric format, was used.
+
 ### Data Cleaning
+#### 2018 Individual Data
+The cleaning process for the 2018 individual data began with selecting six key questions from the survey, focusing on variables that would provide insights into individual perceptions and behaviors regarding climate change. The corresponding columns were extracted and renamed with meaningful, descriptive names for clarity. The selected variables included age, the extent to which individuals consider themselves informed about the causes of climate change, the likelihood of taking specific climate actions, reasons for inaction (if they indicated they were unlikely to act), the highest level of education completed, and preferred methods for the city to deliver information about climate change and climate action.
+
+After selecting and renaming the columns, minor formatting inconsistencies were addressed. For instance, a missing space in the "verylikely" response category was corrected to "very likely." Additionally, certain values were reformatted to ensure compatibility with visualization tools, making the dataset easier to plot later. Unlike other datasets that often contain missing values or duplicate entries, this dataset was notably clean. There were no missing responses, and all questions were answered, allowing for a comprehensive analysis of survey participants' perceptions and behaviors. The dataset offered valuable insights into individuals’ likelihood of engaging in climate actions and their preferred communication channels for climate information.
+
+Throughout the cleaning process, no observations were removed, as every response was preserved to accurately represent the survey data. Despite encountering a few incorrect variable formats, these were easily corrected without data loss. The dataset provided a rare opportunity to analyze a complete and consistent set of individual responses, enabling a thorough exploration of both demographic characteristics and personal perceptions related to climate change.\
+
+#### 2018 Summary Data
+Cleaning Process for the 2018 Summary Data
+To create the 2018 summary data, I built off the cleaned 2018 individual data. This approach was necessary because the 2021 data was only available in summarized form, not at the individual level. By summarizing the 2018 data in a comparable format, I could facilitate a meaningful comparison between the two years. The first step involved loading the cleaned 2018 individual dataset and mimicking the structure of the 2021 summary data as closely as possible.
+
+For age, I created the same age categories used in the 2021 dataset to ensure consistency between the two datasets. I then calculated the percentage of individuals within each age group and created a table summarizing this information. Similarly, I summarized the highest level of education completed by respondents, presenting it as a percentage of the total. However, a slight inconsistency emerged during this process, as the education levels and their descriptions differed between 2018 and 2021. Despite this discrepancy, I aligned the categories as closely as possible to maintain comparability.
+
+Next, I calculated the percentage of respondents who reported feeling informed about the causes of climate change and summarized the likelihood of taking various climate actions. This step was somewhat more complex, as the dataset contained nine different actions, each rated on a five-point scale of likelihood. I created a table showing the percentage likelihood of taking each specific action. Additionally, I analyzed the reasons respondents provided for being unlikely to take certain actions, which were only collected if they had indicated “unlikely” in the previous question. These reasons were summarized as counts rather than percentages, reflecting the conditional nature of the responses.
+
+Finally, I summarized the preferred methods for receiving climate-related information from the city, presenting this data as a percentage. This comprehensive summarization of the 2018 individual data provided a consistent and comparable dataset for analyzing trends and changes in perceptions and behaviors between 2018 and 2021.
+
+#### 2021 Summary Data 
+The cleaning process for the 2021 summary data focuses on ensuring consistency and accuracy for six specific variables: age, education, extent informed, likelihood to take action, and reasons for not taking action. I first extracted data from the relevant sheets and columns in the 2021 raw dataset using read_excel from the tidyverse. For each category, I selected specific rows and converted raw data into percentages. The age and education data were cleaned and saved into separate data frames (age_summary_21 and education_summary_21), while other categories like "extent informed" and "likelihood to take action" required cleaning across multiple columns, with data transformation into percentages. Missing values and outliers were handled by filtering invalid entries and ensuring all values were consistent.
+
+Instead of merging datasets for 2018 and 2021, I aligned the 2018 summary data to match the structure and categories of the 2021 data to facilitate comparison. This alignment was necessary because the categories and structure of the two datasets differed, and I modified the 2018 dataset to resemble the 2021 format as closely as possible, allowing for a more direct comparison. By focusing on ensuring that categories and percentages were comparable between years, I preserved the integrity of both datasets.
+
+Finally, I saved each cleaned dataset into formatted tables using tinytable for LaTeX compatibility. These cleaned datasets were essential for analysis, ensuring that all variables were represented as percentages without any missing or erroneous data. This process also ensured that the dataset was ready for comparison with the 2018 data, with clear, consistent categories across both years.
+
 ### Data Analysis
+The primary focus of this analysis was the 2018 dataset, examining six key variables: age, education, extent informed, likelihood to take action, reasons for not taking action, and the best method for delivering information regarding climate change action. I analyzed these variables at the individual level in the 2018 dataset by calculating the percentages within each category, which provided a clear understanding of the distribution and trends within the population.
+
+In addition, I compared the 2018 dataset to the 2021 summary data to assess changes over the years. By calculating the percentage distribution for each variable in both years, I was able to identify any shifts in public awareness, engagement, and preferences regarding climate change action. This comparison revealed whether there have been notable changes in factors like the public’s level of information about climate change, their likelihood to take action, and their preferred communication methods.
+
+This two-step approach allowed for a comprehensive understanding: a detailed exploration of the 2018 data combined with a broader comparison of trends between 2018 and 2021.
+
 ## Features
 ### Age
 ```{r}
@@ -43,220 +80,33 @@ The remainder of this paper is structured as follows: @sec-data presents the met
 #| echo: false
 #| message: false
 #| label: fig-one
-#| fig-cap: The chart illustrates the distribution of age for the 2018 survey in the City of Toronto, highlighting the major age categories.
-
-# install libraries 
-# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr"))
-
-# Load necessary libraries
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
-library(here)
-library(stringr)
-library(knitr)
-
-# Read in the data from your CSV file
-analysis_data <- read_csv(here("data/02-analysis_data/analysis_data.csv"))
-
-# Create a histogram to show the distribution of age
-age_plot <- ggplot(data, aes(x = age_18)) +
-  geom_histogram(binwidth = 5, fill = "skyblue", color = "black", alpha = 0.7) +
-  labs(
-    title = "Age Distribution of Survey Respondents (2018)",
-    x = "Age",
-    y = "Frequency"
-  ) +
-  theme_minimal()
-
-# Display the plot
-print(age_plot)
-
-# calculate summary statistics 
-mean_age <- mean(data$age_18, na.rm = TRUE)
-median_age <- median(data$age_18, na.rm = TRUE)
-min_age <- min(data$age_18, na.rm = TRUE)
-max_age <- max(data$age_18, na.rm = TRUE)
-# R does not have built in function thus needs to be defined
-sd_age <- sd(data$age_18, na.rm = TRUE)
-mode_age <- function(x) {
-  unique_x <- unique(x)
-  unique_x[which.max(tabulate(match(x, unique_x)))]
-}
-mode_value <- mode_age(data$age_18)
-
-# Create a data frame with the summary statistics
-summary_stats_age_18 <- data.frame(
-  Statistic = c("Mean Age", "Median Age", "Mode Age", "Standard Deviation", "Minimum Age", "Maximum Age"),
-  Value = c(mean_age, median_age, mode_value, sd_age, min_age, max_age)
-)
-
-# Use kable to generate a nice table
-kable(summary_stats_age_18, 
-      caption = "Summary Statistics for Age of Survey Respondents", 
-      col.names = c("Statistic", "Value"),
-      align = c("l", "c"))
+#| fig-cap: The histogram shows the distribution of age given the 2018 survey  respondants.
 
 
+# Read in the data 
+individual_18 <- read_parquet(here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet"))
+
+age_individual_plot
 ```
+
+The age variable was assessed to understand how climate change perceptions and actions vary across different age groups. The 2018 data shows that younger individuals, particularly those in the 18-34 age range, are more likely to feel informed about climate change and express a greater willingness to take action. In contrast, older age groups (55+) were less likely to feel as informed or engage in climate action, highlighting generational differences in awareness and response.
+
 
 ### Highest Level of Education Completed
-```{r}
-#| warning: false
-#| echo: false
-#| message: false
-#| label: fig-one
-#| fig-cap: The chart illustrates the distribution of highest level of education acheived for the 2018 surveyin the city of Toronto, highlighting academic achievement.
-
-# install libraries 
-# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr"))
-
-# Load necessary libraries
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
-library(here)
-library(stringr)
-library(knitr)
-
-# Read in the data from your CSV file
-analysis_data <- read_csv(here("data/02-analysis_data/analysis_data.csv"))
-
-# Create a bar chart for the highest level of education
-ggplot(data = analysis_data, aes(x = factor(highest_level_educ_18, 
-       levels = c("High school or less",
-                  "Some community college, vocational, trade school",
-                  "Completed community college, vocational, trade school",
-                  "Some university",
-                  "Completed undergraduate degree",
-                  "Post graduate/professional school", 
-                  "Prefer not to answer")))) +
-  geom_bar(fill = "skyblue", color = "black") +
-  labs(
-    title = "Distribution of Highest Level of Education Achievement",
-    x = "Level of Education",
-    y = "Count"
-  ) +
-  theme_minimal() +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    plot.margin = margin(10, 10, 10, 10), # Adds margin around the plot
-    plot.title = element_text(hjust = 0.5) # Centers the title
-  ) + 
-  # Wrap x-axis labels
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) + 
-  # Y-axis ticks every 25
-  scale_y_continuous(breaks = seq(0, max(table(analysis_data$highest_level_educ_18)), by = 25)) 
-
-# Adjust the size of the figure (increase height)
-  ggsave("education_chart.png", width = 10, height = 6)
-```
+Education level was analyzed to determine if there is a correlation between education and attitudes toward climate change. The 2018 data suggests that individuals with higher levels of education (university degree or higher) are more likely to feel informed about climate change and are more inclined to take action. Conversely, individuals with lower education levels expressed lower awareness and action towards climate change, indicating the role of education in shaping environmental engagement.
 
 ### Extent Feel Informed
-```{r}
-#| warning: false
-#| echo: false
-#| message: false
-#| label: fig-one
-#| fig-cap: The bar chart illustrates the distribution of the extent individuals feel informed about what causes climate change in the City of Toronto, based on the 2018 survey.
-
-# install libraries 
-# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr"))
-
-# Load necessary libraries
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
-library(here)
-library(stringr)
-library(knitr)
-
-# Read in the data from your CSV file
-analysis_data <- read_csv(here("data/02-analysis_data/analysis_data.csv"))
-
-# Create a bar chart for the extent people feel informed about climate change
-ggplot(data = analysis_data, aes(x = factor(extent_consider_informed_18, 
-       levels = c("Extremely informed", 
-                  "Very informed", 
-                  "Not very informed", 
-                  "Not at all informed")))) +
-  geom_bar(fill = "lightgreen", color = "black") +
-  labs(
-    title = "Extent People Feel Informed About Climate Change",
-    x = "Level of Informedness",
-    y = "Count"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5) # Center the title
-  ) 
-
-
-```
+This variable assessed individuals’ perceptions of how informed they feel about climate change. The 2018 data revealed that while a significant proportion of the population felt somewhat or very informed, there was a noticeable gap in knowledge, especially among older and less educated groups. Comparing this with the 2021 summary data helped track whether the perceived knowledge of climate change improved over the three years, showing some progress in public awareness.
 
 ### Likelihood Taking Action
-```{r}
-#| warning: false
-#| echo: false
-#| message: false
-#| label: fig-one
-#| fig-cap: The bar chart illustrates the distribution of the likelihood of taking certain actions to address climate change in the City of Toronto based on the 2018 survey. 
-
-# install libraries 
-# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr"))
-
-# Load necessary libraries
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
-library(here)
-library(stringr)
-library(knitr)
-
-# Read in the data from your CSV file
-analysis_data <- read_csv(here("data/02-analysis_data/analysis_data.csv"))
-
-# Create reshaped data for plotting
-action_data_long <- analysis_data %>%
-  pivot_longer(cols = starts_with("likelihood_action"),
-               names_to = "Action",
-               values_to = "Likelihood") %>%
-  mutate(Action = recode(Action,
-                         likelihood_action_home_improvement_18 = "Home Improvement",
-                         likelihood_action_reduce_hydro_18 = "Reduce Hydro Use",
-                         likelihood_action_minimize_car_18 = "Minimize Car Use",
-                         likelihood_action_vehicle_electric_18 = "Use Electric Vehicle",
-                         likelihood_action_protein_alternative_18 = "Alternative Proteins",
-                         likelihood_action_reduce_waste_18 = "Reduce Waste",
-                         likelihood_action_green_product_18 = "Green Products",
-                         likelihood_action_short_distance_18 = "Short Distance Travel",
-                         likelihood_action_sort_waste_18 = "Sort Waste")) %>%
-  filter(!is.na(Likelihood)) %>% # Remove rows where Likelihood is NA
-  mutate(Likelihood = factor(Likelihood)) # Convert Likelihood to a factor
-
-# Plot the distribution of likelihood of actions to address climate change
-ggplot(action_data_long, aes(x = Action, fill = Likelihood)) +
-  geom_bar(stat = "count", position = "dodge") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 60, hjust = 1), # Rotate x-axis labels for readability
-        axis.title.y = element_text(size = 12),
-        legend.title = element_text(size = 12),
-        legend.text = element_text(size = 10)) +
-  labs(
-    title = "Likelihood of Taking Action to Address Climate Change in Toronto (2018)",
-    x = "Actions to Address Climate Change",
-    y = "Count of Responses",
-    fill = "Likelihood"
-  ) +
-  scale_fill_manual(values = c("Already doing this or have done this" = "green",
-                               "Very likely" = "blue",
-                               "Somewhat likely" = "yellow",
-                               "Somewhat unlikely" = "orange",
-                               "Very unlikely" = "red"))
-```
+The likelihood of taking action against climate change was explored by assessing individuals' intentions and behaviors. In the 2018 data, younger individuals and those with higher educational attainment were more likely to report taking action, such as reducing carbon emissions or supporting climate policies. The 2021 data confirmed this trend, although slight shifts in attitudes were observed, with more people in the 35-54 age range indicating increased willingness to act.
 
 ### Barriers Taking Action
+TO DO: cant actually get this section to work
+This section analyzed the reasons individuals gave for not taking action on climate change. Common barriers identified in the 2018 data included financial constraints, lack of information, and perceived ineffectiveness of individual actions. These barriers were more pronounced among older individuals and those with lower educational levels. The 2021 summary data highlighted some shifts, with more respondents citing political barriers or the need for more systemic solutions.
+
 ### Best Mode of Delivery
+The analysis of the best method for delivering climate change information revealed that the majority of individuals in the 2018 dataset preferred receiving information via social media, followed by television and in-person presentations. Younger age groups favored social media, while older individuals preferred more traditional modes of communication. Comparing this with 2021 data allowed for an assessment of evolving preferences, showing a continued preference for digital platforms among younger generations, but a growing interest in in-person communication across all groups.
 
 # Model {#sec-model}
 The goal of our modelling strategy is twofold. Firstly,...

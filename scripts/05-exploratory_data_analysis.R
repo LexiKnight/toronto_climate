@@ -11,19 +11,19 @@
 
 # install libraries 
 # install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr", "arrow", "tidyr"))
-# install.packages("forcats,"RColorBrewer)
+# install.packages("forcats","RColorBrewer")
 
 # Load necessary libraries
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(here)
-library(stringr)
+library(stringr) # was this used?
 library(knitr)
 library(arrow)
 library(tidyr)
 library(forcats) # for reordering factor levels
-library(RColorBrewer) # for color palette red to green
+
 
 # Read in the data 
 individual_18 <- read_parquet(here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet"))
