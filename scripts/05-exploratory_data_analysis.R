@@ -11,7 +11,7 @@
 
 # install libraries 
 # install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr", "arrow", "tidyr"))
-# install.packages("forcats")
+# install.packages("forcats,"RColorBrewer)
 
 # Load necessary libraries
 library(tidyverse)
@@ -23,6 +23,7 @@ library(knitr)
 library(arrow)
 library(tidyr)
 library(forcats) # for reordering factor levels
+library(RColorBrewer) # for color palette red to green
 
 # Read in the data 
 individual_18 <- read_parquet(here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet"))
@@ -139,21 +140,22 @@ print(informed_18_plot)
 
 
 ## Likelihood ##
-
-# Install the RColorBrewer package if not installed
-install.packages("RColorBrewer")
-
-library(RColorBrewer)
-
+# Create a figure for likelihood of taking actions to address climate chang
 # Define a new color palette
 color_palette <- brewer.pal(5, "RdYlGn")  # Red to Green, with 5 colors
 
+# Define likelihood columns 
+likelihood_columns <- c("likelihood_home_improvement", "likelihood_reduce_hydro", 
+                        "likelihood_minimize_car", "likelihood_vehicle_electric",
+                        "likelihood_protein_alternative", "likelihood_reduce_waste", 
+                        "likelihood_green_product", "likelihood_short_distance",
+                        "likelihood_sort_waste")
 
 # Create a figure for likelihood of taking actions to address climate change
-# TO DO : need to figure out issue with two addtional likelihood categories appearing in figure (grey colors)
-# Remove NA values from the 'likelihood' column and fix any inconsistent categories (e.g., "Verylikely" should be "Very likely")
-actions_data <- twenty_eighteen %>%
-  pivot_longer(cols = all_of(likelihood_columns), names_to = "action", values_to = "likelihood") %>%
+actions_data <- individual_18 %>%
+  pivot_longer(cols = all_of(likelihood_columns), 
+               names_to = "action", 
+               values_to = "likelihood") %>%
   mutate(action = recode(action, 
                          "likelihood_home_improvement" = "Home Improvement",
                          "likelihood_reduce_hydro" = "Reduce Hydro Usage",
@@ -164,28 +166,33 @@ actions_data <- twenty_eighteen %>%
                          "likelihood_green_product" = "Purchase Green Products",
                          "likelihood_short_distance" = "Walk / Cycle Short Distances",
                          "likelihood_sort_waste" = "Sort Waste Correctly")) %>%
-  # Remove rows where likelihood is NA and fix category names if necessary
-  filter(!is.na(likelihood)) %>%
-  mutate(likelihood = recode(likelihood,
-                             "Verylikely" = "Very likely"))  # Correcting the category name
+  filter(!is.na(likelihood))
 
-# Check the unique values to confirm that the NA has been removed and the category names are fixed
+# Check the unique values to confirm that NA has been removed
 unique(actions_data$likelihood)
 
 # Now, plot the data
 ggplot(actions_data, aes(x = action, fill = likelihood)) +
-  geom_bar(position = "fill") +  # Positioning bars to stack
+  geom_bar(position = "fill") +
   labs(title = "Likelihood of Taking Climate Change Actions",
        x = "Actions",
        y = "Proportion",
        fill = "Likelihood") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(values = c("Already doing this or have done this" = "green",
-                               "Very likely" = "lightgreen",
-                               "Somewhat likely" = "yellow",
-                               "Somewhat unlikely" = "orange",
-                               "Very unlikely" = "red"))
+  scale_fill_manual(values = setNames(color_palette, 
+                                      c("Already doing this or have done this", 
+                                        "Very likely", 
+                                        "Somewhat likely", 
+                                        "Somewhat unlikely", 
+                                        "Very unlikely")))
+
+
+
+
+
+
+
 
 
 
