@@ -171,32 +171,35 @@ for (col in unlikelihood_columns) {
 # Handle "delivery_method" columns
 delivery_method_columns <- grep("^delivery_method", names(twenty_eighteen), value = TRUE)
 
-# Loop through each delivery_method column
+# Mapping for renaming specific non-"no" values
+delivery_method_rename_map <- list(
+  "toronto.ca_website" = "toronto.ca website",
+  "events" = "events",
+  "twitter" = "twitter",
+  "facebook" = "facebook",
+  "enewsletter_email" = "enewsletter / email",
+  "councillor_communication" = "councillor communication",
+  "advertising_campaigns" = "advertising campaigns",
+  "brochures_pamphlets" = "brochures / pamphlets",
+  "other" = "other",
+  "not_interested_receiving" = "not interested"
+)
+
+# Loop through each "delivery_method" column
 for (col in delivery_method_columns) {
   twenty_eighteen[[col]] <- sapply(twenty_eighteen[[col]], function(x) {
     if (grepl("^NO TO", x)) {
-      return("no")  # Change to "no" if it starts with "NO TO"
+      return("no")
     } else {
-      # Handle specific renaming for non-"no" values
-      if (col == "delivery_method_events") {
-        return("events")
-      } else if (col == "delivery_method_enewsletter_email") {
-        return("enewsletter / email")
-      } else if (col == "delivery_method_advertising_campaigns") {
-        return("advertising campaigns")
-      } else if (col == "delivery_method_brochures_pamphlets") {
-        return("brochures / pamphlets")
-      } else if (col == "delivery_method_other") {
-        return("other")
-      } else if (col == "delivery_method_not_interested_receiving") {
-        return("not interested")
-      } else {
-        # Otherwise, remove prefix, replace underscores with spaces, and lowercase
-        return(tolower(sub("delivery_method_", "", gsub("_", " ", x))))
-      }
+      # Remove the prefix and replace underscores with spaces, then lowercase
+      x_cleaned <- tolower(sub("delivery_method_", "", gsub("_", " ", x)))
+      
+      # Check if the value matches the mapping and rename it accordingly
+      return(delivery_method_rename_map[[x_cleaned]])
     }
   })
 }
+
 
 # str(twenty_eighteen)
 
@@ -446,7 +449,6 @@ write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_
 
 
 ## 6. Communication Summary ##
-# TO DO: need to fix - all values to 100 :(
 
 # Select all columns starting with "delivery_method"
 communication_summary_18 <- twenty_eighteen %>%
@@ -459,27 +461,18 @@ communication_summary_18 <- communication_summary_18 %>%
                names_to = "Delivery_Method", 
                values_to = "Percentage") %>%
   mutate(Delivery_Method = gsub("delivery_method_", "", Delivery_Method),  # Remove prefix
-         Delivery_Method = recode(Delivery_Method,
-                                  "toronto.ca_website" = "Toronto.ca Website",
-                                  "events" = "Events",
-                                  "twitter" = "Twitter",
-                                  "facebook" = "Facebook",
-                                  "instagram" = "Instagram",
-                                  "enewsletter_email" = "E-newsletter / Email",
-                                  "councillor_communication" = "Councillor Communication",
-                                  "advertising_campaigns" = "Advertising Campaigns",
-                                  "brochures_pamphlets" = "Brochures/Pamphlets",
-                                  "other" = "Other",
-                                  "not_interested_receiving" = "Not Interested in Receiving"),
          Percentage = round(Percentage)) %>%
   filter(Delivery_Method != "total_rows") %>%
   rename("Communication Method" = Delivery_Method)  # Rename column to "Communication Method"
 
 # Create the table using tinytable (similar to age and education examples)
 communication_summary_18_table <- tinytable::tt(communication_summary_18, 
-                                           row.names = FALSE, 
-                                           col.names = c("Communication Method", "Percentage"), 
-                                           escape = FALSE)
+                                                row.names = FALSE, 
+                                                col.names = c("Communication Method", "Percentage"), 
+                                                escape = FALSE)
+
+# View the summary table
+communication_summary_18_table
 
 # Print the table
 print(communication_summary_18_table)
