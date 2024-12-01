@@ -459,16 +459,33 @@ write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_
 communication_summary_18 <- twenty_eighteen %>%
   select(starts_with("delivery_method"))
 
+# Define the renaming mapping
+delivery_method_rename_map <- list(
+  "delivery_method_toronto.ca_website" = "Toronto.ca website",
+  "delivery_method_events" = "Events",
+  "delivery_method_twitter" = "Twitter",
+  "delivery_method_facebook" = "Facebook",
+  "delivery_method_instagram" = "Instagram",
+  "delivery_method_enewsletter_email" = "Enewsletter / email",
+  "delivery_method_councillor_communication" = "Councillor communication",
+  "delivery_method_advertising_campaigns" = "Advertising campaigns",
+  "delivery_method_brochures_pamphlets" = "Brochures / Pamphlets",
+  "delivery_method_other" = "Other",
+  "delivery_method_not_interested_receiving" = "Not interested"
+)
+
 # Calculate percentage of non-"no" occurrences
 communication_summary_18 <- communication_summary_18 %>%
   summarise(across(everything(), ~ sum(. != "no") / n() * 100)) %>%
   pivot_longer(cols = everything(), 
-               names_to = "Delivery_Method", 
+               names_to = "Communication Method", 
                values_to = "Percentage") %>%
-  mutate(Delivery_Method = gsub("delivery_method_", "", Delivery_Method),  # Remove prefix
-         Percentage = round(Percentage)) %>%
-  filter(Delivery_Method != "total_rows") %>%
-  rename("Communication Method" = Delivery_Method)  # Rename column to "Communication Method"
+  mutate(Percentage = round(Percentage)) %>%
+  filter(`Communication Method` != "total_rows")  # Filter out any unwanted rows
+
+# Apply renaming based on the mapping
+communication_summary_18 <- communication_summary_18 %>%
+  mutate(`Communication Method` = recode(`Communication Method`, !!!delivery_method_rename_map))
 
 # Create the table using tinytable (similar to age and education examples)
 communication_summary_18_table <- tinytable::tt(communication_summary_18, 
@@ -476,16 +493,11 @@ communication_summary_18_table <- tinytable::tt(communication_summary_18,
                                                 col.names = c("Communication Method", "Percentage"), 
                                                 escape = FALSE)
 
-# View the summary table
-communication_summary_18_table
-
 # Print the table
 print(communication_summary_18_table)
 
 # Save the data as Parquet
 write_parquet(communication_summary_18, "data/02-analysis_data/delivery_summary_18.parquet")
-
-
 
 
 

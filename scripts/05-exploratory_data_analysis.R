@@ -278,18 +278,44 @@ ggplot(data_summary, aes(x = action, y = count, fill = reason)) +
 
 
 
-# figure for method of communication 
-# Select columns that start with 'delivery_method' and count non-"no" values
+# Figure for method of communication
+# Select columns that start with 'delivery_method'
 delivery_columns <- individual_18 %>%
-  select(starts_with("delivery_method")) %>%
-  mutate(across(everything(), ~ ifelse(. == "no", NA, .)))  # Convert "no" to NA to easily count non-"no" values
+  select(starts_with("delivery_method"))
 
-# Count the number of non-NA (non-"no") responses for each column
-data_summary <- delivery_columns %>%
-  summarise(across(everything(), ~ sum(!is.na(.)))) %>%
-  pivot_longer(everything(), names_to = "delivery_method", values_to = "count")  # Pivot to long format
+# Create an empty data frame to store the results
+data_summary <- data.frame(
+  delivery_method = character(),
+  count_non_no = integer(),
+  count_no = integer(),
+  percentage = numeric(),
+  stringsAsFactors = FALSE
+)
 
-# Rename delivery_method columns to meaningful names
+# Loop through each column to count non-"no" and "no" responses
+for (col in colnames(delivery_columns)) {
+  
+  # Count non-"no" responses
+  non_no_count <- sum(delivery_columns[[col]] != "no", na.rm = TRUE)
+  
+  # Count "no" responses
+  no_count <- sum(delivery_columns[[col]] == "no", na.rm = TRUE)
+  
+  # Calculate the percentage of non-"no" responses
+  total_responses <- non_no_count + no_count
+  percentage <- (non_no_count / total_responses) * 100
+  
+  # Add the result to the summary data frame
+  data_summary <- data_summary %>%
+    add_row(
+      delivery_method = col,
+      count_non_no = non_no_count,
+      count_no = no_count,
+      percentage = percentage
+    )
+}
+
+# Rename the delivery method columns for readability
 data_summary <- data_summary %>%
   mutate(
     delivery_method = case_when(
@@ -308,42 +334,34 @@ data_summary <- data_summary %>%
     )
   )
 
-# Create a bar chart for frequency of non-"no" responses for each delivery method
-ggplot(data_summary, aes(x = reorder(delivery_method, count), y = count, fill = delivery_method)) +
+# Save the plot as 'communication_18_plot'
+communication_18_plot <- ggplot(data_summary, aes(x = reorder(delivery_method, percentage), y = percentage, fill = delivery_method)) +
   geom_bar(stat = "identity") +  # Use 'identity' to use actual counts
   labs(
-    title = "Frequency of Non-'No' Responses for Communication Methods",
+    title = "Preferred Methods of Communication for Climate Change and Climate Action Information",
     x = "Delivery Method",
-    y = "Frequency of Non-'No' Responses",
+    y = "Percentage of Responses",
     fill = "Delivery Method"
   ) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
-  scale_fill_manual(values = c(
-    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", 
-    "#D55E00", "#CC79A7", "#999999", "#66CC99", "#FF6666", "#8E44AD"))  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),  # Rotate x-axis labels for readability
+        axis.ticks.y = element_line(),  # Add tick marks on the y-axis
+        axis.ticks.x = element_line(),  # Add tick marks on the x-axis
+        axis.text.y = element_text(size = 10),  # Adjust y-axis text size if needed
+        legend.position = "none") +  # Remove the legend
+  scale_fill_brewer(palette = "Set3") +  # Use a nice color palette for fill
+  scale_y_continuous(breaks = seq(0, 100, by = 10))  # Set y-axis tick marks every 10%
 
-# checking the count for each delivery method
-# 1. Select the columns that start with "delivery_method"
-delivery_columns <- twenty_eighteen %>%
-  select(starts_with("delivery_method"))
+# The plot is now saved as 'communication_18_plot'
+communication_18_plot
+# Save the communication method plot to data/03-figures_data
+ggsave(
+  filename = here("data/03-figures_data", "communication_18_plot.png"),  # Saving as a PNG file
+  plot = communication_18_plot,
+  width = 8, height = 6
+)
 
-# 2. Replace "no" with NA so that we can easily count non-"no" values
-delivery_columns_clean <- delivery_columns %>%
-  mutate(across(everything(), ~ ifelse(. == "no", NA, .)))
-
-# 3. Count the number of non-NA (non-"no") values for each column (delivery method)
-data_summary <- delivery_columns_clean %>%
-  summarise(across(everything(), ~ sum(!is.na(.)))) %>%
-  pivot_longer(everything(), names_to = "delivery_method", values_to = "count")
-
-# Print the count for each delivery method
-print(data_summary)
-
-
-
-
-
+                                
 
 
  

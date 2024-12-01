@@ -137,6 +137,18 @@ This section analyzed the reasons individuals gave for not taking action on clim
 
 ### Best Mode of Delivery
 The analysis of the best method for delivering climate change information revealed that the majority of individuals in the 2018 dataset preferred receiving information via social media, followed by television and in-person presentations. Younger age groups favored social media, while older individuals preferred more traditional modes of communication. Comparing this with 2021 data allowed for an assessment of evolving preferences, showing a continued preference for digital platforms among younger generations, but a growing interest in in-person communication across all groups.
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-communication
+#| fig-cap: The stacked bar plot illustrates the preferred methods of communication for receiving information about climate change and climate action.
+
+knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"))
+
+
+```
+
 
 # Model {#sec-model}
 The goal of our modelling strategy is twofold. Firstly,...
