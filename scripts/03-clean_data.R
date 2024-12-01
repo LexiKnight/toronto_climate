@@ -61,7 +61,7 @@ twenty_eighteen <- twenty_eighteen %>%
     likelihood_short_distance = Q10r8,
     likelihood_sort_waste = Q10r9,
     unlikelihood_home_improvement_confusing = Q11_Lr1r1,
-    unlikelihood_home_improvement_individual_difference = Q11_Lr1r2,
+    unlikelihood_home_improvement_individual = Q11_Lr1r2,
     unlikelihood_home_improvement_ineffective = Q11_Lr1r3,
     unlikelihood_home_improvement_costly = Q11_Lr1r4,
     unlikelihood_home_improvement_unavailable = Q11_Lr1r5,
@@ -69,7 +69,7 @@ twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_home_improvement_uninterested = Q11_Lr1r7,
     unlikelihood_home_improvement_other = Q11_Lr1r8,
     unlikelihood_reduce_hydro_confusing = Q11_Lr2r1,
-    unlikelihood_reduce_hydro_individual_difference = Q11_Lr2r2,
+    unlikelihood_reduce_hydro_individual = Q11_Lr2r2,
     unlikelihood_reduce_hydro_ineffective = Q11_Lr2r3,
     unlikelihood_reduce_hydro_costly = Q11_Lr2r4,
     unlikelihood_reduce_hydro_unavailable = Q11_Lr2r5,
@@ -77,7 +77,7 @@ twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_reduce_hydro_uninterested = Q11_Lr2r7,
     unlikelihood_reduce_hydro_other = Q11_Lr2r8,
     unlikelihood_minimize_car_confusing = Q11_Lr3r1,
-    unlikelihood_minimize_car_individual_difference = Q11_Lr3r2,
+    unlikelihood_minimize_car_individual = Q11_Lr3r2,
     unlikelihood_minimize_car_ineffective = Q11_Lr3r3,
     unlikelihood_minimize_car_costly = Q11_Lr3r4,
     unlikelihood_minimize_car_unavailable = Q11_Lr3r5,
@@ -85,7 +85,7 @@ twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_minimize_car_uninterested = Q11_Lr3r7,
     unlikelihood_minimize_car_other = Q11_Lr3r8,
     unlikelihood_vehicle_electric_confusing = Q11_Lr4r1,
-    unlikelihood_vehicle_electric_individual_difference = Q11_Lr4r2,
+    unlikelihood_vehicle_electric_individual = Q11_Lr4r2,
     unlikelihood_vehicle_electric_ineffective = Q11_Lr4r3,
     unlikelihood_vehicle_electric_costly = Q11_Lr4r4,
     unlikelihood_vehicle_electric_unavailable = Q11_Lr4r5,
@@ -93,7 +93,7 @@ twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_vehicle_electric_uninterested = Q11_Lr4r7,
     unlikelihood_vehicle_electric_other = Q11_Lr4r8,
     unlikelihood_meat_alternative_confusing = Q11_Lr5r1,
-    unlikelihood_meat_alternative_individual_difference = Q11_Lr5r2,
+    unlikelihood_meat_alternative_individual = Q11_Lr5r2,
     unlikelihood_meat_alternative_ineffective = Q11_Lr5r3,
     unlikelihood_meat_alternative_costly = Q11_Lr5r4,
     unlikelihood_meat_alternative_unavailable = Q11_Lr5r5,
@@ -101,7 +101,7 @@ twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_meat_alternative_uninterested = Q11_Lr5r7,
     unlikelihood_meat_alternative_other = Q11_Lr5r8,
     unlikelihood_reduce_waste_confusing = Q11_Lr6r1,
-    unlikelihood_reduce_waste_individual_difference = Q11_Lr6r2,
+    unlikelihood_reduce_waste_individual = Q11_Lr6r2,
     unlikelihood_reduce_waste_ineffective = Q11_Lr6r3,
     unlikelihood_reduce_waste_costly = Q11_Lr6r4,
     unlikelihood_reduce_waste_unavailable = Q11_Lr6r5,
@@ -109,7 +109,7 @@ twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_reduce_waste_uninterested = Q11_Lr6r7,
     unlikelihood_reduce_waste_other = Q11_Lr6r8,
     unlikelihood_green_product_confusing = Q11_Lr7r1,
-    unlikelihood_green_product_individual_difference = Q11_Lr7r2,
+    unlikelihood_green_product_individual = Q11_Lr7r2,
     unlikelihood_green_product_ineffective = Q11_Lr7r3,
     unlikelihood_green_product_costly = Q11_Lr7r4,
     unlikelihood_green_product_unavailable = Q11_Lr7r5,
@@ -117,7 +117,7 @@ twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_green_product_uninterested = Q11_Lr7r7,
     unlikelihood_green_product_other = Q11_Lr7r8,
     unlikelihood_short_distance_confusing = Q11_Lr8r1,
-    unlikelihood_short_distance_individual_difference = Q11_Lr8r2,
+    unlikelihood_short_distance_individual = Q11_Lr8r2,
     unlikelihood_short_distance_ineffective = Q11_Lr8r3,
     unlikelihood_short_distance_costly = Q11_Lr8r4,
     unlikelihood_short_distance_unavailable = Q11_Lr8r5,
@@ -125,7 +125,7 @@ twenty_eighteen <- twenty_eighteen %>%
     unlikelihood_short_distance_uninterested = Q11_Lr8r7,
     unlikelihood_short_distance_other = Q11_Lr8r8,
     unlikelihood_sort_waste_confusing = Q11_Lr9r1,
-    unlikelihood_sort_waste_individual_difference = Q11_Lr9r2,
+    unlikelihood_sort_waste_individual = Q11_Lr9r2,
     unlikelihood_sort_waste_ineffective = Q11_Lr9r3,
     unlikelihood_sort_waste_costly = Q11_Lr9r4,
     unlikelihood_sort_waste_unavailable = Q11_Lr9r5,
@@ -154,18 +154,24 @@ twenty_eighteen <- twenty_eighteen %>%
   ))
 
 
-# Clean columns starting with "unlikelihood" 
+# Clean columns starting with "unlikelihood" by replacing NA with 0 and non-NA with 1
 twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
       starts_with("unlikelihood"),  # Apply to columns starting with 'unlikelihood'
-      ~ ifelse(is.na(.), 
-               0,  # Replace NA with 0
-               1)  # Replace all non-NA values with 1
+      ~ ifelse(is.na(.), 0, 1)      # Replace NA with 0 and non-NA with 1
     )
   )
 
-               
+# Process the unlikelihood columns as individual columns
+for (col in grep("^unlikelihood", names(twenty_eighteen), value = TRUE)) {
+  # Replace NA with 0 and non-NA with 1 for each column
+  twenty_eighteen[[col]] <- ifelse(is.na(twenty_eighteen[[col]]), 0, 1)
+}
+
+# After this, `twenty_eighteen` should have 0s and 1s instead of NA values in the unlikelihood columns
+
+
 
 # Clean columns starting with "delivery"
 twenty_eighteen <- twenty_eighteen %>%
@@ -331,6 +337,54 @@ write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_indi
 
 
 ## 5. Reasons Summary ##
+
+## Home Improvements ##
+
+# Load necessary libraries
+library(dplyr)
+library(tinytable)
+
+# Step 1: Select columns starting with "unlikelihood_home_improvement_"
+unlikelihood_columns <- twenty_eighteen %>%
+  select(starts_with("unlikelihood_home_improvement"))
+
+# Step 2: Calculate the sum (count of 1's) for each column
+column_sums <- summarise(unlikelihood_columns, 
+                         across(everything(), ~ sum(.x == 1, na.rm = TRUE)))
+
+# Step 3: Extract the reasons from the column names (after the last "_")
+new_column_names <- gsub("unlikelihood_home_improvement_", "", colnames(unlikelihood_columns))
+
+# Step 4: Create a data frame with reasons and counts
+count_table <- data.frame(
+  reason = new_column_names,   # The reason extracted from the column names
+  count = as.numeric(column_sums)  # The sum of 1's for each column
+)
+
+# Step 5: Use tt() to display the table
+count_table_tt <- tt(count_table)
+
+# Print the styled table
+count_table_tt
+
+
+
+# Check the sum for the specific column
+sum(twenty_eighteen$unlikelihood_home_improvement_confusing)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # TO DO: column headers are not showing up properly. the count seems messed up as well :(
 # TO DO: use tinytable
 # TO DO: change first column in new table to be "Reasons unlikely to take action"
