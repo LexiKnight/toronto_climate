@@ -10,7 +10,7 @@
 #### Workspace setup ####
 # install necessary packages
 # install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow","tidyverse", "tidyr", "stringr", "tinytable"))
-
+install.packages("readr")
 # load necessary packages
 library(readr)
 library(dplyr) # for combining data frames
@@ -146,38 +146,44 @@ twenty_eighteen <- twenty_eighteen %>%
     highest_level_educ = QD5
   )
 
-# Update columns starting with "likelihood"
+# Check after cleaning "likelihood" columns
 twenty_eighteen <- twenty_eighteen %>%
   mutate(across(
-    starts_with("likelihood"),  # Select columns that start with "likelihood"
-    ~ gsub("Verylikely", "Very likely", .)  # Use gsub instead of str_replace_all for replacement
+    starts_with("likelihood"),
+    ~ gsub("Verylikely", "Very likely", .)
   ))
 
 
-# Clean columns starting with "unlikelihood" by replacing NA with 0 and non-NA with 1
-twenty_eighteen <- twenty_eighteen %>%
-  mutate(
-    across(
-      starts_with("unlikelihood"),  # Apply to columns starting with 'unlikelihood'
-      ~ ifelse(is.na(.), 0, 1)      # Replace NA with 0 and non-NA with 1 for each value
-    )
-  )
+# Handle "unlikelihood" columns
+unlikelihood_columns <- grep("^unlikelihood", names(twenty_eighteen), value = TRUE)
 
+for (col in unlikelihood_columns) {
+  twenty_eighteen[[col]] <- sapply(twenty_eighteen[[col]], function(x) {
+    if (is.na(x)) {
+      return(0)
+    } else {
+      return(1)
+    }
+  })
+}
 
-# Clean columns starting with "delivery"
-twenty_eighteen <- twenty_eighteen %>%
-  mutate(
-    across(
-      starts_with("delivery_method"), 
-      ~ ifelse(
-        !is.na(.),  # Check if the value is not NA
-        sub("delivery_method_", "", cur_column()) |> str_replace("_", " ") |> tolower(),  # Clean the value
-        NA_character_  # Ensure that NA values remain NA
-      )
-    )
-  )
+# Handle "delivery_method" columns
+delivery_method_columns <- grep("^delivery_method", names(twenty_eighteen), value = TRUE)
 
+for (col in delivery_method_columns) {
+  twenty_eighteen[[col]] <- sapply(twenty_eighteen[[col]], function(x) {
+    if (grepl("^NO TO", x)) {
+      return("no")
+    } else {
+      # Remove prefix and replace underscores with spaces, then lowercase
+      return(tolower(sub("delivery_method_", "", gsub("_", " ", x))))
+    }
+  })
+}
 
+# str(twenty_eighteen)
+
+# summary(twenty_eighteen)
 
 # View the first few rows to confirm the data
 head(twenty_eighteen)
