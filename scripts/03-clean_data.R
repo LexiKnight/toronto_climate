@@ -150,36 +150,33 @@ twenty_eighteen <- twenty_eighteen %>%
 twenty_eighteen <- twenty_eighteen %>%
   mutate(across(
     starts_with("likelihood"),  # Select columns that start with "likelihood"
-    ~ st r_replace_all(.x, "verylikely", "very likely")  # Replace "verylikely" with "very likely"
+    ~ gsub("Verylikely", "Very likely", .)  # Use gsub instead of str_replace_all for replacement
   ))
 
 
-# Clean columns starting with  "unlikelihood"_action columns"
+# Clean columns starting with "unlikelihood" 
 twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
-      starts_with("unlikelihood"),  # Apply to columns starting with 'unlikelihood_action'
-      ~ ifelse(!is.na(.), 
-               # Extract the reason from the column name and assign it to non-NA values
-               sub(".*_", "", cur_column()) |> tolower(), 
-               .)  # Keep NA as is
+      starts_with("unlikelihood"),  # Apply to columns starting with 'unlikelihood'
+      ~ ifelse(is.na(.), 
+               0,  # Replace NA with 0
+               1)  # Replace all non-NA values with 1
     )
   )
+
+               
 
 # Clean columns starting with "delivery"
 twenty_eighteen <- twenty_eighteen %>%
   mutate(
     across(
       starts_with("delivery_method"), 
-      ~ ifelse(str_starts(., "NO TO:"), "no", .)  # Replace "NO TO:" with "no"
+      ~ ifelse(!is.na(.),
+               # Replace the value with a cleaned version of the delivery method
+               sub("delivery_method_", "", cur_column()) |> str_replace("_", " ") |> tolower(),
+               .)  # Keep NA as is
     )
-  ) %>%
-  mutate(
-    delivery_method_events = ifelse(delivery_method_events != "no", "events", "no"),
-    delivery_method_enewsletter_email = ifelse(delivery_method_enewsletter_email != "no", "enewsletter/email", "no"),
-    delivery_method_advertising_campaigns = ifelse(delivery_method_advertising_campaigns != "no", "advertising campaigns", "no"),
-    delivery_method_brochures_pamphlets = ifelse(delivery_method_brochures_pamphlets != "no", "brochures/pamphlets", "no"),
-    delivery_method_other = ifelse(delivery_method_other != "no", "other", "no")
   )
 
 
