@@ -139,6 +139,16 @@ print(informed_18_plot)
 
 
 ## Likelihood ##
+
+# Install the RColorBrewer package if not installed
+install.packages("RColorBrewer")
+
+library(RColorBrewer)
+
+# Define a new color palette
+color_palette <- brewer.pal(5, "RdYlGn")  # Red to Green, with 5 colors
+
+
 # Create a figure for likelihood of taking actions to address climate change
 # TO DO : need to figure out issue with two addtional likelihood categories appearing in figure (grey colors)
 # Remove NA values from the 'likelihood' column and fix any inconsistent categories (e.g., "Verylikely" should be "Very likely")
