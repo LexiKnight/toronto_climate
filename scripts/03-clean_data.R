@@ -187,16 +187,21 @@ delivery_method_rename_map <- list(
 
 # Loop through each "delivery_method" column
 for (col in delivery_method_columns) {
+  # Remove the prefix 'delivery_method_' from the column name
+  col_name <- sub("delivery_method_", "", col)
+  
   twenty_eighteen[[col]] <- sapply(twenty_eighteen[[col]], function(x) {
     if (grepl("^NO TO", x)) {
       return("no")
     } else {
-      # Remove the prefix and replace underscores with spaces, then lowercase
-      x_cleaned <- tolower(sub("delivery_method_", "", gsub("_", " ", x)))
-      
-      # Check if the value matches the mapping and rename it accordingly
-      return(delivery_method_rename_map[[x_cleaned]])
+      # Replace non-"no" values with the column name without the prefix
+      return(col_name)
     }
+  })
+  
+  # Now, rename specific values in the column using the predefined map
+  twenty_eighteen[[col]] <- sapply(twenty_eighteen[[col]], function(x) {
+    return(delivery_method_rename_map[[x]] %||% x)  # Use the mapped value if it exists, otherwise keep the original
   })
 }
 
