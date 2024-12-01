@@ -190,12 +190,6 @@ ggplot(actions_data, aes(x = action, fill = likelihood)) +
 
 
 
-
-
-
-
-
-
 # Create a figure illustrating reasons why people are not taking specific action to mitigate climate change
 # TO DO: pls come back to. the issue is that each "reason"category is appearing
 # to be the same weight.We need to look at how given a specific action (column), how we

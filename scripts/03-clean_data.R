@@ -150,7 +150,7 @@ twenty_eighteen <- twenty_eighteen %>%
 twenty_eighteen <- twenty_eighteen %>%
   mutate(across(
     starts_with("likelihood"),  # Select columns that start with "likelihood"
-    ~ str_replace_all(.x, "verylikely", "very likely")  # Replace "verylikely" with "very likely"
+    ~ st r_replace_all(.x, "verylikely", "very likely")  # Replace "verylikely" with "very likely"
   ))
 
 
