@@ -66,13 +66,14 @@ ggsave(
 # Create a histogram to show the distribution of highest level of education attained
 # Convert the column to a factor
 individual_18$highest_level_educ <- factor(individual_18$highest_level_educ, 
-                                                  levels = c("High school or less", 
-                                                             "Some community college, vocational, trade school",
-                                                             "Completed community college, vocational, trade school", 
-                                                             "Some university",
-                                                             "Completed undergraduate degree", 
-                                                             "Post graduate/professional school",
-                                                             "Prefer not to answer"))
+                                           levels = c("High school or less", 
+                                                      "Some community college, vocational, trade school",
+                                                      "Completed community college, vocational, trade school", 
+                                                      "Some university",
+                                                      "Completed undergraduate degree", 
+                                                      "Post graduate/professional school",
+                                                      "Prefer not to answer"))
+
 # Create the plot with adjustments
 educ_individual_plot <- ggplot(individual_18, aes(x = highest_level_educ, fill = highest_level_educ)) +
   geom_bar(color = "black", alpha = 0.7) + 
@@ -91,7 +92,8 @@ educ_individual_plot <- ggplot(individual_18, aes(x = highest_level_educ, fill =
   ) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels by 45 degrees
-    plot.margin = margin(10, 10, 20, 10)  # Increase the margins for better spacing
+    plot.margin = margin(10, 10, 20, 10),  # Increase the margins for better spacing
+    legend.position = "none"  # Remove the legend
   ) +
   scale_fill_manual(values = c("High school or less" = "red", 
                                "Some community college, vocational, trade school" = "orange", 
@@ -99,11 +101,11 @@ educ_individual_plot <- ggplot(individual_18, aes(x = highest_level_educ, fill =
                                "Some university" = "lightgreen", 
                                "Completed undergraduate degree" = "green", 
                                "Post graduate/professional school" = "forestgreen", 
-                               "Prefer not to answer" = "gray")) +
-  guides(fill = guide_legend(title = NULL))  # Hide the legend title
+                               "Prefer not to answer" = "gray"))
 
 # Display the plot
 print(educ_individual_plot)
+
 # Save the education plot to data/03-figures_data
 ggsave(
   filename = here("data/03-figures_data", "educ_individual_plot.png"),  # Saving as a PNG file

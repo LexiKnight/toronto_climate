@@ -25,6 +25,11 @@ Addressing the gap between climate awareness and action is critical for effectiv
 
 We found that practical obstacles, such as cost and convenience, alongside perceptions of ineffectiveness, are the primary reasons for inaction. Moreover, age and education level significantly shape how people prefer to receive information about climate action, suggesting that a one-size-fits-all communication strategy may be insufficient. These findings have substantial implications for policymakers and community leaders seeking to design more impactful climate initiatives. By addressing key barriers and tailoring engagement strategies, cities can empower individuals to adopt sustainable behaviors, making meaningful progress toward climate resilience and environmental sustainability.
 
+In Canada, electric vehicles (EVs) are increasingly recognized as a more sustainable alternative to internal combustion engine (ICE) vehicles. A life cycle assessment (LCA) conducted by the National Research Council of Canada highlights that EVs offer substantial greenhouse gas (GHG) emission reductions, particularly when powered by electricity from low-carbon sources, such as hydroelectricity in provinces like Québec. The study emphasizes the importance of considering regional electricity mixes, which significantly influence the environmental performance of EVs compared to conventional vehicles (NRC, 2021)
+Moreover, advancements in battery technology are further enhancing the sustainability of EVs. New lithium iron phosphate (LFP) batteries, which reduce the need for critical metals like cobalt and nickel, are becoming more prevalent. These batteries not only lower production costs but also extend the lifespan of EVs, making them even more environmentally friendly over time. (NRC, 2021)
+In Ontario, where Toronto is located, the electricity grid's relatively low carbon intensity makes EVs a cleaner option throughout most of their lifecycle. According to Clean Energy Canada, EVs in the country can emit up to 89% fewer GHGs than gasoline-powered cars, even after accounting for emissions from battery production and vehicle manufacturing (NRC, 2021)
+
+
 The remainder of this paper is structured as follows: @sec-data presents the methods used to analyze these demographic differences, followed by @sec-results, which details the results of the comparison between Rosedale-Moore Park and Downtown Yonge East. @sec-discussion offers a discussion of the findings, highlighting the implications for understanding residential segregation in Toronto. Finally, @sec-conclusion concludes with a reflection on the limitations of the study and suggestions for future research directions.
 
  
@@ -73,8 +78,15 @@ In addition, I compared the 2018 dataset to the 2021 summary data to assess chan
 
 This two-step approach allowed for a comprehensive understanding: a detailed exploration of the 2018 data combined with a broader comparison of trends between 2018 and 2021.
 
+
 ## Features
 ### Age
+@fig-one illustrates the age distribution of survey respondents in 2018. The histogram displays the frequency of respondents across different age groups, with the x-axis representing age intervals and the y-axis indicating the number of respondents within each interval. The distribution is relatively balanced, with two noticeable peaks around the 30–40 and 50–60 age ranges, suggesting these age groups are the most represented in the survey.
+
+The vertical dotted lines in the figure highlight key statistical measures: the green dotted line represents the median age, while the blue dashed line indicates the mean age of the respondents. Both measures fall near the center of the distribution, reinforcing the observation that the sample is primarily composed of middle-aged individuals. Although the distribution appears fairly symmetrical, there is a gradual decline in respondent frequency after the age of 60, with fewer participants aged 90 and above, indicating a smaller representation of older individuals.
+
+Overall, @fig-one provides valuable context for understanding the demographic composition of the survey sample. The predominance of middle-aged respondents may influence the interpretation of survey results, particularly if age is a factor in attitudes, behaviors, or preferences related to the study.
+
 ```{r}
 #| warning: false
 #| echo: false
@@ -86,16 +98,13 @@ knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 
 ```
 
-The age variable was assessed to understand how climate change perceptions and actions vary across different age groups. The 2018 data shows that younger individuals, particularly those in the 18-34 age range, are more likely to feel informed about climate change and express a greater willingness to take action. In contrast, older age groups (55+) were less likely to feel as informed or engage in climate action, highlighting generational differences in awareness and response.
-
-
 ### Highest Level of Education Completed
-Education level was analyzed to determine if there is a correlation between education and attitudes toward climate change. The 2018 data suggests that individuals with higher levels of education (university degree or higher) are more likely to feel informed about climate change and are more inclined to take action. Conversely, individuals with lower education levels expressed lower awareness and action towards climate change, indicating the role of education in shaping environmental engagement.
+@fig-two illustrates the distribution of survey respondents by their highest level of education attained. The most frequently reported education levels are "Completed undergraduate degree" and "Post graduate/professional school," with both categories having a noticeably higher frequency compared to others, indicating a well-educated respondent population. In contrast, fewer respondents reported "Some community college, vocational, trade school" and "Completed community college, vocational, trade school," suggesting these levels are less common among participants. Additionally, a small portion of respondents preferred not to disclose their education level. This distribution highlights a skew toward higher educational attainment within the sample, which may influence responses related to socio-economic factors and other survey topics.
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-education
+#| label: fig-two
 #| fig-cap: The histogram shows the distribution of education levels of 2018 survey respondents.
 
 knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
@@ -104,44 +113,26 @@ knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png")
 
 
 ### Extent Feel Informed
-This variable assessed individuals’ perceptions of how informed they feel about climate change. The 2018 data revealed that while a significant proportion of the population felt somewhat or very informed, there was a noticeable gap in knowledge, especially among older and less educated groups. Comparing this with the 2021 summary data helped track whether the perceived knowledge of climate change improved over the three years, showing some progress in public awareness.
+@fig-three depicts the distribution of self-reported climate change knowledge among survey respondents in 2018. The majority of participants identified as "Very informed," making this the most prevalent category by a significant margin. A moderate number of respondents reported being "Not very informed," while a smaller yet noticeable group described themselves as "Extremely informed." In contrast, the categories "Not at all informed" and "Not very informed" have the lowest frequencies, with "Not at all informed" being particularly rare. This distribution suggests that most respondents possess a relatively high level of awareness about climate change, with very few indicating a lack of knowledge on the topic.
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-informed
+#| label: fig-three
 #| fig-cap: The histogram shows the distribution of self-reported climate change knowledge among 2018 survey respondents.
 
 knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.png"))
 
 ```
 
-
-### Likelihood Taking Action
-The likelihood of taking action against climate change was explored by assessing individuals' intentions and behaviors. In the 2018 data, younger individuals and those with higher educational attainment were more likely to report taking action, such as reducing carbon emissions or supporting climate policies. The 2021 data confirmed this trend, although slight shifts in attitudes were observed, with more people in the 35-54 age range indicating increased willingness to act.
-```{r}
-#| warning: false
-#| echo: false
-#| message: false
-#| label: fig-likelihood
-#| fig-cap: The stacked bar plot shows the likelihood of survey respondents taking various actions to address climate change.
-
-knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot.png"))
-
-```
-
-
-### Barriers Taking Action
-TO DO: cant actually get this section to work
-This section analyzed the reasons individuals gave for not taking action on climate change. Common barriers identified in the 2018 data included financial constraints, lack of information, and perceived ineffectiveness of individual actions. These barriers were more pronounced among older individuals and those with lower educational levels. The 2021 summary data highlighted some shifts, with more respondents citing political barriers or the need for more systemic solutions.
-
 ### Best Mode of Delivery
-The analysis of the best method for delivering climate change information revealed that the majority of individuals in the 2018 dataset preferred receiving information via social media, followed by television and in-person presentations. Younger age groups favored social media, while older individuals preferred more traditional modes of communication. Comparing this with 2021 data allowed for an assessment of evolving preferences, showing a continued preference for digital platforms among younger generations, but a growing interest in in-person communication across all groups.
+The analysis of the best method for delivering climate change information portrayed in @fig-four revealed that the majority of individuals in the 2018 dataset preferred receiving information firstly from advertising campaigns with about 55 percent, newsletters with about 52 percent, followed by the toronto website wiht about 46 percent. On the other side of the spectrum, few said they were uninterested in receiving climate action information  with about 5 percent, about 12 percent indicated twitter and then 17 percent mentioned instagram. Overall social media platforms Facebook, Instagram and Twtitter were less popular methods of communciation. This could be because the survey only included individals over the age of 18. Moreover, the median sample was in the 40s. 
+
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-communication
+#| label: fig-four
 #| fig-cap: The stacked bar plot illustrates the preferred methods of communication for receiving information about climate change and climate action.
 
 knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"))
@@ -178,6 +169,30 @@ We can use maths by including latex between dollar signs, for instance $\theta$.
 #### Parameter Estimation ####
 
 # Results
+
+
+## Likelihood Taking Action
+The likelihood of taking action against climate change was explored by assessing individuals' intentions and behaviors. 
+@fig-five illustrates self-reported likelihood of taking certain actions that minimize climate change effects. On the x-axis, we have the nine different climate actions and on the y-axis is the percentage. The stacked bar chart allows understanding of how likely individuals are to take part in the given actions. 
+Sorting waste into the correct bins is the action that most individuals are doing right now, accounting for 60 percent whith 24 percent saying they are very likely to take part in this action. The next most prominent actions are walking or cycling short distances, reduce hydro usage, reduce waste and home improvements. 40 percent of invidiuals report walking or cycling when traveling shorter distances in the city with 22 percent reporting they are very likely. However, 7 percent say they are very unlikely to change their method of transportation. Reducing the amount of energy and water use is already done by 36 percent and very likely for 29 percent only a mere 3 percent is very unlikely. Reducing personal waste such as contributing to repurposing used products has similar percentages to responses for reducing hydro but even fewer individuals that report they are very unlikely to take action. Similarly, the likelihoods for making home improvements for energy efficiency such as energy-efficient appliances, programmable thermostat, LED lightbulbs, green or cool roof. 
+In contrast, the action where the least number of individuals are contributing to is the investment of an electric or hybrid vehicle over gas-powered vehicles with only 8 percent who currently have an energy efficient vehicle. While 19 percetn are very likely to make this switch, 14 percent say they are very unlikely. This illustrates that buying an electric or hybrid vehicle is action the least number of individuals are willing to invest in despite gas-powered vehicles being a major contributor to greenhouse gases. This action has a huge impact on the environment and yet 41 percent of this sample say they are unlikely to change! The second action that individuals are most unlikely to engage in is eat less meat by incorporating more plant-based foods in their diet with 12 percent very unlikely and 23 percent somewhat unlikely. Only 23 percent are already consuming meat alternatives. Vegans greenhosue gas emissions are on average 37% lower than those who eat meat frequently. 
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-five
+#| fig-cap: The stacked bar plot shows the likelihood of survey respondents taking various actions to address climate change.
+
+knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot.png"))
+
+```
+
+### Likelihood taking action by age
+
+### Likelihood taking action by education 
+
+## comparison 2018 to 2021
+
 
 
 # Discussion
