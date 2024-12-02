@@ -22,7 +22,7 @@ library(tidyverse)
 library(tidyr)
 library(stringr)
 library(tinytable)
-
+library(here)
 
 #### Clean individual 2018 data ####
 
@@ -228,7 +228,7 @@ write_csv(twenty_eighteen, "data/02-analysis_data/twenty_eighteen_individual_ana
 twenty_eighteen <- read_csv("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv", col_names = TRUE)
 
 
-## 1. Age Summary ##
+## 1. Age Summary 2018 ##
 
 ## Create age categories based on ranges in 2021 summary data and summarize directly
 age_summary_18 <- as.data.frame(table(cut(twenty_eighteen$age, 
@@ -246,15 +246,14 @@ age_summary_18 <- age_summary_18[, c("Age Group", "Percentage")]
 # Create the table using tinytable
 age_summary_18_table <- tt(age_summary_18)
 
-# Print the table
-print(age_summary_18_table)
+# print table
+age_summary_18_table
 
 # Save as Parquet
-write_parquet(age_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+write_parquet(age_summary_18, here("data/03-figures_data", "age_summary_2018_table.parquet"))
 
 
-
-## 2. Education Level Summary ##
+## 2. Education Level Summary 2018 ##
 
 # Create the summary table based on education levels
 education_summary_18 <- as.data.frame(table(twenty_eighteen$highest_level_educ))
@@ -269,15 +268,15 @@ education_summary_18 <- education_summary_18[, c("Education Level", "Percentage"
 # Create the table using tinytable
 education_summary_18_table <- tt(education_summary_18)
 
-# Print the table
-print(education_summary_18_table)
+# Print table
+education_summary_18_table
 
 # Save as Parquet
-write_parquet(education_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+write_parquet(education_summary_18, here("data/03-figures_data", "education_summary_2018_table.parquet"))
 
 
 
-## 3. Informed Summary ##
+## 3. Informed Summary 2018 ##
 
 # Create the summary table based on the informed extent categories
 informed_summary_18 <- as.data.frame(table(twenty_eighteen$extent_consider_informed))
@@ -296,13 +295,12 @@ informed_summary_18_table <- tt(informed_summary_18)
 informed_summary_18_table
 
 # Save as Parquet
-write_parquet(informed_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+write_parquet(informed_summary_18, here("data/03-figures_data", "informed_summary_2018_table.parquet"))
 
 
 
 
-
-## 4. Likelihood Action Summary ##
+## 4. Likelihood Action Summary 2018 ##
 
 # Identify columns starting with "likelihood_action"
 likelihood_columns <- grep("^likelihood", names(twenty_eighteen), value = TRUE)
@@ -348,112 +346,16 @@ rownames(likelihood_summary_18) <- NULL
 # Create the table using tinytable
 likelihood_summary_18_table <- tt(likelihood_summary_18)
 
-# Print the table to the console (this is where you would see a neat, compact table)
-print(likelihood_summary_18_table)
+# print table
+likelihood_summary_18_table
 
 # Save as Parquet File (Ensure data is written as a data frame, not matrix)
-write_parquet(likelihood_summary_18, "data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet")
+write_parquet(likelihood_summary_18, here("data/03-figures_data", "likelihood_summary_2018_table.parquet"))
 
 
 
 
-
-
-
-## 5. Reasons Summary ##
-# TO DO: column headers are not showing up properly. the count seems messed up as well :(
-# TO DO: use tinytable
-# TO DO: change first column in new table to be "Reasons unlikely to take action"
-
-## Home Improvements ##
-
-# Load necessary libraries
-library(dplyr)
-library(tinytable)
-
-# Step 1: Select columns starting with "unlikelihood_home_improvement_"
-unlikelihood_columns <- twenty_eighteen %>%
-  select(starts_with("unlikelihood_home_improvement"))
-
-# Step 2: Calculate the sum (count of 1's) for each column
-column_sums <- summarise(unlikelihood_columns, 
-                         across(everything(), ~ sum(.x == 1, na.rm = TRUE)))
-
-# Step 3: Extract the reasons from the column names (after the last "_")
-new_column_names <- gsub("unlikelihood_home_improvement_", "", colnames(unlikelihood_columns))
-
-# Step 4: Create a data frame with reasons and counts
-count_table <- data.frame(
-  reason = new_column_names,   # The reason extracted from the column names
-  count = as.numeric(column_sums)  # The sum of 1's for each column
-)
-
-# Step 5: Use tt() to display the table
-count_table_tt <- tt(count_table)
-
-# Print the styled table
-count_table_tt
-
-
-
-# Check the sum for the specific column
-sum(twenty_eighteen$unlikelihood_home_improvement_confusing)
-
-######################
-
-# Reshape data from wide to long format
-twenty_eighteen_long <- twenty_eighteen %>%
-  pivot_longer(
-    cols = starts_with("unlikelihood"),              # Select all 'unlikelihood_' columns
-    names_to = c("Action", "Reason"),                # Split names into Action and Reason
-    names_pattern = "unlikelihood_([^_]+(?:_[^_]+)*)_(\\w+)$",  # Match entire multi-word action and single-word reason
-    values_to = "Value"                              # New column containing the counts
-  )
-
-# Replace non-NA values with the corresponding reason (keep NA values as is)
-twenty_eighteen_long <- twenty_eighteen_long %>%
-  mutate(Value = ifelse(!is.na(Value), 1, NA))       # Replace values with 1 to indicate reason presence
-
-# Group by Action and Reason, and count occurrences of each reason
-twenty_eighteen_filtered <- twenty_eighteen_long %>%
-  filter(!is.na(Value)) %>%                          # Keep only rows where a reason is present
-  group_by(Action, Reason) %>%                       # Group by Action and Reason
-  summarise(Count = sum(Value), .groups = 'drop')    # Sum occurrences of each reason
-
-# Pivot the data to wide format (Reasons as rows and Actions as columns)
-reason_summary_18 <- twenty_eighteen_filtered %>%
-  pivot_wider(
-    names_from = Action,            # Make actions the columns
-    values_from = Count,            # Fill with counts of each reason
-    values_fill = list(Count = 0)   # Replace missing values with 0
-  )
-
-# Rename the action columns for readability
-reason_summary_18 <- reason_summary_18 %>%
-  rename_with(
-    ~ recode(.,                    # Recode action names
-             "green_product" = "Purchase Green Products",
-             "home_improvement" = "Home Improvement",
-             "reduce_hydro" = "Reduce Hydro Use",
-             "minimize_car" = "Minimize Car Use",
-             "vehicle_electric" = "Electric / Hybrid Car",
-             "protein_alternative" = "Meat Alternative",
-             "reduce_waste" = "Reduce Waste",
-             "short_distance" = "Walk / Cycle Short Distance",
-             "sort_waste" = "Sort Waste Correctly"
-    )
-  )
-
-# Step 6: Print the final reason summary table
-print(reason_summary_18)
-
-# Save as a CSV or Parquet file 
-write_parquet(reason_summary_18, "data/02-analysis_data/twenty_eighteen_reasons_summary.parquet")
-
-
-
-
-## 6. Communication Summary ##
+## 5. Communication Summary 2018 ##
 
 # Select all columns starting with "delivery_method"
 communication_summary_18 <- twenty_eighteen %>%
@@ -494,10 +396,10 @@ communication_summary_18_table <- tinytable::tt(communication_summary_18,
                                                 escape = FALSE)
 
 # Print the table
-print(communication_summary_18_table)
+communication_summary_18_table
 
 # Save the data as Parquet
-write_parquet(communication_summary_18, "data/02-analysis_data/delivery_summary_18.parquet")
+write_parquet(communication_summary_18, here("data/03-figures_data", "communication_summary_2018_table.parquet"))
 
 
 
@@ -512,7 +414,10 @@ twenty_twenty_one <- "data/01-raw_data/twenty_twenty_one_raw_data.xlsx"
 # Sample size information
 sample_size_2021 <- 1401 # This is the sample size for the year 2021
 
-## Age - sheet 3 ##
+
+
+
+## Age 2021 - sheet 3 ##
 
 # Extract data from Sheet 3 + 1 (accounting for the index sheet)
 sheet4_data <- read_excel(twenty_twenty_one, sheet = 4)
@@ -548,24 +453,18 @@ age_summary_21 <- data.frame(
 colnames(age_summary_21) <- c("Age Group", "Percentage")
 
 # Create the table using tinytable
-age_summary_21_table <- tt(age_summary_21)
+age_summary_2021_table <- tt(age_summary_21)
 
 # Print the styled table
-age_summary_21_table
+age_summary_2021_table
 
-# Save as a LaTeX file using tinytable
-sink("age_summary_21_table.tex")  # Redirect output to a .tex file
-tinytable::tt(age_summary_21, 
-              row.names = FALSE, 
-              col.names = c("Age Group", "Percentage"), 
-              escape = FALSE)  # Prevent escaping characters
-sink()  # Stop redirecting output to file
+# Save the data as Parquet
+write_parquet(age_summary_21, here("data/03-figures_data", "age_summary_2021_table.parquet"))
 
 
 
 
-
-## education - sheet 11 ##
+## education 2021 - sheet 11 ##
 
 # Extract data from Sheet 11 + 1 (accounting for the index sheet)
 sheet12_data <- read_excel(twenty_twenty_one, sheet = 12)
@@ -601,24 +500,18 @@ education_summary_21 <- data.frame(
 colnames(education_summary_21) <- c("Education Level", "Percentage")
 
 # Create the table using tinytable
-education_summary_21_table <- tt(education_summary_21)
+education_summary_2021_table <- tt(education_summary_21)
 
-# Print the styled table
-education_summary_21_table
+# Print table
+education_summary_2021_table
 
-# Save as a LaTeX file using tinytable
-sink("education_summary_21_table.tex")  # Redirect output to a .tex file
-tinytable::tt(education_summary_21, 
-              row.names = FALSE, 
-              col.names = c("Education Level", "Percentage"), 
-              escape = FALSE)  # Prevent escaping characters
-sink()  # Stop redirecting output to file
+# Save the data as Parquet
+write_parquet(education_summary_21, here("data/03-figures_data", "education_summary_2021_table.parquet"))
 
 
 
 
-
-## Extent Informed - sheet 34 ##
+## Extent Informed 2021 - sheet 34 ##
 
 # Extract data from Sheet 34 + 1 (accounting for the index sheet)
 sheet35_data <- read_excel(twenty_twenty_one, sheet = 35)
@@ -654,24 +547,18 @@ informed_summary_21 <- data.frame(
 colnames(informed_summary_21) <- c("Extent Informed", "Percentage")
 
 # Create the table using tinytable
-informed_summary_21_table <- tt(informed_summary_21)
+informed_summary_2021_table <- tt(informed_summary_21)
 
-# Print the styled table
-informed_summary_21_table
+# Print table
+informed_summary_2021_table
 
-# Save as a LaTeX file using tinytable
-sink("informed_summary_21_table.tex")  # Redirect output to a .tex file
-tinytable::tt(informed_summary_21, 
-              row.names = FALSE, 
-              col.names = c("Extent Informed", "Informed Percentage"), 
-              escape = FALSE)  # Prevent escaping characters
-sink()  # Stop redirecting output to file
+# Save the data as Parquet
+write_parquet(informed_summary_21, here("data/03-figures_data", "informed_summary_2021_table.parquet"))
 
 
 
 
-
-## Likelihood Take Action - sheet 69 ##
+## Likelihood Take Action 2021- sheet 69 ##
 
 # Extract data from Sheet 69 + 1 (accounting for the index sheet)
 sheet70_data <- read_excel(twenty_twenty_one, sheet = 70)
@@ -741,39 +628,18 @@ colnames(likelihood_summary_21) <- c(
 )
 
 # Create the table using tinytable
-likelihood_summary_21_table <- tt(likelihood_summary_21)
+likelihood_summary_2021_table <- tt(likelihood_summary_21)
 
-# Print the styled table
-likelihood_summary_21_table
+# Print table
+likelihood_summary_2021_table
 
-# Save as a LaTeX file using tinytable
-sink("likelihood_summary_21_table.tex")  # Redirect output to a .tex file
-tinytable::tt(likelihood_summary_21, 
-              row.names = FALSE, 
-              col.names = c("Likelihood to Take Action", 
-                            "Purchase energy efficient appliances",
-                            "Install a programmable thermostat",
-                            "Install LED lightbulbs",
-                            "Major home renovations",
-                            "Add solar panels to home",
-                            "Get EnerGuide home energy evaluation",
-                            "Reduce water use",
-                            "Use public transit more",
-                            "Cycle more",
-                            "Walk more",
-                            "Purchase electric/hybrid vehicle in next 1-3 years",
-                            "Reduce meat consumption",
-                            "Reduce own waste",
-                            "Purchase environmentally friendly items",
-                            "Sort waste into correct bins"), 
-              escape = FALSE)  # Prevent escaping characters
-sink()  # Stop redirecting output to file
-
+# Save the data as Parquet
+write_parquet(likelihood_summary_21, here("data/03-figures_data", "likelihood_summary_2021_table.parquet"))
 
 
               
 
-## Reason Unlikely to Take Action - sheet 85 ##
+## Reason Unlikely to Take Action 2021 - sheet 85 ##
 
 # Extract data from Sheet 85 + 1 (accounting for the index sheet)
 sheet86_data <- read_excel(twenty_twenty_one, sheet = 86)
@@ -857,96 +723,18 @@ colnames(reasons_summary_21) <- c(
 )
 
 # Create the table using tinytable
-reasons_summary_21_table <- tt(reasons_summary_21)
+reasons_summary_2021_table <- tt(reasons_summary_21)
 
-# Print the styled table
-reasons_summary_21_table
+# Print table
+reasons_summary_2021_table
 
-# Save as a LaTeX file using tinytable
-sink("reasons_summary_21_table.tex")  # Redirect output to a .tex file
-tinytable::tt(reasons_summary_21, 
-              row.names = FALSE, 
-              col.names = c("Reasons unlikely to take action", 
-                            "Purchase energy efficient appliances",
-                            "Install a programmable thermostat",
-                            "Install LED lightbulbs",
-                            "Major home renovations",
-                            "Add solar panels to home",
-                            "Get EnerGuide home energy evaluation",
-                            "Reduce water use",
-                            "Reduce meat consumption",
-                            "Reduce own waste",
-                            "Purchase environmentally friendly items",
-                            "Sort waste into correct bins"), 
-              escape = FALSE)  # Prevent escaping characters
-sink()  # Stop redirecting output to file
+# Save the data as Parquet
+write_parquet(reasons_summary_21, here("data/03-figures_data", "reasons_summary_2021_table.parquet"))
 
 
 
 
-
-
-## City support - sheet 113 ##
-# Unsure if going to use this information
-
-# Extract data from Sheet 113 + 1 (accounting for the index sheet)
-sheet114_data <- read_excel(twenty_twenty_one, sheet = 114)
-
-# Define rows and columns for Sheet 113 that want extract 
-rows_A <- c(7, 10, 13, 16, 19,22, 25, 28, 31,34, 37,40, 43, 46, 49, 52, 55, 58,
-            61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91, 94, 97, 100, 103, 106,
-            109, 112,115, 118) # Categories in column A (city support categories)
-rows_B <- c(8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59,
-           62, 65, 68, 71, 74, 77, 80, 83, 86, 89, 92, 95, 98, 101, 104, 107,
-           110, 113, 116, 119) # Data in column B
-
-# Extract the city support categories from column A
-categories <- sheet114_data %>%
-  slice(rows_A) %>%
-  pull(1) %>%  # Pull the first column (A) as a vector
-  trimws()  # Remove unexpected whitespace
-
-# Extract the percentage raw data from column B 
-raw_data_B <- sheet114_data[rows_B, 2]
-
-# Convert raw data from tibble to character and then to numeric
-raw_data_B_numeric <- as.numeric(as.character(raw_data_B[[1]]))
-
-# Multiply by 100 to convert to percentages (if the conversion succeeded)
-percentages <- round(raw_data_B_numeric * 100)
-
-
-## Save the informed_summary_21 ##
-
-# Combine categories and percentages into a data frame
-support_summary_21 <- data.frame(
-  Category = categories,
-  Percentage = percentages
-)
-
-# Rename the column headers
-colnames(support_summary_21) <- c("City Support to Motivate", "Percentage")
-
-# Create the table using tinytable
-support_summary_21_table <- tt(support_summary_21)
-
-# Print the styled table
-support_summary_21_table
-
-# Save as a LaTeX file using tinytable
-sink("support_summary_21_table.tex")  # Redirect output to a .tex file
-tinytable::tt(support_summary_21, 
-              row.names = FALSE, 
-              col.names = c("City Support to Motivate", "Support Percentage"), 
-              escape = FALSE)  # Prevent escaping characters
-sink()  # Stop redirecting output to file
-
-
-
-
-
-
-## Methods of communication - sheet 114 ##
+## Methods of communication 2021- sheet 114 ##
 
 # Extract data from Sheet 113 + 1 (accounting for the index sheet)
 sheet115_data <- read_excel(twenty_twenty_one, sheet = 115)
@@ -987,19 +775,13 @@ communication_summary_21 <- data.frame(
 colnames(communication_summary_21) <- c("Communication Method", "Percentage")
 
 # Create the table using tinytable
-communication_summary_21_table <- tt(communication_summary_21)
+communication_summary_2021_table <- tt(communication_summary_21)
 
-# Print the styled table
-communication_summary_21_table
+# Print table
+communication_summary_2021_table
 
-# Save as a LaTeX file using tinytable
-sink("communication_summary_21_table.tex")  # Redirect output to a .tex file
-tinytable::tt(communication_summary_21, 
-              row.names = FALSE, 
-              col.names = c("Method of Communication", "Communication Percentage"), 
-              escape = FALSE)  # Prevent escaping characters
-sink()  # Stop redirecting output to file
-
+# Save the data as Parquet
+write_parquet(communication_summary_21, here("data/03-figures_data", "communication_summary_2021_table.parquet"))
 
 
 

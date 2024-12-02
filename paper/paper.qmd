@@ -81,6 +81,7 @@ This two-step approach allowed for a comprehensive understanding: a detailed exp
 
 ## Features
 ### Age
+#### Individual 2018
 @fig-one illustrates the age distribution of survey respondents in 2018. The histogram displays the frequency of respondents across different age groups, with the x-axis representing age intervals and the y-axis indicating the number of respondents within each interval. The distribution is relatively balanced, with two noticeable peaks around the 30–40 and 50–60 age ranges, suggesting these age groups are the most represented in the survey.
 
 The vertical dotted lines in the figure highlight key statistical measures: the green dotted line represents the median age, while the blue dashed line indicates the mean age of the respondents. Both measures fall near the center of the distribution, reinforcing the observation that the sample is primarily composed of middle-aged individuals. Although the distribution appears fairly symmetrical, there is a gradual decline in respondent frequency after the age of 60, with fewer participants aged 90 and above, indicating a smaller representation of older individuals.
@@ -97,6 +98,14 @@ Overall, @fig-one provides valuable context for understanding the demographic co
 knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 
 ```
+#### Age Comparison 2018 and 2021
+This summary table illustrates the different age ditribution for 2018 and 2021 surveys. The major difference is that there was greater representation of younger inviduals ranging from 18 to 23 in 2021 compared to 2018. The remaining age groups were not very different. 
+
+```{r}
+print(age_summary_combined)
+
+```
+
 
 ### Highest Level of Education Completed
 @fig-two illustrates the distribution of survey respondents by their highest level of education attained. The most frequently reported education levels are "Completed undergraduate degree" and "Post graduate/professional school," with both categories having a noticeably higher frequency compared to others, indicating a well-educated respondent population. In contrast, fewer respondents reported "Some community college, vocational, trade school" and "Completed community college, vocational, trade school," suggesting these levels are less common among participants. Additionally, a small portion of respondents preferred not to disclose their education level. This distribution highlights a skew toward higher educational attainment within the sample, which may influence responses related to socio-economic factors and other survey topics.
@@ -110,6 +119,11 @@ knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
 
 ```
+#### Education Comparison 2018 and 2021
+```{r}
+print(education_summary_combined)
+```
+
 
 
 ### Extent Feel Informed
@@ -142,13 +156,14 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 
 
 # Model {#sec-model}
+TO DO:
 The goal of our modelling strategy is twofold. Firstly,...
 Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-appendix].
 ## Model set-up
 In this analysis, we aim to predict the likelihood of taking climate-friendly actions based on demographic variables (age, education) and climate change awareness (knowledge). The specific actions include investing in an electric or hybrid vehicle instead of a gas-powered one, making home improvements (e.g., using LED lightbulbs), adopting meat alternatives, minimizing car use, purchasing green products, reducing hydro usage, reducing waste by repurposing used products, sorting waste correctly, and walking or cycling shorter distances.
 
 ### Model Specifications ###
-
+TO DO: 
 
 \begin{align} 
 y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
@@ -176,16 +191,16 @@ Age: Previous studies indicate that younger individuals are more likely to engag
 Education: Higher educational attainment has been associated with a higher likelihood of adopting environmentally responsible behaviors, likely due to increased awareness of environmental issues and access to relevant information (Kollmuss & Agyeman, 2002).
 
 Knowledge: A greater understanding of climate change is expected to positively influence individuals' likelihood of taking action. More knowledgeable individuals are more likely to adopt climate-friendly practices, as they are more aware of the urgency of the crisis and the potential benefits of sustainable behaviors (Gifford, 2013).
+
 #### Model Structure ####
 The model assumes that the likelihood of taking climate-friendly actions is linearly related to the input variables. Each predictor (age, education, and knowledge) is assumed to have a linear relationship with the likelihood of taking action, meaning that as these variables change, the likelihood of taking climate-friendly actions will either increase or decrease in a predictable manner. This structure facilitates a clear interpretation of how each variable contributes to the overall likelihood of climate-positive behavior.
 
 Detailed Structure
 The model does not assume any interactions between the predictors, meaning each factor (age, education, knowledge) is considered independently in its influence on the outcome. However, depending on the data, you might consider adding interaction terms if you believe that, for example, the effect of knowledge on action is stronger for younger individuals.
 The linear relationship between predictors and the likelihood of action allows for easy interpretation, with coefficients representing the change in the likelihood of taking action for each unit change in the predictor variable.
+
 #### Parameter Estimation ####
-
 In parameter estimation, we anticipate that:
-
 Age: We expect that younger individuals will have a higher likelihood of taking climate-friendly actions, as studies have shown that younger generations are more environmentally conscious and concerned about climate change (Leiserowitz et al., 2010).
 Education: We hypothesize that higher levels of education will positively influence the likelihood of taking climate-positive actions. More educated individuals tend to have better access to information about climate change and sustainability practices (Kollmuss & Agyeman, 2002).
 Knowledge: We expect that greater knowledge of climate change will be strongly associated with higher likelihoods of adopting climate-friendly behaviors. Knowledge acts as a critical enabler, motivating individuals to take action and contribute to mitigating climate change (Gifford, 2013).
@@ -194,7 +209,6 @@ We will estimate the model parameters using a standard linear regression approac
 β) for each predictor, showing how each factor influences the likelihood of taking climate-friendly actions.
 
 # Results
-
 
 ## Likelihood Taking Action
 The likelihood of taking action against climate change was explored by assessing individuals' intentions and behaviors. 
@@ -214,6 +228,7 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot
 
 ### Likelihood taking action by age
 The graph illustrates the relationship between age group (x-axis) and the percentage of respondents (y-axis) who reported varying levels of likelihood to adopt climate-related actions. The colored segments of each bar represent five levels of likelihood and black dashed trend line provides an overview of how the likelihood to engage in each action changes across different age groups.
+
 #### Electric / Hybrid Vehicle Adoption
 For electric and hybrid vehicles, younger age groups (15-24, 25-34) show relatively lower engagement, with a smaller proportion already adopting or being very likely to adopt these vehicles. However, engagement slightly increases with age, peaking in the 55-64 age group before slightly declining in the 65+ group. The trend line indicates a modest upward trajectory as respondents age, suggesting that older individuals may have more resources or stability to invest in electric vehicles.
 
@@ -252,9 +267,8 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_age_plot.png"))
 ```
 
 
-
-
 ### Likelihood taking action by education 
+TO DO: graph not working 
 
 ## comparison 2018 to 2021
 

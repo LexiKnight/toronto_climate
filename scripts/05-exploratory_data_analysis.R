@@ -12,17 +12,21 @@
 # install libraries 
 # install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr", "arrow", "tidyr"))
 # install.packages("forcats","RColorBrewer")
+install.packages("kableExtra")
 
 # Load necessary libraries
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
-library(here)
+library(here) # for working with relative paths
 library(stringr) # was this used?
 library(knitr)
-library(arrow)
+library(arrow) # for reading parquet files
 library(tidyr)
 library(forcats) # for reordering factor levels
+library(kableExtra) # for rendering tables
+library(tinytable)
+
 
 
 # Read in the data 
@@ -460,40 +464,80 @@ ggsave(
 
 
  
-### 2018 summary tables + graphs ###
+### Comparison 2018 and 2021 tables
 
-age_summary_18_table
+## Age
+# Read the 2018 and 2021 age summary tables from Parquet files
+age_summary_18 <- read_parquet(here("data/03-figures_data", "age_summary_2018_table.parquet"))
+age_summary_21 <- read_parquet(here("data/03-figures_data", "age_summary_2021_table.parquet"))
 
-education_summary_18_table
+# Rename columns to indicate the year for clarity
+colnames(age_summary_18) <- c("Age Group", "2018 (%)")
+colnames(age_summary_21) <- c("Age Group", "2021 (%)")
 
-informed_summary_18_table
+# Merge the two data frames by Age Group for side-by-side comparison
+age_summary_combined <- full_join(age_summary_18, age_summary_21, by = "Age Group")
 
-likelihood_summary_18_table
+# Render the combined table using kableExtra
+age_summary_combined %>%
+  kbl(caption = "Age Summary Comparison for 2018 and 2021 Survey Respondents") %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
 
-communication_summary_18_table
+# create table using tinytable
+age_summary_combined <- tt(age_summary_combined)
 
-
-
-
-### 2021 summary tables + graphs ###
-
-age_summary_21_table
-
-education_summary_21_table
-
-informed_summary_21_table
-
-likelihood_summary_21_table
-
-reasons_summary_21_table
-
-communication_summary_21_table
+# print table
+age_summary_combined
 
 
 
+## Education 
+# Read the 2018 and 2021 education summary tables from Parquet files
+education_summary_18 <- read_parquet(here("data/03-figures_data", "education_summary_2018_table.parquet"))
+education_summary_21 <- read_parquet(here("data/03-figures_data", "education_summary_2021_table.parquet"))
 
+# Rename columns for clarity
+colnames(education_summary_18) <- c("Education Level (2018)", "2018 (%)")
+colnames(education_summary_21) <- c("Education Level (2021)", "2021 (%)")
 
-#### 2018 vs. 2021 summary graph ####
+# Specify the desired order for the 2018 education levels
+desired_order_18 <- c(
+  "High school or less", 
+  "Some community college, vocational, trade school",
+  "Completed community college, vocational, trade school",
+  "Some university", 
+  "Completed undergraduate degree",
+  "Post graduate/professional school",
+  "Prefer not to answer"
+)
 
-# TO DO: decide on comparison graphs
+# Reorder the 2018 education levels based on the specified order
+education_summary_18 <- education_summary_18 %>%
+  mutate(`Education Level (2018)` = factor(`Education Level (2018)`, levels = desired_order_18)) %>%
+  arrange(`Education Level (2018)`)
 
+# Create a full join using row numbers to align both years even with different categories
+education_summary_combined <- full_join(
+  education_summary_18 %>% mutate(RowNum = row_number()),
+  education_summary_21 %>% mutate(RowNum = row_number()),
+  by = "RowNum"
+) %>%
+  select(-RowNum)  # Drop the helper column
+
+# Convert factor columns to character to avoid NA assignment errors
+education_summary_combined <- education_summary_combined %>%
+  mutate(across(everything(), as.character))
+
+# Replace NAs with empty strings to leave rows empty
+education_summary_combined[is.na(education_summary_combined)] <- ""
+
+# Render the combined table using kableExtra
+education_summary_combined %>%
+  kbl(caption = "Education Level Summary Comparison for 2018 and 2021") %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
+
+# create table using tinytable
+education_summary_combined <- tt(age_summary_combined)
+
+# print table
+education_summary_combined
