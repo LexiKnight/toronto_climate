@@ -213,6 +213,46 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot
 ```
 
 ### Likelihood taking action by age
+The graph illustrates the relationship between age group (x-axis) and the percentage of respondents (y-axis) who reported varying levels of likelihood to adopt climate-related actions. The colored segments of each bar represent five levels of likelihood and black dashed trend line provides an overview of how the likelihood to engage in each action changes across different age groups.
+#### Electric / Hybrid Vehicle Adoption
+For electric and hybrid vehicles, younger age groups (15-24, 25-34) show relatively lower engagement, with a smaller proportion already adopting or being very likely to adopt these vehicles. However, engagement slightly increases with age, peaking in the 55-64 age group before slightly declining in the 65+ group. The trend line indicates a modest upward trajectory as respondents age, suggesting that older individuals may have more resources or stability to invest in electric vehicles.
+
+#### Home Improvement for Energy Efficiency
+Home improvement actions follow a similar trend, with middle-aged groups (35-54) showing the highest likelihood of engagement. The younger groups (15-24 and 25-34) report the lowest likelihood, which may reflect barriers such as homeownership rates and disposable income. The trend line peaks in the 45-54 group, indicating that this demographic is most likely to engage in energy-efficient home improvements.
+
+#### Consumption of Meat Alternatives
+Adoption of meat alternatives is more prevalent in the younger age groups (15-24 and 25-34), with a significant proportion already consuming or being very likely to consume these products. As age increases, the likelihood decreases, with the 65+ group showing the lowest engagement. This trend may be driven by cultural or dietary habits that are more entrenched in older generations.
+
+#### Minimizing Car Use
+Minimizing car use shows a similar trend to meat alternatives, with younger respondents demonstrating a higher likelihood of reducing their car use. The likelihood declines steadily across age groups, and the trend line confirms this downward trajectory, suggesting that older individuals are less willing or able to minimize car use, possibly due to mobility needs or suburban living arrangements.
+
+#### Purchasing Green Products
+The likelihood of purchasing green products is relatively consistent across age groups, with slight increases in the middle-aged and older demographics. The trend line remains relatively flat, indicating that green product consumption is not strongly age-dependent but may be influenced by other factors such as income and environmental awareness.
+
+#### Reducing Hydro Usage
+Efforts to reduce hydro (electricity) usage are most prominent among older age groups (55-64 and 65+), who report the highest likelihood of engaging in this action. The trend line shows a clear upward trajectory, suggesting that older respondents, possibly driven by cost-saving measures or environmental concerns, are more likely to reduce hydro usage.
+
+#### Reducing and Sorting Waste
+Reducing waste and sorting waste correctly show a similar pattern: younger age groups report lower levels of engagement, while middle-aged and older groups (45-64) show higher participation. The trend line peaks around the 55-64 age group, highlighting the heightened awareness or resources available to this demographic for proper waste management.
+
+#### Walking / Cycling Short Distances
+Walking or cycling short distances is notably more prevalent among younger respondents, particularly those aged 15-34. The trend line declines steadily with age, indicating that older individuals are less likely to walk or cycle, potentially due to physical limitations or differing lifestyle needs.
+
+#### Summary
+Overall, the graph highlights significant variation in the likelihood of engaging in climate actions across different age groups. Younger respondents are more inclined to adopt behaviors such as consuming meat alternatives and minimizing car use, while older respondents show greater engagement in actions like reducing hydro usage and making home improvements. The trend lines across actions suggest that age is a critical factor influencing climate-related behavior, potentially mediated by factors such as income, lifestyle, and environmental awareness.
+
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-six
+#| fig-cap: Likelihood of Taking Climate Change Actions by Age Group. The stacked bar chart illustrates the percentage of respondents across six age groups (15-24, 25-34, 35-44, 45-54, 55-64, 65+) in terms of their self-reported likelihood to engage in nine distinct climate-related actions. Each color represents a different level of likelihood, from "Already doing this or have done this" to "Very unlikely." The black dashed trend line highlights how the likelihood of action changes across age groups, providing insights into generational differences in climate-related behavior.
+
+knitr::include_graphics(here("data/03-figures_data", "likelihood_age_plot.png"))
+```
+
+
+
 
 ### Likelihood taking action by education 
 

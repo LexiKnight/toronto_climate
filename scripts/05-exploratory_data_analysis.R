@@ -223,63 +223,6 @@ ggsave(
 
 
 
-
-
-# Create a figure illustrating reasons why people are not taking specific action to mitigate climate change
-# TO DO: pls come back to. the issue is that each "reason"category is appearing
-# to be the same weight.We need to look at how given a specific action (column), how we
-# count up  non-NA values (reasons). the count is displaying wrong. 
-# TO DO: renaming OG data - bad
-
-# Pivot to long format
-data_long <- individual_18 %>%
-  pivot_longer(
-    cols = starts_with("unlikelihood"),  # Select all the columns starting with "unlikelihood"
-    names_to = c("action", "reason"),  # Separate action and reason
-    names_pattern = "unlikelihood_(.*)_(.*)_18",  # Extract action and reason parts from the column name
-    values_to = "response"  # Values will be stored under 'response'
-  ) %>%
-  filter(!is.na(response)) %>%  # Filter out rows with NA responses
-  mutate(
-    action = case_when(  # Clean the action labels to ensure we have only 9 distinct actions
-      str_detect(action, "home_improvement") ~ "Home Improvement",
-      str_detect(action, "reduce_waste") ~ "Reduce Waste",
-      str_detect(action, "short_distance") ~ "Walk/Cycle Short Distances",
-      str_detect(action, "vehicle_electric") ~ "Electric/Hybrid Vehicle",
-      str_detect(action, "minimize_car") ~ "Minimize Car Use",
-      str_detect(action, "green_product") ~ "Purchase Green Products",
-      str_detect(action, "protein_alternative") ~ "Protein Alternatives",
-      str_detect(action, "reduce_hydro") ~ "Reduce Hydro Usage",
-      str_detect(action, "sort_waste") ~ "Sort Waste",
-      TRUE ~ action  # Default case if the action is already correctly labeled
-    )
-  )
-
-# Summarize counts by action and reason (correctly count non-NA responses)
-data_summary <- data_long %>%
-  group_by(action, reason) %>%  # Group by both action and reason
-  summarise(count = n(), .groups = "drop")  # Count the frequency of each reason per action
-
-# Create a stacked bar chart
-ggplot(data_summary, aes(x = action, y = count, fill = reason)) +
-  geom_bar(stat = "identity") +  # Use 'identity' to use actual counts
-  labs(
-    title = "Reasons for Unlikelihood of Taking Climate Change Actions",
-    x = "Climate Change Action",
-    y = "Frequency of Responses",
-    fill = "Reason"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # Rotate x-axis labels for readability
-  scale_fill_manual(values = c(
-    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#999999"))  # Customize colors
-
-
-
-
-
-
-
 # Figure for method of communication
 # Select columns that start with 'delivery_method'
 delivery_columns <- individual_18 %>%
@@ -366,6 +309,156 @@ ggsave(
                                 
 
 
+## likelihood by age ##
+
+# Create age groups and remove NA categories
+individual_18 <- individual_18 %>%
+  mutate(age_group = cut(age, breaks = c(15, 24, 34, 44, 54, 64, 100), 
+                         labels = c("15-24", "25-34", "35-44", "45-54", "55-64", "65+"))) %>%
+  filter(!is.na(age_group))
+
+# Pivot and recode data for likelihood of taking action
+likelihood_age_data <- individual_18 %>%
+  pivot_longer(cols = starts_with("likelihood_"), 
+               names_to = "action", 
+               values_to = "likelihood") %>%
+  mutate(action = recode(action, 
+                         "likelihood_home_improvement" = "Home Improvement",
+                         "likelihood_reduce_hydro" = "Reduce Hydro Usage",
+                         "likelihood_minimize_car" = "Minimize Car Use",
+                         "likelihood_vehicle_electric" = "Electric / Hybrid Vehicle",
+                         "likelihood_protein_alternative" = "Meat Alternatives",
+                         "likelihood_reduce_waste" = "Reduce Waste",
+                         "likelihood_green_product" = "Purchase Green Products",
+                         "likelihood_short_distance" = "Walk / Cycle Short Distances",
+                         "likelihood_sort_waste" = "Sort Waste Correctly")) %>%
+  filter(!is.na(likelihood)) %>%
+  mutate(likelihood = factor(likelihood, 
+                             levels = c("Already doing this or have done this", 
+                                        "Very likely", 
+                                        "Somewhat likely", 
+                                        "Somewhat unlikely", 
+                                        "Very unlikely")))
+
+# Calculate percentages for each action and age group
+likelihood_age_plot_percent <- likelihood_age_data %>%
+  group_by(action, age_group, likelihood) %>%
+  tally() %>%
+  group_by(action, age_group) %>%
+  mutate(percentage = n / sum(n) * 100)
+
+# Plot using faceting to show each action in a separate facet and adding trend lines
+likelihood_age_plot <- ggplot(likelihood_age_plot_percent, 
+                              aes(x = age_group, fill = likelihood, y = percentage)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_smooth(aes(group = 1), method = "loess", se = FALSE, 
+              color = "black", linetype = "dashed") +  # Add trend lines
+  labs(title = "Likelihood of Taking Climate Change Actions by Age Group",
+       x = "Age Group", y = "Percentage", fill = "Likelihood",
+       caption = "Note: Black dashed lines represent the trend for average likelihood across each age group.") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(
+    values = c("Already doing this or have done this" = "forestgreen", 
+               "Very likely" = "green", 
+               "Somewhat likely" = "yellow", 
+               "Somewhat unlikely" = "orange", 
+               "Very unlikely" = "red")
+  ) +
+  facet_wrap(~action, scales = "free_y")  # Create separate facets for each action
+
+# Print the plot
+print(likelihood_age_plot)
+
+# Save the plot
+ggsave(
+  filename = here("data/03-figures_data", "likelihood_age_plot.png"),
+  plot = likelihood_age_plot,
+  width = 12, height = 8
+)
+
+
+
+
+
+## likelihood by education ##
+# TO DO NOT WORKING :(
+# Step 1: Prepare the Data
+# Pivot the data from wide to long format, keeping 'highest_level_educ' as a grouping variable
+likelihood_education_data <- individual_18 %>%
+  pivot_longer(cols = starts_with("likelihood_"), 
+               names_to = "action", 
+               values_to = "likelihood") %>%
+  mutate(action = recode(action, 
+                         "likelihood_home_improvement" = "Home Improvement",
+                         "likelihood_reduce_hydro" = "Reduce Hydro Usage",
+                         "likelihood_minimize_car" = "Minimize Car Use",
+                         "likelihood_vehicle_electric" = "Electric / Hybrid Vehicle",
+                         "likelihood_protein_alternative" = "Meat Alternatives",
+                         "likelihood_reduce_waste" = "Reduce Waste",
+                         "likelihood_green_product" = "Purchase Green Products",
+                         "likelihood_short_distance" = "Walk / Cycle Short Distances",
+                         "likelihood_sort_waste" = "Sort Waste Correctly")) %>%
+  filter(!is.na(likelihood)) %>%
+  mutate(
+    likelihood = factor(likelihood, 
+                        levels = c("Already doing this or have done this", 
+                                   "Very likely", 
+                                   "Somewhat likely", 
+                                   "Somewhat unlikely", 
+                                   "Very unlikely"))
+  )
+
+# Step 2: Group and Calculate Percentages by Education Level
+likelihood_education_plot_percent <- likelihood_education_data %>%
+  group_by(highest_level_educ, action, likelihood) %>%
+  tally() %>%
+  group_by(highest_level_educ, action) %>%
+  mutate(percentage = n / sum(n) * 100)
+
+# Step 3: Create the Plot
+likelihood_education_plot <- ggplot(likelihood_education_plot_percent, aes(x = highest_level_educ, y = percentage, fill = likelihood)) +
+  geom_bar(stat = "identity", position = "stack") +  # Stacked bar chart
+  labs(
+    title = "Likelihood of Taking Climate Change Actions by Education Level",
+    x = "Education Level",
+    y = "Percentage",
+    fill = "Likelihood"
+  ) +
+  facet_wrap(~action, scales = "free", ncol = 3) +  # Separate plots for each action, 3 columns
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),  # Rotate x-axis labels to 90 degrees
+    axis.text.y = element_text(size = 10),  # Optional: Adjust size for y-axis labels
+    strip.text.x = element_text(size = 10),  # Adjust font size for facet labels
+    plot.margin = margin(10, 10, 20, 10),  # Increase plot margin for better spacing
+    panel.spacing = unit(1, "lines")  # Adjust spacing between facets
+  ) +
+  scale_fill_manual(
+    values = c("Already doing this or have done this" = "forestgreen", 
+               "Very likely" = "green", 
+               "Somewhat likely" = "yellow", 
+               "Somewhat unlikely" = "orange", 
+               "Very unlikely" = "red")
+  ) +
+  # Add a trend line for each action and education level combination
+  geom_smooth(aes(group = highest_level_educ), method = "loess", color = "black", size = 0.7, se = FALSE, linetype = "solid") +
+  theme(
+    strip.text.x = element_text(size = 10)  # Optional: Adjust font size for facet labels
+  )
+
+# Step 4: Display the Plot
+print(likelihood_education_plot)
+
+# Step 5: Save the Plot as a PNG
+ggsave(
+  filename = here("data/03-figures_data", "likelihood_education_actions_plot.png"),
+  plot = likelihood_education_plot,
+  width = 12, height = 10
+)
+
+
+
  
 ### 2018 summary tables + graphs ###
 
@@ -377,12 +470,8 @@ informed_summary_18_table
 
 likelihood_summary_18_table
 
-reason_summary_18_table
-# TO DO: not functioning yet
-
 communication_summary_18_table
 
-#TO DO: decide which graphs to do 
 
 
 
@@ -400,7 +489,6 @@ reasons_summary_21_table
 
 communication_summary_21_table
 
-# TO DO: decide which graphs to do 
 
 
 
