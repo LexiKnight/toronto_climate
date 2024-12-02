@@ -145,7 +145,10 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 The goal of our modelling strategy is twofold. Firstly,...
 Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-appendix].
 ## Model set-up
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+In this analysis, we aim to predict the likelihood of taking climate-friendly actions based on demographic variables (age, education) and climate change awareness (knowledge). The specific actions include investing in an electric or hybrid vehicle instead of a gas-powered one, making home improvements (e.g., using LED lightbulbs), adopting meat alternatives, minimizing car use, purchasing green products, reducing hydro usage, reducing waste by repurposing used products, sorting waste correctly, and walking or cycling shorter distances.
+
+### Model Specifications ###
+
 
 \begin{align} 
 y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
@@ -158,15 +161,37 @@ y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
 
 We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
-### Model Specifications ###
-### Model Justification 
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
 
-We can use maths by including latex between dollar signs, for instance $\theta$.
+### Model Justification 
+This model is designed to explore how various demographic and knowledge-based factors influence the likelihood of engaging in climate-friendly behaviors. The likelihood of taking specific actions, such as reducing energy consumption or investing in green technologies, represents an important outcome in understanding climate change perceptions. As such, focusing on these behaviors rather than general knowledge allows for a more actionable and directly applicable model to climate change policy and interventions.
+
 #### Response Variable ####
+The response variable in this analysis is the likelihood of taking climate-friendly actions, which is typically a continuous or ordinal measure based on respondents' self-reported likelihood of adopting behaviors such as switching to an electric vehicle, reducing waste, or conserving energy. These actions are commonly measured on a Likert scale (e.g., 1 = "not likely" to 5 = "very likely").
+
 #### Input Variabless ####
+The input variables (predictors) include:
+
+Age: Previous studies indicate that younger individuals are more likely to engage in climate-positive behaviors due to greater environmental awareness and concern (Leiserowitz et al., 2010; Gifford, 2013).
+
+Education: Higher educational attainment has been associated with a higher likelihood of adopting environmentally responsible behaviors, likely due to increased awareness of environmental issues and access to relevant information (Kollmuss & Agyeman, 2002).
+
+Knowledge: A greater understanding of climate change is expected to positively influence individuals' likelihood of taking action. More knowledgeable individuals are more likely to adopt climate-friendly practices, as they are more aware of the urgency of the crisis and the potential benefits of sustainable behaviors (Gifford, 2013).
 #### Model Structure ####
+The model assumes that the likelihood of taking climate-friendly actions is linearly related to the input variables. Each predictor (age, education, and knowledge) is assumed to have a linear relationship with the likelihood of taking action, meaning that as these variables change, the likelihood of taking climate-friendly actions will either increase or decrease in a predictable manner. This structure facilitates a clear interpretation of how each variable contributes to the overall likelihood of climate-positive behavior.
+
+Detailed Structure
+The model does not assume any interactions between the predictors, meaning each factor (age, education, knowledge) is considered independently in its influence on the outcome. However, depending on the data, you might consider adding interaction terms if you believe that, for example, the effect of knowledge on action is stronger for younger individuals.
+The linear relationship between predictors and the likelihood of action allows for easy interpretation, with coefficients representing the change in the likelihood of taking action for each unit change in the predictor variable.
 #### Parameter Estimation ####
+
+In parameter estimation, we anticipate that:
+
+Age: We expect that younger individuals will have a higher likelihood of taking climate-friendly actions, as studies have shown that younger generations are more environmentally conscious and concerned about climate change (Leiserowitz et al., 2010).
+Education: We hypothesize that higher levels of education will positively influence the likelihood of taking climate-positive actions. More educated individuals tend to have better access to information about climate change and sustainability practices (Kollmuss & Agyeman, 2002).
+Knowledge: We expect that greater knowledge of climate change will be strongly associated with higher likelihoods of adopting climate-friendly behaviors. Knowledge acts as a critical enabler, motivating individuals to take action and contribute to mitigating climate change (Gifford, 2013).
+We will estimate the model parameters using a standard linear regression approach (e.g., using the lm() function in R), which will provide the coefficients (
+β
+β) for each predictor, showing how each factor influences the likelihood of taking climate-friendly actions.
 
 # Results
 

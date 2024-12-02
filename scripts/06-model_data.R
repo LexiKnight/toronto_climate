@@ -1,11 +1,12 @@
 #### Preamble ####
-# Purpose: Models... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Constructs a linear regression model for predicting likelihood of taking climate action based on age and education. 
+# Author: Lexi Knight
+# Date: 30 November 2024
+# Contact: lexi.knight@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: complete 01-download_data.R and 03-clean_data.R in scripts folder in order to access data.
+
+
 
 
 #### Workspace setup ####
