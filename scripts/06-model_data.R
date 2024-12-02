@@ -7,32 +7,38 @@
 # Pre-requisites: complete 01-download_data.R and 03-clean_data.R in scripts folder in order to access data.
 
 
-
-
 #### Workspace setup ####
+
+# Install required packages
+install.packages("tidyverse")  # For data manipulation
+install.packages("broom")  # Optional, for tidying model output
+
+
 library(tidyverse)
-library(rstanarm)
+library(brms)
+library(arrow)
+library(here)
+library(broom)
 
 #### Read data ####
-analysis_data <- read_csv("data/analysis_data/analysis_data.csv")
+# Load your analysis data
+individual_18 <- read_parquet(here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.parquet"))
 
-### Model data ####
-first_model <-
-  stan_glm(
-    formula = flying_time ~ length + width,
-    data = analysis_data,
-    family = gaussian(),
-    prior = normal(location = 0, scale = 2.5, autoscale = TRUE),
-    prior_intercept = normal(location = 0, scale = 2.5, autoscale = TRUE),
-    prior_aux = exponential(rate = 1, autoscale = TRUE),
-    seed = 853
-  )
+# Convert the 'highest_level_educ' variable to a factor
+climate_data$highest_level_educ <- factor(climate_data$highest_level_educ)
+
+# Now check the levels again
+levels(climate_data$highest_level_educ)
 
 
-#### Save model ####
-saveRDS(
-  first_model,
-  file = "models/first_model.rds"
-)
+# Convert the ordinal likelihood variables to numeric values
+climate_data <- climate_data %>%
+  mutate(across(starts_with("likelihood"),
+                ~ as.numeric(factor(., levels = c("very_unlikely", "somewhat_unlikely", 
+                                                  "somewhat_likely", "very_likely", "already_done")))))
 
+# Fit a linear regression model
+linear_model <- lm(likelihood_home_improvement ~ age + highest_level_educ, data = climate_data)
 
+# Summarize the model
+summary(linear_model)
