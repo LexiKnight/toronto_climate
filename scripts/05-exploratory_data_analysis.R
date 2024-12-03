@@ -56,7 +56,7 @@ print(age_individual_plot)
 ggsave(
   filename = here("data/03-figures_data", "age_individual_plot.png"),  # Specify the correct path and filename
   plot = age_individual_plot,
-  width = 8, height = 6
+  width = 6, height = 4
 )
 
 
@@ -109,7 +109,7 @@ print(educ_individual_plot)
 ggsave(
   filename = here("data/03-figures_data", "educ_individual_plot.png"),  # Saving as a PNG file
   plot = educ_individual_plot,
-  width = 8, height = 6
+  width = 6, height = 4
 )
 
 
@@ -156,7 +156,7 @@ print(informed_18_plot)
 ggsave(
   filename = here("data/03-figures_data", "informed_individual_plot.png"),  # Saving as a PNG file
   plot = informed_18_plot,
-  width = 8, height = 6 
+  width = 6, height = 4 
 )
 
 
@@ -216,7 +216,7 @@ print(likelihood_18_plot)
 ggsave(
   filename = here("data/03-figures_data", "likelihood_individual_plot.png"),  # Saving as a PNG file
   plot = likelihood_18_plot,
-  width = 8, height = 6
+  width = 6, height = 4
 )
 
 
@@ -302,7 +302,7 @@ communication_18_plot
 ggsave(
   filename = here("data/03-figures_data", "communication_18_plot.png"),  # Saving as a PNG file
   plot = communication_18_plot,
-  width = 8, height = 6
+  width = 6, height = 4
 )
 
                                 
@@ -380,7 +380,7 @@ print(likelihood_age_plot)
 ggsave(
   filename = here("data/03-figures_data", "likelihood_age_plot.png"),
   plot = likelihood_age_plot,
-  width = 8, height = 6
+  width = 6, height = 4
 )
 
 
@@ -498,7 +498,7 @@ print(likelihood_education_plot)
 ggsave(
   filename = here("data/03-figures_data", "likelihood_education_plot.png"),
   plot = likelihood_education_plot,
-  width = 8, height = 6
+  width = 6, height = 4
 )
 
 
