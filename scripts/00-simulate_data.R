@@ -1,58 +1,71 @@
 #### Preamble ####
-# Purpose: Simulates a dataset of climate perceptions in the city of Toronto.
+# Purpose: Tests stimulation for age, education, extent informed, likelihood of taking climate actions and prefered method of communication data from the climate change perspectives dataset from OpenDataToronto.
 # Author: Lexi Knight
 # Date: 6 November 2024
 # Contact: lexi.knight@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: The `tidyverse` package must be installed
+# Pre-requisites:none
 
 #### Workspace setup ####
-
-# install libraries
-install.packages("tidyverse")
-
-# load libraries 
+# load packages
 library(tidyverse)
-
-# set seed for reproducibility 
-set.seed(853)
-
-
-# TODO
+library(arrow)
 
 #### Simulate data ####
-# State names
-states <- c(
-  "New South Wales",
-  "Victoria",
-  "Queensland",
-  "South Australia",
-  "Western Australia",
-  "Tasmania",
-  "Northern Territory",
-  "Australian Capital Territory"
+
+# Set seed for reproducibility
+set.seed(853)
+
+# Number of entries
+num_entries <- 404
+
+# Simulate climate change data
+simulated_data <- data.frame(
+  # Simulate age
+  age = sample(18:100, num_entries, replace = TRUE),  # Simulating age from 18 to 100
+  
+  # education categories
+  education = sample(c("high school or less",
+                       "some community college / trade school",
+                       "completed community college / trade school", 
+                       "some university",
+                       "completed undergraduate degree",
+                       "post graduate / professional school",
+                       "prefer not to answer"),
+                     num_entries, replace = TRUE),
+  
+  # extent informed categories
+  informed = sample(c("extremely informed",
+                      "very informed",
+                      "not very informed",
+                      "not at all informed"),
+                    num_entries, replace = TRUE),
+  
+  # likelihood of taking action categories 
+  likelihood = sample(c("already doing this or have done this",
+                        "very likely",
+                        "somewhat likely",
+                        "somewhat unlikely",
+                        "very unlikely"),
+                      num_entries, replace = TRUE),  # Corrected this line
+  
+  # communication method categories
+  communication = sample(c("Toronto.ca website", 
+                           "city of toronto events",
+                           "twitter",
+                           "facebook",
+                           "instagram",
+                           "city of toronto enewsletter / email",
+                           "councillor communications",
+                           "advertising campaigns",
+                           "brochures / pamphlets",
+                           "other",
+                           "not interested"),
+                         num_entries, replace = TRUE)
 )
 
-# Political parties
-parties <- c("Labor", "Liberal", "Greens", "National", "Other")
+# Show a summary of the simulated data - as a check
+summary(simulated_data)
 
-# Create a dataset by randomly assigning states and parties to divisions
-analysis_data <- tibble(
-  division = paste("Division", 1:151),  # Add "Division" to make it a character
-  state = sample(
-    states,
-    size = 151,
-    replace = TRUE,
-    prob = c(0.25, 0.25, 0.15, 0.1, 0.1, 0.1, 0.025, 0.025) # Rough state population distribution
-  ),
-  party = sample(
-    parties,
-    size = 151,
-    replace = TRUE,
-    prob = c(0.40, 0.40, 0.05, 0.1, 0.05) # Rough party distribution
-  )
-)
-
-
-#### Save data ####
-write_csv(analysis_data, "data/00-simulated_data/simulated_data.csv")
+# Save the simulated data
+write_parquet(simulated_data, "data/00-simulated_data/simulated_climate_change_data.parquet")

@@ -23,5 +23,9 @@ install.packages(c(
   "knitr",      # For dynamic report generation
   "forcats",    # For reordering factor levels
   "kableExtra", # For rendering tables with extra features
-  "broom"       # For tidying model output (optional)
+  "broom",      # For tidying model output
+  "testthat"    # For testing data
 ))
+
+
+install.packages("testthat")

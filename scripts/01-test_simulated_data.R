@@ -1,89 +1,113 @@
 #### Preamble ####
-# Purpose: Tests the structure and validity of the simulated Australian 
-  #electoral divisions dataset.
-# Author: Rohan Alexander
-# Date: 26 September 2024
-# Contact: rohan.alexander@utoronto.ca
+# Purpose: Tests the structure and validity of the simulated climate change perspectives data.
+# Date: 26 November 2024
+# Contact: lexi.knight@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: 
-  # - The `tidyverse` package must be installed and loaded
-  # - 00-simulate_data.R must have been run
-# Any other information needed? Make sure you are in the `starter_folder` rproj
-
+# Pre-requisites: complete the 00-simulate_data.R script. 
 
 #### Workspace setup ####
-library(tidyverse)
-
-analysis_data <- read_csv("data/00-simulated_data/simulated_data.csv")
-
-# Test if the data was successfully loaded
-if (exists("analysis_data")) {
-  message("Test Passed: The dataset was successfully loaded.")
-} else {
-  stop("Test Failed: The dataset could not be loaded.")
-}
-
+# Load required packages
+library(tidyverse)  # For data manipulation and visualization
+library(testthat)   # For testing
+library(arrow)      # For reading parquet files
 
 #### Test data ####
 
-# Check if the dataset has 151 rows
-if (nrow(analysis_data) == 151) {
-  message("Test Passed: The dataset has 151 rows.")
-} else {
-  stop("Test Failed: The dataset does not have 151 rows.")
-}
-
-# Check if the dataset has 3 columns
-if (ncol(analysis_data) == 3) {
-  message("Test Passed: The dataset has 3 columns.")
-} else {
-  stop("Test Failed: The dataset does not have 3 columns.")
-}
-
-# Check if all values in the 'division' column are unique
-if (n_distinct(analysis_data$division) == nrow(analysis_data)) {
-  message("Test Passed: All values in 'division' are unique.")
-} else {
-  stop("Test Failed: The 'division' column contains duplicate values.")
-}
-
-# Check if the 'state' column contains only valid Australian state names
-valid_states <- c("New South Wales", "Victoria", "Queensland", "South Australia", 
-                  "Western Australia", "Tasmania", "Northern Territory", 
-                  "Australian Capital Territory")
-
-if (all(analysis_data$state %in% valid_states)) {
-  message("Test Passed: The 'state' column contains only valid Australian state names.")
-} else {
-  stop("Test Failed: The 'state' column contains invalid state names.")
-}
-
-# Check if the 'party' column contains only valid party names
-valid_parties <- c("Labor", "Liberal", "Greens", "National", "Other")
-
-if (all(analysis_data$party %in% valid_parties)) {
-  message("Test Passed: The 'party' column contains only valid party names.")
-} else {
-  stop("Test Failed: The 'party' column contains invalid party names.")
-}
-
-# Check if there are any missing values in the dataset
-if (all(!is.na(analysis_data))) {
-  message("Test Passed: The dataset contains no missing values.")
-} else {
-  stop("Test Failed: The dataset contains missing values.")
-}
-
-# Check if there are no empty strings in 'division', 'state', and 'party' columns
-if (all(analysis_data$division != "" & analysis_data$state != "" & analysis_data$party != "")) {
-  message("Test Passed: There are no empty strings in 'division', 'state', or 'party'.")
-} else {
-  stop("Test Failed: There are empty strings in one or more columns.")
-}
-
-# Check if the 'party' column has at least two unique values
-if (n_distinct(analysis_data$party) >= 2) {
-  message("Test Passed: The 'party' column contains at least two unique values.")
-} else {
-  stop("Test Failed: The 'party' column contains less than two unique values.")
-}
+test_that("Simulated Data Tests", {
+  
+  # Load simulated data
+  simulated_data <- read_parquet(file = here::here("data/00-simulated_data/simulated_climate_change_data.parquet"))
+  
+  # Test if the dataset has 404 entries
+  expect_equal(nrow(simulated_data), 404)
+  
+  # Test if 'age' is within the range of 18 to 100
+  expect_true(all(simulated_data$age >= 18 & simulated_data$age <= 100))
+  
+  # Test if 'education' contains the correct categories
+  expect_true(all(simulated_data$education %in% c("high school or less",
+                                                  "some community college / trade school",
+                                                  "completed community college / trade school", 
+                                                  "some university",
+                                                  "completed undergraduate degree",
+                                                  "post graduate / professional school",
+                                                  "prefer not to answer")))
+  
+  # Test if 'informed' contains the correct categories
+  expect_true(all(simulated_data$informed %in% c("extremely informed",
+                                                 "very informed",
+                                                 "not very informed",
+                                                 "not at all informed")))
+  
+  # Test if 'likelihood' contains the correct categories
+  expect_true(all(simulated_data$likelihood %in% c("already doing this or have done this",
+                                                   "very likely",
+                                                   "somewhat likely",
+                                                   "somewhat unlikely",
+                                                   "very unlikely")))
+  
+  # Test if 'communication' contains the correct categories
+  expect_true(all(simulated_data$communication %in% c("Toronto.ca website", 
+                                                      "city of toronto events",
+                                                      "twitter",
+                                                      "facebook",
+                                                      "instagram",
+                                                      "city of toronto enewsletter / email",
+                                                      "councillor communications",
+                                                      "advertising campaigns",
+                                                      "brochures / pamphlets",
+                                                      "other",
+                                                      "not interested")))
+  
+  # Test if 'age' is numeric
+  expect_true(is.numeric(simulated_data$age))
+  
+  # Test if 'education', 'informed', 'likelihood', and 'communication' are characters
+  expect_true(is.character(simulated_data$education))
+  expect_true(is.character(simulated_data$informed))
+  expect_true(is.character(simulated_data$likelihood))
+  expect_true(is.character(simulated_data$communication))
+  
+  # Check the data types again for confirmation
+  print(class(simulated_data$age))
+  print(class(simulated_data$education))
+  print(class(simulated_data$informed))
+  print(class(simulated_data$likelihood))
+  print(class(simulated_data$communication))
+  
+  #### Additional Tests ####
+  
+  # Test if there are any missing values in critical columns
+  expect_true(all(!is.na(simulated_data$age)))
+  expect_true(all(!is.na(simulated_data$education)))
+  expect_true(all(!is.na(simulated_data$informed)))
+  expect_true(all(!is.na(simulated_data$likelihood)))
+  expect_true(all(!is.na(simulated_data$communication)))
+  
+  # Check for duplicates and show the duplicated rows
+  duplicate_rows <- simulated_data[duplicated(simulated_data), ]
+  print(duplicate_rows)  # Display duplicate rows for investigation
+  
+  # If duplicates are found, remove them
+  simulated_data <- unique(simulated_data)  # Removing duplicates
+  
+  # Test if there are any duplicate rows after removing
+  expect_equal(nrow(simulated_data), nrow(unique(simulated_data)))
+  
+  # Test if 'education' contains only expected categories
+  expect_true(all(simulated_data$education %in% c("high school or less",
+                                                  "some community college / trade school",
+                                                  "completed community college / trade school", 
+                                                  "some university",
+                                                  "completed undergraduate degree",
+                                                  "post graduate / professional school",
+                                                  "prefer not to answer")))
+  
+  # Test if the 'education' categories have reasonable distribution (i.e., no overly dominant categories)
+  education_counts <- table(simulated_data$education)
+  expect_true(all(education_counts > 20))  # Ensure each category has at least 20 entries
+  
+  # Test if 'age' distribution is reasonable (e.g., no ages below 18 or above 100)
+  expect_true(all(simulated_data$age >= 18 & simulated_data$age <= 100))
+  
+})
