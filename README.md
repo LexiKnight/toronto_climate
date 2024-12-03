@@ -1,4 +1,4 @@
-# Climate Change Perspectives
+# <span style="color: #ff6347;">Climate Change Perspectives</span>
 
 ## Overview
 This project explores the perspectives of Toronto residents on climate change and the likelihood of individuals taking climate-friendly actions. The analysis primarily relies on survey data from 2018, supplemented by summary data from 2021 to provide a more current overview of the public's engagement with climate-related behaviors.
@@ -39,7 +39,8 @@ Aspects of the code and some debugging were written with the help of ChatGpt 4o.
 
 ## Future Work and Improvements
 -    **Expanding Data**: Additional years of survey data or other sources of demographic data could further enrich the analysis and provide more detailed insights into climate action trends over time.
--     **Exploring Additional Variables**: Beyond age and education, it would be valuable to explore other factors, such as income or geographic location, to better understand climate action behaviors across different segments of the population.
+
+-    **Exploring Additional Variables**: Beyond age and education, it would be valuable to explore other factors, such as income or geographic location, to better understand climate action behaviors across different segments of the population.
 
 
 
