@@ -309,14 +309,13 @@ ggsave(
 
 
 ## likelihood by age ##
-
 # Create age groups and remove NA categories
 individual_18 <- individual_18 %>%
   mutate(age_group = cut(age, breaks = c(15, 24, 34, 44, 54, 64, 100), 
                          labels = c("15-24", "25-34", "35-44", "45-54", "55-64", "65+"))) %>%
   filter(!is.na(age_group))
 
-# Pivot and recode data for likelihood of taking action
+# Step 2: Pivot and recode data for likelihood of taking action
 likelihood_age_data <- individual_18 %>%
   pivot_longer(cols = starts_with("likelihood_"), 
                names_to = "action", 
@@ -346,30 +345,38 @@ likelihood_age_plot_percent <- likelihood_age_data %>%
   group_by(action, age_group) %>%
   mutate(percentage = n / sum(n) * 100)
 
-# Plot using faceting to show each action in a separate facet and adding trend lines
+# Plot using faceting to show each action in a separate facet
 likelihood_age_plot <- ggplot(likelihood_age_plot_percent, 
                               aes(x = age_group, fill = likelihood, y = percentage)) +
   geom_bar(stat = "identity", position = "stack") +
-  geom_smooth(aes(group = 1), method = "loess", se = FALSE, 
-              color = "black", linetype = "dashed") +  # Add trend lines
   labs(title = "Likelihood of Taking Climate Change Actions by Age Group",
-       x = "Age Group", y = "Percentage", fill = "Likelihood",
-       caption = "Note: Black dashed lines represent the trend for average likelihood across each age group.") +
+       x = "Age Group", 
+       y = "Percentage", 
+       fill = "Likelihood") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(
-    values = c("Already doing this or have done this" = "forestgreen", 
-               "Very likely" = "green", 
-               "Somewhat likely" = "yellow", 
-               "Somewhat unlikely" = "orange", 
-               "Very unlikely" = "red")
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Rotate x-axis labels
+    axis.text.y = element_text(size = 10),  # Adjust font size for y-axis labels
+    strip.text.x = element_text(size = 10),  # Adjust font size for facet labels
+    legend.position = "right",  # Legend on the right side
+    legend.title = element_text(size = 10),  # Adjust legend title size
+    legend.text = element_text(size = 9)  # Adjust legend text size
   ) +
-  facet_wrap(~action, scales = "free_y")  # Create separate facets for each action
+  scale_fill_manual(
+    values = c(
+      "Already doing this or have done this" = "forestgreen", 
+      "Very likely" = "green", 
+      "Somewhat likely" = "yellow", 
+      "Somewhat unlikely" = "orange", 
+      "Very unlikely" = "red"
+    )
+  ) +
+  facet_wrap(~action, scales = "free_y")  # Separate facets for each action
 
-# Print the plot
+# Print the Plot
 print(likelihood_age_plot)
 
-# Save the plot
+# Save the Plot as a PNG
 ggsave(
   filename = here("data/03-figures_data", "likelihood_age_plot.png"),
   plot = likelihood_age_plot,
@@ -381,7 +388,7 @@ ggsave(
 
 
 ## likelihood by education ##
-# Step 1: Prepare the Data with Shortened and Ordered Education Levels
+## Prepare the Data with Shortened and Ordered Education Levels
 likelihood_education_data <- individual_18 %>%
   pivot_longer(
     cols = starts_with("likelihood_"), 
@@ -431,14 +438,14 @@ likelihood_education_data <- individual_18 %>%
     )
   )
 
-# Step 2: Group and Calculate Percentages by Education Level
+## Group and Calculate Percentages by Education Level
 likelihood_education_plot_percent <- likelihood_education_data %>%
   group_by(highest_level_educ, action, likelihood) %>%
   tally() %>%
   group_by(highest_level_educ, action) %>%
   mutate(percentage = n / sum(n) * 100)
 
-# Step 3: Create the Plot with Custom Order and Legend at the Bottom
+## Create the Plot with Custom Order and Legend on the Right
 likelihood_education_plot <- ggplot(likelihood_education_plot_percent, 
                                     aes(x = percentage, 
                                         y = highest_level_educ, 
@@ -458,9 +465,11 @@ likelihood_education_plot <- ggplot(likelihood_education_plot_percent,
     strip.text.x = element_text(size = 10),  # Adjust font size for facet labels
     plot.margin = margin(10, 10, 20, 10),  # Increase plot margin for better spacing
     panel.spacing = unit(1, "lines"),  # Adjust spacing between facets
-    legend.position = "bottom",  # Move legend to the bottom
+    legend.position = "right",  # Move legend to the right
     legend.title = element_text(size = 10),  # Adjust legend title size
-    legend.text = element_text(size = 9)  # Adjust legend text size
+    legend.text = element_text(size = 9),  # Adjust legend text size
+    strip.background = element_blank(),  # Remove background of facet labels
+    strip.text = element_text(margin = margin(t = 10))  # Adjust strip margin for labels
   ) +
   scale_fill_manual(
     values = c("Already doing this or have done this" = "forestgreen", 
@@ -469,14 +478,25 @@ likelihood_education_plot <- ggplot(likelihood_education_plot_percent,
                "Somewhat unlikely" = "orange", 
                "Very unlikely" = "red")
   ) +
-  coord_flip()  # Flip the axes
+  coord_flip() +  # Flip the axes
+  theme(
+    axis.ticks.x = element_blank(),  # Remove x-axis ticks
+  )
 
-# Step 4: Display the Plot
+# Remove education levels from x-axis for all actions except the specified ones
+likelihood_education_plot$facet$params$strip.position <- "top"
+likelihood_education_plot <- likelihood_education_plot + 
+  theme(strip.background = element_blank(),
+        strip.text.x = element_blank()) + 
+  facet_wrap(~action, scales = "free_x", ncol = 3, 
+             labeller = label_wrap_gen(width = 20))
+
+# Display the Plot
 print(likelihood_education_plot)
 
-# Step 5: Save the Plot as a PNG
+# Save the Plot as a PNG
 ggsave(
-  filename = here("data/03-figures_data", "likelihood_education_actions_plot_ordered_legend_bottom.png"),
+  filename = here("data/03-figures_data", "likelihood_education_actions_plot_ordered_legend_right.png"),
   plot = likelihood_education_plot,
   width = 12, height = 10
 )

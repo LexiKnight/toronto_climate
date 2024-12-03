@@ -99,16 +99,21 @@ Overall, @fig-one provides valuable context for understanding the demographic co
 knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 
 ```
-#### Age Comparison 2018 to 2021
-This summary table illustrates the different age ditribution for 2018 and 2021 surveys. The major difference is that there was greater representation of younger inviduals ranging from 18 to 23 in 2021 compared to 2018. The remaining age groups were not very different. 
+#### Comparison 2018 to 2021
+@table-one illustrates the different age ditribution for 2018 and 2021 surveys. The major difference is that there was greater representation of younger inviduals ranging from 18 to 23 in 2021 compared to 2018. The remaining age groups were not very different. 
 
 ```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: table-one
 print(age_summary_combined)
 
 ```
 
 
 ### Highest Level of Education Completed
+#### Individual 2018
 @fig-two illustrates the distribution of survey respondents by their highest level of education attained. The most frequently reported education levels are "Completed undergraduate degree" and "Post graduate/professional school," with both categories having a noticeably higher frequency compared to others, indicating a well-educated respondent population. In contrast, fewer respondents reported "Some community college, vocational, trade school" and "Completed community college, vocational, trade school," suggesting these levels are less common among participants. Additionally, a small portion of respondents preferred not to disclose their education level. This distribution highlights a skew toward higher educational attainment within the sample, which may influence responses related to socio-economic factors and other survey topics.
 ```{r}
 #| warning: false
@@ -120,15 +125,23 @@ print(age_summary_combined)
 knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
 
 ```
-#### Education Comparison 2018 to 2021
-This table illustrates respondant education level in 2018 and 2021 respectively. Please note, the categories of education level are different for 2018 and 2021 as these were different surveys and categories were updated in 2021. Despite this, we are still able to make comparisons. Individuals with high school diplomas or less account for 9 for 2018 and 38 for 2021 (addition of less than highs school and high school or equivalent categories). This could indicate that the younger population was included more in the 2021 suvey or that less education individuals were surveyed. Additionally, its not super clear howver those with a post graduate or professional degree accounted for 29 percent in 2018 and 35 percent in 2021. This illustrates that more educated inviduals responded to the 2021 survey.
+#### Comparison 2018 to 2021
+@table-two illustrates respondant education level in 2018 and 2021 respectively. Please note, the categories of education level are different for 2018 and 2021 as these were different surveys and categories were updated in 2021. Despite this, we are still able to make comparisons. Individuals with high school diplomas or less account for 9 for 2018 and 38 for 2021 (addition of less than highs school and high school or equivalent categories). This could indicate that the younger population was included more in the 2021 suvey or that less education individuals were surveyed. Additionally, its not super clear howver those with a post graduate or professional degree accounted for 29 percent in 2018 and 35 percent in 2021. This illustrates that more educated inviduals responded to the 2021 survey.
 ```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: table-two
+#| fig-cap:?
+
+
+
+
 print(education_summary_combined)
 ```
 
-
-
 ### Extent Feel Informed
+#### Individual 2018
 @fig-three depicts the distribution of self-reported climate change knowledge among survey respondents in 2018. The majority of participants identified as "Very informed," making this the most prevalent category by a significant margin. A moderate number of respondents reported being "Not very informed," while a smaller yet noticeable group described themselves as "Extremely informed." In contrast, the categories "Not at all informed" and "Not very informed" have the lowest frequencies, with "Not at all informed" being particularly rare. This distribution suggests that most respondents possess a relatively high level of awareness about climate change, with very few indicating a lack of knowledge on the topic.
 ```{r}
 #| warning: false
@@ -140,15 +153,22 @@ print(education_summary_combined)
 knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.png"))
 
 ```
-#### Extent Feel Informed Comparison 2018 to 2021
-This table illustrates the self-reported level of extent inviduals feel informed about climate change and climate action for 2018 and 2021. In 2018, the large marjority of individuals say they are very informed with 60 percent and the follwoign category is not very informed with 27 percent. In 2021, The majority of inividuals also say they are very informed but to a lesser degree with 48 percent and this is closely followed by only a little informed with 37 percent. There is a trend that invidiusls in 2018 reported greater levels of knowldege about climate change whereas 2021 illstrates a more even split between very informed and only little informed, portraying that fewer individuals have adequate knowledge about climate change. 
+#### Comparison 2018 to 2021
+@table-three illustrates the self-reported level of extent inviduals feel informed about climate change and climate action for 2018 and 2021. In 2018, the large marjority of individuals say they are very informed with 60 percent and the follwoign category is not very informed with 27 percent. In 2021, The majority of inividuals also say they are very informed but to a lesser degree with 48 percent and this is closely followed by only a little informed with 37 percent. There is a trend that invidiusls in 2018 reported greater levels of knowldege about climate change whereas 2021 illstrates a more even split between very informed and only little informed, portraying that fewer individuals have adequate knowledge about climate change. 
 
 ```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: table-three
+#| fig-cap:?
+
 print(informed_summary_combined)
 ```
 
 
 ### Best Mode of Delivery
+#### Individual 2018
 The analysis of the best method for delivering climate change information portrayed in @fig-four revealed that the majority of individuals in the 2018 dataset preferred receiving information firstly from advertising campaigns with about 55 percent, newsletters with about 52 percent, followed by the toronto website wiht about 46 percent. On the other side of the spectrum, few said they were uninterested in receiving climate action information  with about 5 percent, about 12 percent indicated twitter and then 17 percent mentioned instagram. Overall social media platforms Facebook, Instagram and Twtitter were less popular methods of communciation. This could be because the survey only included individals over the age of 18. Moreover, the median sample was in the 40s. 
 
 ```{r}
@@ -163,14 +183,34 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 
 ```
 
-#### Method of Communicaton Comparison 2018 to 2021
-This table compares responses from 2018 and 2021 surverys regarding the best method of delivering information on climate change and climate action. Aside from the additon of four options to the 2021 survey, both surveys questions are the same. The leading category for 2018 is advertising campaigns with 55 percent, closely followed by newsletter emails with 52 percent and the Toronto website with 46. The 2021 survey illustrates a consistent trend with the same platforms as the top method of delivering information, specifically the Toronto website with 44 percent, then enewsletter emails with 43 percent and advertising campains at 42 percent. These top methods of communciation are more evenly spread out than the 2018 survey results. Social media platforms namely twitter, facebook and instagram all increased in the 2021 survey. Notable decreases in term of percentage from 2018 to 2021 include events, enewsletter emails, advertising campaigns, brochures and pamphlets. The new category of BetterHomesTO.ca webiste accounts for 15 percent of votes for the 2021 survey. 
+#### Comparison 2018 to 2021
+@table-four compares responses from 2018 and 2021 surverys regarding the best method of delivering information on climate change and climate action. Aside from the additon of four options to the 2021 survey, both surveys questions are the same. The leading category for 2018 is advertising campaigns with 55 percent, closely followed by newsletter emails with 52 percent and the Toronto website with 46. The 2021 survey illustrates a consistent trend with the same platforms as the top method of delivering information, specifically the Toronto website with 44 percent, then enewsletter emails with 43 percent and advertising campains at 42 percent. These top methods of communciation are more evenly spread out than the 2018 survey results. Social media platforms namely twitter, facebook and instagram all increased in the 2021 survey. Notable decreases in term of percentage from 2018 to 2021 include events, enewsletter emails, advertising campaigns, brochures and pamphlets. The new category of BetterHomesTO.ca webiste accounts for 15 percent of votes for the 2021 survey. 
 
 ```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: table-four
+#| fig-cap:?
+
 print(communication_summary_combined_table)
 ```
+### Likelihood Taking Action
+#### Individual 2018
+The likelihood of taking action against climate change was explored by assessing individuals' intentions and behaviors. 
+@fig-five illustrates self-reported likelihood of taking certain actions that minimize climate change effects. On the x-axis, we have the nine different climate actions and on the y-axis is the percentage. The stacked bar chart allows understanding of how likely individuals are to take part in the given actions. 
+Sorting waste into the correct bins is the action that most individuals are doing right now, accounting for 60 percent whith 24 percent saying they are very likely to take part in this action. The next most prominent actions are walking or cycling short distances, reduce hydro usage, reduce waste and home improvements. 40 percent of invidiuals report walking or cycling when traveling shorter distances in the city with 22 percent reporting they are very likely. However, 7 percent say they are very unlikely to change their method of transportation. Reducing the amount of energy and water use is already done by 36 percent and very likely for 29 percent only a mere 3 percent is very unlikely. Reducing personal waste such as contributing to repurposing used products has similar percentages to responses for reducing hydro but even fewer individuals that report they are very unlikely to take action. Similarly, the likelihoods for making home improvements for energy efficiency such as energy-efficient appliances, programmable thermostat, LED lightbulbs, green or cool roof. 
+In contrast, the action where the least number of individuals are contributing to is the investment of an electric or hybrid vehicle over gas-powered vehicles with only 8 percent who currently have an energy efficient vehicle. While 19 percetn are very likely to make this switch, 14 percent say they are very unlikely. This illustrates that buying an electric or hybrid vehicle is action the least number of individuals are willing to invest in despite gas-powered vehicles being a major contributor to greenhouse gases. This action has a huge impact on the environment and yet 41 percent of this sample say they are unlikely to change! The second action that individuals are most unlikely to engage in is eat less meat by incorporating more plant-based foods in their diet with 12 percent very unlikely and 23 percent somewhat unlikely. Only 23 percent are already consuming meat alternatives. Vegans greenhosue gas emissions are on average 37% lower than those who eat meat frequently. 
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-five
+#| fig-cap: The stacked bar plot shows the likelihood of survey respondents taking various actions to address climate change.
 
+knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot.png"))
 
+```
 
 # Model {#sec-model}
 TO DO:
@@ -227,51 +267,32 @@ We will estimate the model parameters using a standard linear regression approac
 
 # Results
 
-## Likelihood Taking Action
-The likelihood of taking action against climate change was explored by assessing individuals' intentions and behaviors. 
-@fig-five illustrates self-reported likelihood of taking certain actions that minimize climate change effects. On the x-axis, we have the nine different climate actions and on the y-axis is the percentage. The stacked bar chart allows understanding of how likely individuals are to take part in the given actions. 
-Sorting waste into the correct bins is the action that most individuals are doing right now, accounting for 60 percent whith 24 percent saying they are very likely to take part in this action. The next most prominent actions are walking or cycling short distances, reduce hydro usage, reduce waste and home improvements. 40 percent of invidiuals report walking or cycling when traveling shorter distances in the city with 22 percent reporting they are very likely. However, 7 percent say they are very unlikely to change their method of transportation. Reducing the amount of energy and water use is already done by 36 percent and very likely for 29 percent only a mere 3 percent is very unlikely. Reducing personal waste such as contributing to repurposing used products has similar percentages to responses for reducing hydro but even fewer individuals that report they are very unlikely to take action. Similarly, the likelihoods for making home improvements for energy efficiency such as energy-efficient appliances, programmable thermostat, LED lightbulbs, green or cool roof. 
-In contrast, the action where the least number of individuals are contributing to is the investment of an electric or hybrid vehicle over gas-powered vehicles with only 8 percent who currently have an energy efficient vehicle. While 19 percetn are very likely to make this switch, 14 percent say they are very unlikely. This illustrates that buying an electric or hybrid vehicle is action the least number of individuals are willing to invest in despite gas-powered vehicles being a major contributor to greenhouse gases. This action has a huge impact on the environment and yet 41 percent of this sample say they are unlikely to change! The second action that individuals are most unlikely to engage in is eat less meat by incorporating more plant-based foods in their diet with 12 percent very unlikely and 23 percent somewhat unlikely. Only 23 percent are already consuming meat alternatives. Vegans greenhosue gas emissions are on average 37% lower than those who eat meat frequently. 
-```{r}
-#| warning: false
-#| echo: false
-#| message: false
-#| label: fig-five
-#| fig-cap: The stacked bar plot shows the likelihood of survey respondents taking various actions to address climate change.
+## Likelihood taking action by age
+@fig-six shows the relationship between age and the likelihood of engaging in various climate-related actions. The x-axis represents the age groups, and the y-axis indicates the percentage of respondents reporting different likelihood levels, from "Already doing this" to "Very unlikely." The trend lines across each action show how engagement varies by age.
 
-knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot.png"))
+### Electric / Hybrid Vehicle Adoption
+Younger respondents (15-24, 25-34) are less likely to adopt electric or hybrid vehicles, with only a small proportion already using or considering them. Adoption rates increase slightly in the 55-64 age group, then decline again in the 65+ group. This suggests that older individuals may have more resources or stability to invest in electric vehicles.
 
-```
+### Home Improvement for Energy Efficiency
+Middle-aged individuals (35-54) are the most likely to engage in home improvement actions aimed at increasing energy efficiency. Younger age groups (15-24, 25-34) report lower likelihoods, likely due to barriers such as homeownership and disposable income.
 
-### Likelihood taking action by age
-The graph illustrates the relationship between age group (x-axis) and the percentage of respondents (y-axis) who reported varying levels of likelihood to adopt climate-related actions. The colored segments of each bar represent five levels of likelihood and black dashed trend line provides an overview of how the likelihood to engage in each action changes across different age groups.
+### Consumption of Meat Alternatives
+Younger age groups, especially 15-24 and 25-34, are more likely to adopt meat alternatives. As age increases, the likelihood of doing so decreases, possibly due to established dietary habits in older generations.
 
-#### Electric / Hybrid Vehicle Adoption
-For electric and hybrid vehicles, younger age groups (15-24, 25-34) show relatively lower engagement, with a smaller proportion already adopting or being very likely to adopt these vehicles. However, engagement slightly increases with age, peaking in the 55-64 age group before slightly declining in the 65+ group. The trend line indicates a modest upward trajectory as respondents age, suggesting that older individuals may have more resources or stability to invest in electric vehicles.
+### Minimizing Car Use
+A trend similar to that of meat alternatives is observed, with younger individuals more likely to minimize car use. Older respondents, particularly those 65 and older, show less inclination to reduce car usage, possibly due to mobility needs or lifestyle factors like suburban living.
 
-#### Home Improvement for Energy Efficiency
-Home improvement actions follow a similar trend, with middle-aged groups (35-54) showing the highest likelihood of engagement. The younger groups (15-24 and 25-34) report the lowest likelihood, which may reflect barriers such as homeownership rates and disposable income. The trend line peaks in the 45-54 group, indicating that this demographic is most likely to engage in energy-efficient home improvements.
+### Purchasing Green Products
+The likelihood of purchasing green products is relatively uniform across age groups. Middle-aged and older demographics show a slight increase in engagement, but the trend line remains mostly flat, indicating that this behavior is more influenced by factors such as income or environmental awareness rather than age.
 
-#### Consumption of Meat Alternatives
-Adoption of meat alternatives is more prevalent in the younger age groups (15-24 and 25-34), with a significant proportion already consuming or being very likely to consume these products. As age increases, the likelihood decreases, with the 65+ group showing the lowest engagement. This trend may be driven by cultural or dietary habits that are more entrenched in older generations.
+### Reducing Hydro Usage
+Older respondents (55-64 and 65+) are the most likely to reduce hydro usage, likely driven by cost-saving measures or environmental concerns. The trend line shows a steady increase with age.
 
-#### Minimizing Car Use
-Minimizing car use shows a similar trend to meat alternatives, with younger respondents demonstrating a higher likelihood of reducing their car use. The likelihood declines steadily across age groups, and the trend line confirms this downward trajectory, suggesting that older individuals are less willing or able to minimize car use, possibly due to mobility needs or suburban living arrangements.
+### Reducing and Sorting Waste
+Both reducing and sorting waste are more commonly reported by middle-aged and older groups (45-64). This may reflect increased awareness or resources for waste management.
 
-#### Purchasing Green Products
-The likelihood of purchasing green products is relatively consistent across age groups, with slight increases in the middle-aged and older demographics. The trend line remains relatively flat, indicating that green product consumption is not strongly age-dependent but may be influenced by other factors such as income and environmental awareness.
-
-#### Reducing Hydro Usage
-Efforts to reduce hydro (electricity) usage are most prominent among older age groups (55-64 and 65+), who report the highest likelihood of engaging in this action. The trend line shows a clear upward trajectory, suggesting that older respondents, possibly driven by cost-saving measures or environmental concerns, are more likely to reduce hydro usage.
-
-#### Reducing and Sorting Waste
-Reducing waste and sorting waste correctly show a similar pattern: younger age groups report lower levels of engagement, while middle-aged and older groups (45-64) show higher participation. The trend line peaks around the 55-64 age group, highlighting the heightened awareness or resources available to this demographic for proper waste management.
-
-#### Walking / Cycling Short Distances
-Walking or cycling short distances is notably more prevalent among younger respondents, particularly those aged 15-34. The trend line declines steadily with age, indicating that older individuals are less likely to walk or cycle, potentially due to physical limitations or differing lifestyle needs.
-
-#### Summary
-Overall, the graph highlights significant variation in the likelihood of engaging in climate actions across different age groups. Younger respondents are more inclined to adopt behaviors such as consuming meat alternatives and minimizing car use, while older respondents show greater engagement in actions like reducing hydro usage and making home improvements. The trend lines across actions suggest that age is a critical factor influencing climate-related behavior, potentially mediated by factors such as income, lifestyle, and environmental awareness.
+### Walking / Cycling Short Distances
+ Younger respondents (15-34) are more likely to engage in walking or cycling short distances. As age increases, the likelihood of walking or cycling decreases, possibly due to physical limitations or differing lifestyle needs.
 
 ```{r}
 #| warning: false
@@ -283,16 +304,45 @@ Overall, the graph highlights significant variation in the likelihood of engagin
 knitr::include_graphics(here("data/03-figures_data", "likelihood_age_plot.png"))
 ```
 
+## Likelihood taking action by education 
+@fig-seven displays how the likelihood of engaging in climate-friendly actions varies by educational attainment. The x-axis represents the proportion of respondents in each education category, while the y-axis lists the educational levels, from "Prefer not to answer" to "Postgrad." Each action is shown across separate facets, revealing how education level correlates with engagement in each behavior.
 
-### Likelihood taking action by education 
+### Trends in Education Attainment and Climate-Friendly Actions
+Individuals with higher education levels generally show a higher likelihood of engaging in climate-friendly actions. This trend is evident across all behaviors, with respondents possessing undergraduate or postgraduate degrees more likely to adopt electric vehicles or purchase green products.
+
+#### Electric/Hybrid Vehicle Adoption
+Postgraduate degree holders are the most likely to have adopted or consider adopting electric or hybrid vehicles. In contrast, respondents with lower education levels, such as those with high school or less, are more likely to report being "Very unlikely" or "Somewhat unlikely" to adopt these vehicles.
+
+#### Minimizing Car Use
+Higher education levels correlate with a greater likelihood of minimizing car use, though the trend is less pronounced for individuals with lower education levels.
+
+#### Reducing Hydro Usage
+While education has a smaller impact on reducing hydro usage compared to other actions, those with higher education levels are still more likely to engage in this behavior.
+
+#### Purchasing Green Products and Reducing Waste
+Purchasing green products and reducing waste are more common among individuals with postsecondary education, especially those with undergraduate or postgraduate degrees. In contrast, individuals with lower education levels report more moderate engagement with these actions.
+
+### Adopting Meat Alternatives
+Higher education is associated with greater adoption of meat alternatives. This is particularly true for those with undergraduate or postgraduate education, while fewer respondents with lower education levels report engaging in this behavior.
+
+### Walking or Cycling Short Distances
+Walking or cycling short distances is a behavior that is relatively common across all education levels, though individuals with higher education levels show slightly higher engagement.
+
+
+### Sorting Waste Correctly
+Sorting waste correctly is one of the most consistently adopted behaviors across all education levels, with a relatively small proportion of respondents indicating they are unlikely to engage in this action. However, individuals with higher education are still more likely to fall in the "Already doing this" category.
 
 ```{r}
-print(likelihood_education_plot)
+#| warning: false
+#| echo: false
+#| message: false
+#| label: fig-seven
+#| print(likelihood_education_plot)
 ```
 
 
-## comparison 2018 to 2021
-
+## Overall Summary of Results:
+The results indicate that both age and education significantly influence the likelihood of engaging in climate-related actions. Younger respondents tend to be more likely to adopt behaviors such as consuming meat alternatives and minimizing car use, while older individuals are more inclined to engage in actions that require larger investments or long-term commitments, such as reducing hydro usage and investing in energy-efficient home improvements. Higher educational attainment is also strongly linked to a greater likelihood of engaging in climate-friendly behaviors, particularly those that involve financial investment, like adopting electric vehicles and consuming meat alternatives. However, simpler actions such as sorting waste correctly are more widely reported across all education levels. These generational and educational differences highlight the importance of factors such as income, lifestyle, and environmental awareness in shaping individuals' climate-related behaviors. In light of these findings, it is crucial to consider demographic factors when designing policies or campaigns aimed at encouraging climate action, as different age and education groups exhibit varied levels of engagement with both simple and more complex sustainable practices.
 
 
 # Discussion
@@ -308,14 +358,9 @@ Please don't use these as sub-heading labels - change them to be what your point
 ## Third discussion point
 
 ## Limitations
-
-the following categories were not options under reasons unlikely to perform action   "Use public transit more",
-  "Cycle more",
-  "Walk more",
-  "Purchase electric/hybrid vehicle in next 1-3 years",
-  but they were categories for which actions are you most likely to take part in to address climate change.
   
-no indiivdual data for 2021, used summary statistics instead
+no individual data for 2021, had to used summary statistics instead
+i was originally very interested in loooking at the reasons behind why people are unlikely to perform such climate friendly actions
 
 ## Future Directions
 
