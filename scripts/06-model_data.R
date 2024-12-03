@@ -9,11 +9,6 @@
 
 #### Workspace setup ####
 
-# Install required packages
-install.packages("tidyverse")  # For data manipulation
-install.packages("broom")  # Optional, for tidying model output
-
-
 library(tidyverse)
 library(brms)
 library(arrow)

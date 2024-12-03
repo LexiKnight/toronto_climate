@@ -7,8 +7,6 @@
 # License: MIT
 
 #### Workspace setup ####
-# Install the necessary packages if needed
-# install.packages(c("httr", "readxl", "tidyverse", "openxlsx"))
 
 # Load required libraries
 library(httr) # downloads excel file

@@ -8,9 +8,6 @@
 
 
 #### Workspace setup ####
-# install necessary packages
-# install.packages(c("readr", "dplyr", "openxlsx", "readxl", "arrow","tidyverse", "tidyr", "stringr", "tinytable"))
-
 
 # load necessary packages
 library(readr)

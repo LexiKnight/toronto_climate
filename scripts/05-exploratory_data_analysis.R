@@ -9,11 +9,6 @@
 
 #### Workspace setup ####
 
-# install libraries 
-# install.packages(c("tidyverse", "dplyr", "ggplot2", "here", "stringr", "knitr", "arrow", "tidyr"))
-# install.packages("forcats","RColorBrewer")
-install.packages("kableExtra")
-
 # Load necessary libraries
 library(tidyverse)
 library(dplyr)
