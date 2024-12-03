@@ -207,25 +207,33 @@ TO DO:
 The goal of our modelling strategy is twofold. Firstly,...
 Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-appendix].
 ## Model set-up
-In this analysis, we aim to predict the likelihood of taking climate-friendly actions based on demographic variables (age, education) and climate change awareness (knowledge). The specific actions include investing in an electric or hybrid vehicle instead of a gas-powered one, making home improvements (e.g., using LED lightbulbs), adopting meat alternatives, minimizing car use, purchasing green products, reducing hydro usage, reducing waste by repurposing used products, sorting waste correctly, and walking or cycling shorter distances.
+In this analysis, we aim to predict the likelihood of taking climate-friendly actions based on demographic variables namely age and education. The specific actions include investing in an electric or hybrid vehicle instead of a gas-powered one, making home improvements (e.g., using LED lightbulbs), adopting meat alternatives, minimizing car use, purchasing green products, reducing hydro usage, reducing waste by repurposing used products, sorting waste correctly, and walking or cycling shorter distances.
 
 ### Model Specifications ###
 TO DO: 
 
 \begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
+y_i = \beta_0 + \beta_1 * Age_i + \beta_2 * Education_i + \epsilon_i
+\end{align*}
+where:
+
+ - $y_i$ represents the likelihood of taking a climate-friendly action for individual $i$, measured on a five point Likert scale:
+ 1. "Very unlikely"
+ 2. "Somewhat unlikely"
+ 3. "Somewhat likely"
+ 4. "Very likely"
+ 5. "Already doing this or have done this"
+- $\beta_0$ is the intercept, representing the baseline likelihood of taking action when all predictors are zero
+- $\beta_1$ is the coefficient for Age, representing how a one-year increase affects the likelihood of taking action
+- $\beta_2$ is the coefficient for Education, a categorical variable that is dummy-coded.
+- $\epsilon_i$ is the error term, accounting for unexplained variation.
+
 
 We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
 
 
 ### Model Justification 
-This model is designed to explore how various demographic and knowledge-based factors influence the likelihood of engaging in climate-friendly behaviors. The likelihood of taking specific actions, such as reducing energy consumption or investing in green technologies, represents an important outcome in understanding climate change perceptions. As such, focusing on these behaviors rather than general knowledge allows for a more actionable and directly applicable model to climate change policy and interventions.
+This model is designed to explore how various demographics influence the likelihood of engaging in climate-friendly behaviors. The likelihood of taking specific actions, such as reducing energy consumption or investing in green technologies, represents an important outcome in understanding climate change perceptions. As such, focusing on these behaviors rather than general knowledge allows for a more actionable and directly applicable model to climate change policy and interventions.
 
 #### Response Variable ####
 The response variable in this analysis is the likelihood of taking climate-friendly actions, which is typically a continuous or ordinal measure based on respondents' self-reported likelihood of adopting behaviors such as switching to an electric vehicle, reducing waste, or conserving energy. These actions are commonly measured on a Likert scale (e.g., 1 = "not likely" to 5 = "very likely").
