@@ -62,7 +62,9 @@ Overall, @fig-one provides valuable context for understanding the demographic co
 #| echo: false
 #| message: false
 #| label: fig-one
-#| fig-cap: The histogram shows the distribution of age given the 2018 survey respondents.
+#| fig-cap: "The histogram shows the distribution of age given the 2018 survey respondents."
+
+library(here)
 
 knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 
@@ -74,8 +76,16 @@ knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 #| warning: false
 #| echo: false
 #| message: false
-#| label: table-one
-print(age_summary_combined)
+# #| label: table-one
+# #| fig-cap: "Comparison of Age Distribution Between 2018 and 2021 Surveys: This table highlights the age distribution of survey respondents in 2018 and 2021. Notable differences include a higher representation of individuals aged 18–23 in 2021 compared to 2018, while the distribution across other age groups remained relatively consistent between the two years."
+
+# Read the cleaned CSV into a data frame
+# age_summary_combined <- read.csv(here("data/03-figures_data", "age_summary_combined.csv"))
+
+# Print the cleaned table (using kable for styling)
+# age_summary_combined %>%
+  # kbl(caption = "Age Distribution Comparison for 2018 and 2021") %>%
+  # kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
@@ -88,7 +98,7 @@ print(age_summary_combined)
 #| echo: false
 #| message: false
 #| label: fig-two
-#| fig-cap: The histogram shows the distribution of education levels of 2018 survey respondents.
+#| fig-cap: "The histogram shows the distribution of education levels of 2018 survey respondents."
 
 knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
 
@@ -99,13 +109,25 @@ knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png")
 #| warning: false
 #| echo: false
 #| message: false
-#| label: table-two
-#| fig-cap:?
+# #| label: table-education
+# #|  fig-cap: TODO
+
+# Load necessary libraries
+# library(tinytable)
+
+# Read the CSV into a data frame
+# education_summary_combined <- read.csv(here("data/03-figures_data", "education_summary_combined.csv"))
+
+# Remove the leading 'X' from column names
+# colnames(education_summary_combined) <- gsub("^X", "", colnames(education_summary_combined))
+
+# Convert the data frame to tinytable
+# education_summary_combined_tiny <- tt(education_summary_combined)
+
+# Print the tinytable
+# education_summary_combined_tiny
 
 
-
-
-print(education_summary_combined)
 ```
 
 ### Extent Feel Informed
@@ -128,10 +150,10 @@ knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.p
 #| warning: false
 #| echo: false
 #| message: false
-#| label: table-three
-#| fig-cap:?
+# #| label: table-three
+# #| fig-cap: TODO
 
-print(informed_summary_combined)
+# print(informed_summary_combined)
 ```
 
 
@@ -158,10 +180,10 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 #| warning: false
 #| echo: false
 #| message: false
-#| label: table-four
-#| fig-cap:?
+# #| label: table-four
+# #| fig-cap: TODO
 
-print(communication_summary_combined_table)
+# print(communication_summary_combined_table)
 ```
 ### Likelihood Taking Action
 #### Individual 2018
@@ -270,6 +292,7 @@ Both reducing and sorting waste are more commonly reported by middle-aged and ol
 #| fig-cap: Likelihood of Taking Climate Change Actions by Age Group. The stacked bar chart illustrates the percentage of respondents across six age groups (15-24, 25-34, 35-44, 45-54, 55-64, 65+) in terms of their self-reported likelihood to engage in nine distinct climate-related actions. Each color represents a different level of likelihood, from "Already doing this or have done this" to "Very unlikely." The black dashed trend line highlights how the likelihood of action changes across age groups, providing insights into generational differences in climate-related behavior.
 
 knitr::include_graphics(here("data/03-figures_data", "likelihood_age_plot.png"))
+
 ```
 
 ## Likelihood taking action by education 
@@ -305,7 +328,9 @@ Sorting waste correctly is one of the most consistently adopted behaviors across
 #| echo: false
 #| message: false
 #| label: fig-seven
-#| print(likelihood_education_plot)
+
+knitr::include_graphics(here("data/03-figures_data", "likelihood_education_plot.png"))
+
 ```
 
 
@@ -337,7 +362,6 @@ Future research should aim to identify the specific barriers that prevent certai
 
 # Conclusion {#sec-conclusion}
 This study provides valuable insights into the demographic factors that influence individuals' likelihood to engage in climate-friendly behaviors, particularly age, education, and climate change knowledge. Younger individuals and those with higher levels of education are more likely to adopt sustainable behaviors, particularly those that require greater financial investment or long-term commitment. However, barriers such as financial constraints and access to resources remain significant challenges. Addressing these barriers through targeted policies and interventions could help make sustainable behaviors more accessible and the norm across all demographic groups. Future research should explore the underlying reasons for resistance to adopting climate-friendly behaviors and how external factors can help overcome these challenges to achieve widespread climate action.
-
 
 
 \newpage

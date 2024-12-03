@@ -380,7 +380,7 @@ print(likelihood_age_plot)
 ggsave(
   filename = here("data/03-figures_data", "likelihood_age_plot.png"),
   plot = likelihood_age_plot,
-  width = 12, height = 8
+  width = 8, height = 6
 )
 
 
@@ -496,9 +496,9 @@ print(likelihood_education_plot)
 
 # Save the Plot as a PNG
 ggsave(
-  filename = here("data/03-figures_data", "likelihood_education_actions_plot_ordered_legend_right.png"),
+  filename = here("data/03-figures_data", "likelihood_education_plot.png"),
   plot = likelihood_education_plot,
-  width = 12, height = 10
+  width = 8, height = 6
 )
 
 
@@ -513,23 +513,30 @@ ggsave(
 age_summary_18 <- read_parquet(here("data/03-figures_data", "age_summary_2018_table.parquet"))
 age_summary_21 <- read_parquet(here("data/03-figures_data", "age_summary_2021_table.parquet"))
 
-# Rename columns to indicate the year for clarity
-colnames(age_summary_18) <- c("Age Group", "2018 (%)")
-colnames(age_summary_21) <- c("Age Group", "2021 (%)")
+# Rename columns to indicate the year for clarity (without % signs)
+colnames(age_summary_18) <- c("Age_Group", "2018")
+colnames(age_summary_21) <- c("Age_Group", "2021")
 
 # Merge the two data frames by Age Group for side-by-side comparison
-age_summary_combined <- full_join(age_summary_18, age_summary_21, by = "Age Group")
+age_summary_combined <- full_join(age_summary_18, age_summary_21, by = "Age_Group")
 
-# Render the combined table using kableExtra
+# Remove the leading 'X' from column names (for both '2018' and '2021' columns)
+colnames(age_summary_combined) <- gsub("^X", "", colnames(age_summary_combined))
+
+# Convert the data frame to tinytable (optional)
+age_summary_combined_tiny <- tt(age_summary_combined)
+
+# Print the tinytable (optional, only for inspection)
+age_summary_combined_tiny
+
+# Save the cleaned and processed table as a CSV file
+write.csv(age_summary_combined, here("data/03-figures_data", "age_summary_combined.csv"), row.names = FALSE)
+
+# Print the table with a new title using kable (and change the caption)
 age_summary_combined %>%
-  kbl(caption = "Age Summary Comparison for 2018 and 2021 Survey Respondents") %>%
+  kbl(caption = "Comparison of Age Distribution in 2018 and 2021") %>%
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
 
-# create table using tinytable
-age_summary_combined <- tt(age_summary_combined)
-
-# print table
-age_summary_combined
 
 
 
@@ -573,16 +580,13 @@ education_summary_combined <- education_summary_combined %>%
 # Replace NAs with empty strings to leave rows empty
 education_summary_combined[is.na(education_summary_combined)] <- ""
 
-# Render the combined table using kableExtra
-education_summary_combined %>%
-  kbl(caption = "Education Level Summary Comparison for 2018 and 2021") %>%
-  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
-
-# create table using tinytable
-education_summary_combined <- tt(age_summary_combined)
-
-# print table
+# Print to check 
 education_summary_combined
+
+# Save the combined table as a CSV file
+write.csv(education_summary_combined, here("data/03-figures_data", "education_summary_combined.csv"), row.names = FALSE)
+
+
 
 
 
