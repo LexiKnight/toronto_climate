@@ -285,7 +285,11 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_age_plot.png"))
 
 
 ### Likelihood taking action by education 
-TO DO: graph not working 
+
+```{r}
+print(likelihood_education_plot)
+```
+
 
 ## comparison 2018 to 2021
 
