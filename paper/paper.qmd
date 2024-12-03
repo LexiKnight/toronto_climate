@@ -35,6 +35,7 @@ The remainder of this paper is structured as follows: @sec-data presents the met
  
 
 # Data {#sec-data}
+The primary data source for this project is the Climate Perception Study dataset, provided by the City of Toronto via the Open Data Toronto platform [@climateperceptionstudy]. This dataset offers insights into public perceptions of climate change in Toronto and was accessed from Open Data Toronto [@opendatatoronto] on 6 November 2024.
 ## Software and R-packages
 This project was conducted using the statistical software `R` [@citeR]. Data cleaning and manipulation were primarily facilitated by the `tidyverse` package [@tidyverse], which encompasses various essential tools. Within this suite, `dplyr` [@dplyr] was employed for data manipulation tasks such as filtering, summarizing, and joining datasets, while `readr` [@readr] provided efficient functionality for reading and writing rectangular text data. Specifically, the `write_csv` function from `tidyverse` was used to save the raw 2018 dataset. To handle Excel files, we incorporated the `httr` package for downloading files directly from online sources and `readxl` [@readxl], which enabled us to read Excel files seamlessly. Additionally, the `openxlsx` package was utilized to create a new Excel workbook with multiple sheets, allowing us to store the 2021 dataset in a structured format.
 

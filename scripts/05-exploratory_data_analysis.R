@@ -381,23 +381,25 @@ ggsave(
 
 
 ## likelihood by education ##
-# TO DO NOT WORKING :(
-# Step 1: Prepare the Data
-# Pivot the data from wide to long format, keeping 'highest_level_educ' as a grouping variable
+# Step 1: Prepare the Data with Shortened and Ordered Education Levels
 likelihood_education_data <- individual_18 %>%
-  pivot_longer(cols = starts_with("likelihood_"), 
-               names_to = "action", 
-               values_to = "likelihood") %>%
-  mutate(action = recode(action, 
-                         "likelihood_home_improvement" = "Home Improvement",
-                         "likelihood_reduce_hydro" = "Reduce Hydro Usage",
-                         "likelihood_minimize_car" = "Minimize Car Use",
-                         "likelihood_vehicle_electric" = "Electric / Hybrid Vehicle",
-                         "likelihood_protein_alternative" = "Meat Alternatives",
-                         "likelihood_reduce_waste" = "Reduce Waste",
-                         "likelihood_green_product" = "Purchase Green Products",
-                         "likelihood_short_distance" = "Walk / Cycle Short Distances",
-                         "likelihood_sort_waste" = "Sort Waste Correctly")) %>%
+  pivot_longer(
+    cols = starts_with("likelihood_"), 
+    names_to = "action", 
+    values_to = "likelihood"
+  ) %>%
+  mutate(
+    action = recode(action, 
+                    "likelihood_home_improvement" = "Home Improvement",
+                    "likelihood_reduce_hydro" = "Reduce Hydro Usage",
+                    "likelihood_minimize_car" = "Minimize Car Use",
+                    "likelihood_vehicle_electric" = "Electric / Hybrid Vehicle",
+                    "likelihood_protein_alternative" = "Meat Alternatives",
+                    "likelihood_reduce_waste" = "Reduce Waste",
+                    "likelihood_green_product" = "Purchase Green Products",
+                    "likelihood_short_distance" = "Walk / Cycle Short Distances",
+                    "likelihood_sort_waste" = "Sort Waste Correctly")
+  ) %>%
   filter(!is.na(likelihood)) %>%
   mutate(
     likelihood = factor(likelihood, 
@@ -405,7 +407,28 @@ likelihood_education_data <- individual_18 %>%
                                    "Very likely", 
                                    "Somewhat likely", 
                                    "Somewhat unlikely", 
-                                   "Very unlikely"))
+                                   "Very unlikely")),
+    highest_level_educ = factor(
+      recode(
+        highest_level_educ,
+        "High school or less" = "High School",
+        "Some community college, vocational, trade school" = "Some college / trade",
+        "Completed community college, vocational, trade school" = "College / trade",
+        "Some univeristy" = "Some university",
+        "Completed undergraduate degree" = "Undergrad",
+        "Post graduate/professional school" = "Post grad",
+        "Prefer not to answer" = "Pref no answer"
+      ),
+      levels = c(
+        "Pref no answer",
+        "High School",
+        "Some college / trade",
+        "College / trade",
+        "Some university",
+        "Undergrad",
+        "Post grad"
+      )  # Explicitly set factor levels for ordering
+    )
   )
 
 # Step 2: Group and Calculate Percentages by Education Level
@@ -415,23 +438,29 @@ likelihood_education_plot_percent <- likelihood_education_data %>%
   group_by(highest_level_educ, action) %>%
   mutate(percentage = n / sum(n) * 100)
 
-# Step 3: Create the Plot
-likelihood_education_plot <- ggplot(likelihood_education_plot_percent, aes(x = highest_level_educ, y = percentage, fill = likelihood)) +
+# Step 3: Create the Plot with Custom Order and Legend at the Bottom
+likelihood_education_plot <- ggplot(likelihood_education_plot_percent, 
+                                    aes(x = percentage, 
+                                        y = highest_level_educ, 
+                                        fill = likelihood)) +
   geom_bar(stat = "identity", position = "stack") +  # Stacked bar chart
   labs(
     title = "Likelihood of Taking Climate Change Actions by Education Level",
-    x = "Education Level",
-    y = "Percentage",
+    x = "Percentage",
+    y = "Education Level",
     fill = "Likelihood"
   ) +
-  facet_wrap(~action, scales = "free", ncol = 3) +  # Separate plots for each action, 3 columns
+  facet_wrap(~action, scales = "free_x", ncol = 3) +  # Separate plots for each action, 3 columns
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),  # Rotate x-axis labels to 90 degrees
-    axis.text.y = element_text(size = 10),  # Optional: Adjust size for y-axis labels
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Rotate x-axis labels 45 degrees
+    axis.text.y = element_text(size = 10),  # Adjust font size for y-axis labels
     strip.text.x = element_text(size = 10),  # Adjust font size for facet labels
     plot.margin = margin(10, 10, 20, 10),  # Increase plot margin for better spacing
-    panel.spacing = unit(1, "lines")  # Adjust spacing between facets
+    panel.spacing = unit(1, "lines"),  # Adjust spacing between facets
+    legend.position = "bottom",  # Move legend to the bottom
+    legend.title = element_text(size = 10),  # Adjust legend title size
+    legend.text = element_text(size = 9)  # Adjust legend text size
   ) +
   scale_fill_manual(
     values = c("Already doing this or have done this" = "forestgreen", 
@@ -440,21 +469,19 @@ likelihood_education_plot <- ggplot(likelihood_education_plot_percent, aes(x = h
                "Somewhat unlikely" = "orange", 
                "Very unlikely" = "red")
   ) +
-  # Add a trend line for each action and education level combination
-  geom_smooth(aes(group = highest_level_educ), method = "loess", color = "black", size = 0.7, se = FALSE, linetype = "solid") +
-  theme(
-    strip.text.x = element_text(size = 10)  # Optional: Adjust font size for facet labels
-  )
+  coord_flip()  # Flip the axes
 
 # Step 4: Display the Plot
 print(likelihood_education_plot)
 
 # Step 5: Save the Plot as a PNG
 ggsave(
-  filename = here("data/03-figures_data", "likelihood_education_actions_plot.png"),
+  filename = here("data/03-figures_data", "likelihood_education_actions_plot_ordered_legend_bottom.png"),
   plot = likelihood_education_plot,
   width = 12, height = 10
 )
+
+
 
 
 
