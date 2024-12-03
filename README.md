@@ -1,4 +1,6 @@
-# <span style="color: #ff6347;">Climate Change Perspectives</span>
+# 🌍 Climate Change Perspectives
+# ![Climate Change](https://via.placeholder.com/15/ff6347/ff6347.png) Climate Change Perspectives
+
 
 ## Overview
 This project explores the perspectives of Toronto residents on climate change and the likelihood of individuals taking climate-friendly actions. The analysis primarily relies on survey data from 2018, supplemented by summary data from 2021 to provide a more current overview of the public's engagement with climate-related behaviors.
