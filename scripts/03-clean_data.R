@@ -202,11 +202,6 @@ for (col in delivery_method_columns) {
   })
 }
 
-
-# str(twenty_eighteen)
-
-# summary(twenty_eighteen)
-
 # View the first few rows to confirm the data
 head(twenty_eighteen)
 
@@ -391,12 +386,14 @@ communication_summary_18_table <- tinytable::tt(communication_summary_18,
                                                 row.names = FALSE, 
                                                 col.names = c("Communication Method", "Percentage"), 
                                                 escape = FALSE)
-
 # Print the table
 communication_summary_18_table
 
 # Save the data as Parquet
 write_parquet(communication_summary_18, here("data/03-figures_data", "communication_summary_2018_table.parquet"))
+
+
+
 
 
 
@@ -634,100 +631,6 @@ likelihood_summary_2021_table
 write_parquet(likelihood_summary_21, here("data/03-figures_data", "likelihood_summary_2021_table.parquet"))
 
 
-              
-
-## Reason Unlikely to Take Action 2021 - sheet 85 ##
-
-# Extract data from Sheet 85 + 1 (accounting for the index sheet)
-sheet86_data <- read_excel(twenty_twenty_one, sheet = 86)
-
-# Define rows and columns for Sheet 11 that want extract 
-rows_A <- c(5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33)  # Categories in column A (reason categories)
-rows_B_to_P <- c(6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34)  # Rows for data in columns B through P
-
-# Extract the likelihood take action categories from column A
-categories <- sheet86_data %>%
-  slice(rows_A) %>%
-  pull(1) %>%  # Pull the first column (A) as a vector
-  trimws()  # Remove unexpected whitespace
-
-# Initialize a list to store data for columns B through L
-percentage_list <- list()
-
-# Loop through columns B to L and extract corresponding data
-for (col_index in 2:12) {  # Columns B (2) to L (12) in R indexing
-  raw_data <- sheet86_data[rows_B_to_P, col_index]
-  
-  # Convert raw data to character, replace "-" with "0", then convert to numeric
-  raw_data_cleaned <- as.character(raw_data[[1]])
-  raw_data_cleaned[raw_data_cleaned == "-"] <- "0"
-  
-  # Convert the cleaned data to numeric and multiply by 100 (if conversion succeeded)
-  numeric_data <- round(as.numeric(raw_data_cleaned) * 100)
-  percentage_list[[paste0("Col_", LETTERS[col_index])]] <- numeric_data
-}
-
-# Ensure values are rounded to whole numbers and formatted correctly
-percentages <- format(percentages, nsmall = 0)  # No decimal places
-
-# Combine categories and percentages into a data frame
-reasons_summary_21 <- data.frame(
-  Category = categories,
-  percentage_list
-)
-
-# Define shorter names for the "Reasons unlikely to take action" categories
-shorter_categories <- c(
-  "Don't know enough",         # I don't know enough about this
-  "No individual difference",  # I don't think my individual actions will make a difference
-  "Not effective",             # I don't believe this is effective for addressing climate change
-  "Too expensive",             # This is too expensive for me
-  "Unavailable",               # This is not available for me to do
-  "Inconvenient",              # This is not convenient for me to do
-  "Not interested",            # I'm not interested in making this change
-  "Can't do this",             # I can’t do this
-  "Health concerns",           # Health concerns
-  "Hardly do/use",             # I hardly do/use/consume it
-  "Not vegetarian/vegan",      # I am not vegetarian/vegan/ I like meat
-  "Already do/have",           # I (already) do/have this
-  "Live in condo",             # I live in a condo
-  "Nothing",                   # Nothing
-  "Other"                      # Other
-)
-
-# Check if the lengths match (in case there's a mismatch)
-if (length(shorter_categories) == length(reasons_summary_21$Category)) {
-  # Assign the shorter names to the 'Category' column in the reasons_summary_21 data frame
-  reasons_summary_21$Category <- shorter_categories
-} else {
-  warning("The number of shorter categories does not match the number of entries in the Category column.")
-}
-
-# Rename the column headers
-colnames(reasons_summary_21) <- c(
-  "Reasons unlikely to take action",
-  "Purchase energy efficient appliances",
-  "Install a programmable thermostat",
-  "Install LED lightbulbs",
-  "Major home renovations",
-  "Add solar panels to home",
-  "Get EnerGuide home energy evaluation",
-  "Reduce water use",
-  "Reduce meat consumption",
-  "Reduce own waste",
-  "Purchase environmentally friendly items",
-  "Sort waste into correct bins"
-)
-
-# Create the table using tinytable
-reasons_summary_2021_table <- tt(reasons_summary_21)
-
-# Print table
-reasons_summary_2021_table
-
-# Save the data as Parquet
-write_parquet(reasons_summary_21, here("data/03-figures_data", "reasons_summary_2021_table.parquet"))
-
 
 
 
@@ -790,8 +693,6 @@ num_rows <- sapply(list(
   education_summary_21,
   informed_summary_21,
   likelihood_summary_21,
-  reasons_summary_21,
-  support_summary_21,
   communication_summary_21
 ), nrow)
 
@@ -813,8 +714,6 @@ age_summary_21 <- pad_with_na(age_summary_21, max_rows)
 education_summary_21 <- pad_with_na(education_summary_21, max_rows)
 informed_summary_21 <- pad_with_na(informed_summary_21, max_rows)
 likelihood_summary_21 <- pad_with_na(likelihood_summary_21, max_rows)
-reasons_summary_21 <- pad_with_na(reasons_summary_21, max_rows)
-support_summary_21 <- pad_with_na(support_summary_21, max_rows)
 communication_summary_21 <- pad_with_na(communication_summary_21, max_rows)
 
 # Combine datasets side by side
@@ -823,8 +722,6 @@ combined_data <- bind_cols(
   education_summary_21,
   informed_summary_21,
   likelihood_summary_21,
-  reasons_summary_21,
-  support_summary_21,
   communication_summary_21
 )
 

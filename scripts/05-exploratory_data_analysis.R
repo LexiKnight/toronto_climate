@@ -538,8 +538,9 @@ education_summary_combined <- tt(age_summary_combined)
 education_summary_combined
 
 
-## Informed 
 
+
+## Informed 
 # Load the 2018 and 2021 Extent Informed summary tables from Parquet files
 informed_summary_18 <- read_parquet(here("data/03-figures_data", "informed_summary_2018_table.parquet"))
 informed_summary_21 <- read_parquet(here("data/03-figures_data", "informed_summary_2021_table.parquet"))
@@ -624,7 +625,6 @@ communication_method_rename_map_21 <- list(
   "Not interested in receiving information" = "Not interested",
   "Other Methods" = "Other"
 )
-
 # Apply renaming based on the mapping for 2021
 communication_summary_21 <- communication_summary_21 %>%
   mutate(`Communication Method_2021` = recode(`Communication Method_2021`, !!!communication_method_rename_map_21))

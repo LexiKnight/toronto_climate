@@ -1,39 +1,16 @@
-Age Group,Percentage...2,Education Level,Percentage...6,Extent Informed,Percentage...10,Likelihood to Take Action,Purchase energy efficient appliances...14,Install a programmable thermostat...15,Install LED lightbulbs...16,Major home renovations...17,Add solar panels to home...18,Get EnerGuide home energy evaluation...19,Reduce water use...20,Use public transit more,Cycle more,Walk more,Purchase electric/hybrid vehicle in next 1-3 years,Reduce meat consumption...25,Reduce own waste...26,Purchase environmentally friendly items...27,Sorting waste into correct bins,Reasons unlikely to take action,Purchase energy efficient appliances...46,Install a programmable thermostat...47,Install LED lightbulbs...48,Major home renovations...49,Add solar panels to home...50,Get EnerGuide home energy evaluation...51,Reduce water use...52,Reduce meat consumption...53,Reduce own waste...54,Purchase environmentally friendly items...55,Sort waste into correct bins,City Support to Motivate,Percentage...70,Communication Method,Percentage...72
-18-23,11,Less than high school,6,Extremely informed,13,Very likely,25,19,28,13,9,14,21,22,16,25,14,15,25,23,31,Don't know enough,12,11,13,3,8,25,9,9,22,15,11,Economy - NET,23,Toronto.ca website,44
-24-39,30,High School or equivalent,32,Very informed,48,Somewhat likely,34,22,23,27,16,27,30,22,23,29,24,24,33,40,22,No individual difference,15,4,16,4,2,4,15,14,12,10,17,Implement/ improve rebates/ incentives,12,City of Toronto events,31
-40-55,26,Degree or diploma from a college or university,26,Only a little informed,37,Somewhat unlikely,7,11,6,18,23,22,15,12,16,9,19,20,7,12,6,Not effective,7,10,9,6,4,7,20,19,11,9,20,Reduce costs/ affordability,4,Twitter,17
-56+,33,"Graduate or professional degree (examples: Master, PhD, MD or LLB/JD)",35,Not at all informed,2,Very unlikely,4,9,5,14,30,14,8,15,20,5,20,21,4,6,3,Too expensive,37,20,14,47,56,19,4,5,12,37,6,Less taxes/ tax credit,4,Facebook,26
-NA,NA,Prefer not to answer,1,NA,NA,Already doing/done in past year,25,30,35,16,1,11,21,19,9,27,3,17,28,16,36,Unavailable,3,14,15,13,12,12,6,3,14,4,17,Subsidy/ grants,3,Instagram,25
-NA,NA,DK/NS,0,NA,NA,Not applicable,4,10,4,13,20,12,4,9,17,4,20,4,2,2,3,Inconvenient,17,14,13,11,11,13,26,17,19,11,15,Cheaper/ free public transit,1,City of Toronto e-newsletters / email,43
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Not interested,22,13,16,12,9,15,13,39,14,15,10,Heavier fines/ penalties,1,Councillor e-newsletters,24
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Can't do this,2,9,8,10,8,6,15,12,5,7,7,More jobs/ employment opportunities,0,Advertising campaigns,42
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Health concerns,0,0,3,0,0,0,0,2,0,0,0,Other economy mentions,1,"Printed or online brochures, pamphlets",31
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Hardly do/use,0,0,2,0,0,0,1,2,0,1,0,Education - NET,16,BetterHomesTO.ca website,15
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Not vegetarian/vegan,0,0,0,0,0,0,0,1,0,0,0,Educate people/ Increase population awareness/ Provide more information,13,Not interested in receiving information,8
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Already do/have,1,6,1,5,0,5,5,0,5,1,1,More advertising/ infomercials,2,Mail/ letter,1
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Live in condo,0,3,0,1,1,1,0,0,0,0,0,Lead by example/ less talk more action/ do a better job,2,Nothing,1
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Nothing,0,1,0,0,0,0,0,0,0,0,0,Other education mentions,0,Other,0
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Other,2,2,1,1,2,0,1,1,0,2,4,Infrastructure - NET,11,Don't know,0
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Better/ easy accessible public transit,4,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Reduce traffic/ private car use/ make driving more expensive,3,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Better bike infrastructure/ lanes,2,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Use/ support the use of green transportation ( electric cars/ bicycles),1,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Improve Infrastructure,1,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Mandatory solar panels,1,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Other infrastructure mentions,1,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Waste Management - NET,6,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Better recycling program/ Better information about recycling,4,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Better waste management programs,2,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Other waste management mentions,1,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Social - NET,2,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Get everyone involved/ community involvement,2,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Other social issues,0,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Nature - NET,2,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Plant more trees/ more green spaces,2,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Other nature mentions,0,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Air - NET,2,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Reduce emissions/ gas usage,2,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Other air mentions,0,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Nothing,16,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Other,9,NA,NA
-NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Don't Know,24,NA,NA
+Age Group,Percentage...2,Education Level,Percentage...6,Extent Informed,Percentage...10,Likelihood to Take Action,Purchase energy efficient appliances,Install a programmable thermostat,Install LED lightbulbs,Major home renovations,Add solar panels to home,Get EnerGuide home energy evaluation,Reduce water use,Use public transit more,Cycle more,Walk more,Purchase electric/hybrid vehicle in next 1-3 years,Reduce meat consumption,Reduce own waste,Purchase environmentally friendly items,Sorting waste into correct bins,Communication Method,Percentage...46
+18-23,11,Less than high school,6,Extremely informed,13,Very likely,25,19,28,13,9,14,21,22,16,25,14,15,25,23,31,Toronto.ca website,44
+24-39,30,High School or equivalent,32,Very informed,48,Somewhat likely,34,22,23,27,16,27,30,22,23,29,24,24,33,40,22,City of Toronto events,31
+40-55,26,Degree or diploma from a college or university,26,Only a little informed,37,Somewhat unlikely,7,11,6,18,23,22,15,12,16,9,19,20,7,12,6,Twitter,17
+56+,33,"Graduate or professional degree (examples: Master, PhD, MD or LLB/JD)",35,Not at all informed,2,Very unlikely,4,9,5,14,30,14,8,15,20,5,20,21,4,6,3,Facebook,26
+NA,NA,Prefer not to answer,1,NA,NA,Already doing/done in past year,25,30,35,16,1,11,21,19,9,27,3,17,28,16,36,Instagram,25
+NA,NA,DK/NS,0,NA,NA,Not applicable,4,10,4,13,20,12,4,9,17,4,20,4,2,2,3,City of Toronto e-newsletters / email,43
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Councillor e-newsletters,24
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Advertising campaigns,42
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,"Printed or online brochures, pamphlets",31
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,BetterHomesTO.ca website,15
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Not interested in receiving information,8
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Mail/ letter,1
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Nothing,1
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Other,0
+NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Don't know,0
