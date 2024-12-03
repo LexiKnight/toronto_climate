@@ -98,7 +98,7 @@ Overall, @fig-one provides valuable context for understanding the demographic co
 knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 
 ```
-#### Age Comparison 2018 and 2021
+#### Age Comparison 2018 to 2021
 This summary table illustrates the different age ditribution for 2018 and 2021 surveys. The major difference is that there was greater representation of younger inviduals ranging from 18 to 23 in 2021 compared to 2018. The remaining age groups were not very different. 
 
 ```{r}
@@ -119,7 +119,8 @@ print(age_summary_combined)
 knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
 
 ```
-#### Education Comparison 2018 and 2021
+#### Education Comparison 2018 to 2021
+This table illustrates respondant education level in 2018 and 2021 respectively. Please note, the categories of education level are different for 2018 and 2021 as these were different surveys and categories were updated in 2021. Despite this, we are still able to make comparisons. Individuals with high school diplomas or less account for 9 for 2018 and 38 for 2021 (addition of less than highs school and high school or equivalent categories). This could indicate that the younger population was included more in the 2021 suvey or that less education individuals were surveyed. Additionally, its not super clear howver those with a post graduate or professional degree accounted for 29 percent in 2018 and 35 percent in 2021. This illustrates that more educated inviduals responded to the 2021 survey.
 ```{r}
 print(education_summary_combined)
 ```
@@ -138,6 +139,13 @@ print(education_summary_combined)
 knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.png"))
 
 ```
+#### Extent Feel Informed Comparison 2018 to 2021
+This table illustrates the self-reported level of extent inviduals feel informed about climate change and climate action for 2018 and 2021. In 2018, the large marjority of individuals say they are very informed with 60 percent and the follwoign category is not very informed with 27 percent. In 2021, The majority of inividuals also say they are very informed but to a lesser degree with 48 percent and this is closely followed by only a little informed with 37 percent. There is a trend that invidiusls in 2018 reported greater levels of knowldege about climate change whereas 2021 illstrates a more even split between very informed and only little informed, portraying that fewer individuals have adequate knowledge about climate change. 
+
+```{r}
+print(informed_summary_combined)
+```
+
 
 ### Best Mode of Delivery
 The analysis of the best method for delivering climate change information portrayed in @fig-four revealed that the majority of individuals in the 2018 dataset preferred receiving information firstly from advertising campaigns with about 55 percent, newsletters with about 52 percent, followed by the toronto website wiht about 46 percent. On the other side of the spectrum, few said they were uninterested in receiving climate action information  with about 5 percent, about 12 percent indicated twitter and then 17 percent mentioned instagram. Overall social media platforms Facebook, Instagram and Twtitter were less popular methods of communciation. This could be because the survey only included individals over the age of 18. Moreover, the median sample was in the 40s. 
@@ -153,6 +161,14 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 
 
 ```
+
+#### Method of Communicaton Comparison 2018 to 2021
+This table compares responses from 2018 and 2021 surverys regarding the best method of delivering information on climate change and climate action. Aside from the additon of four options to the 2021 survey, both surveys questions are the same. The leading category for 2018 is advertising campaigns with 55 percent, closely followed by newsletter emails with 52 percent and the Toronto website with 46. The 2021 survey illustrates a consistent trend with the same platforms as the top method of delivering information, specifically the Toronto website with 44 percent, then enewsletter emails with 43 percent and advertising campains at 42 percent. These top methods of communciation are more evenly spread out than the 2018 survey results. Social media platforms namely twitter, facebook and instagram all increased in the 2021 survey. Notable decreases in term of percentage from 2018 to 2021 include events, enewsletter emails, advertising campaigns, brochures and pamphlets. The new category of BetterHomesTO.ca webiste accounts for 15 percent of votes for the 2021 survey. 
+
+```{r}
+print(communication_summary_combined_table)
+```
+
 
 
 # Model {#sec-model}

@@ -541,3 +541,147 @@ education_summary_combined <- tt(age_summary_combined)
 
 # print table
 education_summary_combined
+
+
+## Informed 
+
+# Load the 2018 and 2021 Extent Informed summary tables from Parquet files
+informed_summary_18 <- read_parquet(here("data/03-figures_data", "informed_summary_2018_table.parquet"))
+informed_summary_21 <- read_parquet(here("data/03-figures_data", "informed_summary_2021_table.parquet"))
+
+# Rename columns for clarity
+colnames(informed_summary_18) <- c("Extent Informed (2018)", "2018 (%)")
+colnames(informed_summary_21) <- c("Extent Informed (2021)", "2021 (%)")
+
+# Specify the desired order for the 2018 Extent Informed categories
+desired_order_18 <- c("Extremely informed", "Very informed", "Not very informed", "Not at all informed")
+
+# Reorder the 2018 Extent Informed categories based on the specified order
+informed_summary_18 <- informed_summary_18 %>%
+  mutate(`Extent Informed (2018)` = factor(`Extent Informed (2018)`, levels = desired_order_18)) %>%
+  arrange(`Extent Informed (2018)`)
+
+# Create a full join using row numbers to align both years (no missing values)
+informed_summary_combined <- full_join(
+  informed_summary_18 %>% mutate(RowNum = row_number()),
+  informed_summary_21 %>% mutate(RowNum = row_number()),
+  by = "RowNum"
+) %>%
+  select(-RowNum)  # Drop the helper column
+
+# Convert factor columns to character to avoid NA assignment errors
+informed_summary_combined <- informed_summary_combined %>%
+  mutate(across(everything(), as.character))
+
+# Replace NAs with empty strings to leave rows empty
+informed_summary_combined[is.na(informed_summary_combined)] <- ""
+
+# Render the combined table using tinytable
+informed_summary_combined_table <- tt(informed_summary_combined)
+
+# Print the table
+print(informed_summary_combined_table)
+
+# Save the combined table as a Parquet file
+write_parquet(informed_summary_combined, here("data/03-figures_data", "informed_summary_combined_table.parquet"))
+
+
+
+
+## Communication
+# Load the 2018 and 2021 Communication summary tables from Parquet files
+communication_summary_18 <- read_parquet(here("data/03-figures_data", "communication_summary_2018_table.parquet"))
+communication_summary_21 <- read_parquet(here("data/03-figures_data", "communication_summary_2021_table.parquet"))
+
+# Rename columns for clarity
+colnames(communication_summary_18) <- c("Communication Method_2018", "Percentage_2018")
+colnames(communication_summary_21) <- c("Communication Method_2021", "Percentage_2021")
+
+# Reorder the 2018 communication methods (if needed)
+# Specify the desired order for the 2018 communication methods
+desired_order_18 <- c(
+  "Toronto.ca website",
+  "Events",
+  "Twitter",
+  "Facebook",
+  "Instagram",
+  "Enewsletter / email",
+  "Councillor communication",
+  "Advertising campaigns",
+  "Brochures / Pamphlets",
+  "Other",
+  "Not interested"
+)
+
+# Reorder the 2018 communication methods based on the specified order
+communication_summary_18 <- communication_summary_18 %>%
+  mutate(`Communication Method_2018` = factor(`Communication Method_2018`, levels = desired_order_18)) %>%
+  arrange(`Communication Method_2018`)
+
+# Rename categories for 2021 Communication Methods
+# Define the mapping for 2021 communication methods
+communication_method_rename_map_21 <- list(
+  "City of Toronto events" = "Events",
+  "City of Toronto e-newsletters / email" = "Enewsletter / email",
+  "Councillor e-newsletters" = "Councillor communication",
+  "Printed or online brochures, pamphlets" = "Brochures / Pamphlets",
+  "Other" = "Other Methods",
+  "Not interested in receiving information" = "Not interested",
+  "Other Methods" = "Other"
+)
+
+# Apply renaming based on the mapping for 2021
+communication_summary_21 <- communication_summary_21 %>%
+  mutate(`Communication Method_2021` = recode(`Communication Method_2021`, !!!communication_method_rename_map_21))
+
+# Specify the desired order for the 2021 communication methods
+desired_order_21 <- c(
+  "Toronto.ca website",
+  "Events",
+  "Twitter",
+  "Facebook",
+  "Instagram",
+  "Enewsletter / email",
+  "Councillor communication",
+  "Advertising campaigns",
+  "Brochures / Pamphlets",
+  "Other Methods",
+  "Not interested",
+  "BetterHomesTO.ca website",
+  "Mail/ letter",
+  "Nothing",
+  "Don't know"
+)
+
+# Reorder the 2021 communication methods based on the specified order
+communication_summary_21 <- communication_summary_21 %>%
+  mutate(`Communication Method_2021` = factor(`Communication Method_2021`, levels = desired_order_21)) %>%
+  arrange(`Communication Method_2021`)
+
+# Create a full join using row numbers to align both years even with different categories
+communication_summary_combined <- full_join(
+  communication_summary_18 %>% mutate(RowNum = row_number()),
+  communication_summary_21 %>% mutate(RowNum = row_number()),
+  by = "RowNum"
+) %>%
+  select(-RowNum)  # Drop the helper column
+
+# Convert factor columns to character to avoid NA assignment errors
+communication_summary_combined <- communication_summary_combined %>%
+  mutate(across(everything(), as.character))
+
+# Replace NAs with empty strings to leave rows empty
+communication_summary_combined[is.na(communication_summary_combined)] <- ""
+
+# Render the combined table using tinytable (4 columns: Communication Method_2018, Percentage_2018, Communication Method_2021, Percentage_2021)
+communication_summary_combined_table <- tt(communication_summary_combined, 
+                                           row.names = FALSE, 
+                                           col.names = c("2018 Communication Method", "2018 Percentage", "2021 Communication Method", "2021 Percentage"), 
+                                           escape = FALSE)
+
+# Print the table
+print(communication_summary_combined_table)
+
+# Save the combined table as a new Parquet file
+write_parquet(communication_summary_combined, here("data/03-figures_data", "communication_summary_combined_renamed_table.parquet"))
+
