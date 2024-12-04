@@ -9,6 +9,8 @@
 
 #### Workspace setup ####
 
+#### Workspace setup ####
+
 # load packages
 library(tidyverse)
 library(rpart)
@@ -18,7 +20,6 @@ library(arrow)
 
 # Set seed for reproducibility
 set.seed(853)
-
 
 #### Read data ####
 climate_data <- read_csv(here::here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv"))
@@ -32,9 +33,13 @@ generate_model <- function(target_var, train_data, test_data, model_name) {
   # Construct file path for saving the plot
   png_file_path <- file.path(here::here("data/04-model_data"), paste0(model_name, "_tree.png"))
   
+  # Adjust PNG size to avoid cutting off the tree
+  png(png_file_path, width = 3200, height = 1500, res = 150)  # Increase size and resolution
+  
   # Plot the decision tree and save the plot as a .png
-  png(png_file_path)
   plot(as.party(tree), gp = gpar(cex = 1), type = "simple")
+  
+  # Close the device after saving the plot
   dev.off()
   
   # Make predictions on the test dataset

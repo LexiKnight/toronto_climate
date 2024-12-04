@@ -24,10 +24,8 @@ install.packages(c(
   "forcats",    # For reordering factor levels
   "kableExtra", # For rendering tables with extra features
   "broom",      # For tidying model output
-  "testthat"    # For testing data
+  "testthat",   # For testing data
+  "rpart",      # For running the model
+  "partykit"    # For running the model
+  
 ))
-
-
-
-install.packages("rpart")
-install.packages("partykit")
