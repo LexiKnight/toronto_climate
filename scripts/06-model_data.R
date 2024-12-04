@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Constructs a linear regression model for predicting likelihood of taking climate action based on age and education. 
+# Purpose: Constructs a  decision tree model for predicting likelihood of taking climate action based on age and education. 
 # Author: Lexi Knight
 # Date: 30 November 2024
 # Contact: lexi.knight@mail.utoronto.ca
@@ -11,82 +11,69 @@
 
 # load packages
 library(tidyverse)
-library(readr)
-library(here)
-library(arrow)
 library(rpart)
 library(partykit)
+library(here)
+library(arrow)
 
-# set seed for reproducibility
-set.seed(123)
+# Set seed for reproducibility
+set.seed(853)
+
 
 #### Read data ####
-# Load your analysis data
 climate_data <- read_csv(here::here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv"))
 
-# List to store model names and accuracies
-model_accuracies <- data.frame(Model = character(), Accuracy = numeric(), stringsAsFactors = FALSE)
-
-# Helper function to calculate accuracy
-calculate_accuracy <- function(predictions, actual_values) {
-  confusion_matrix <- table(predictions, actual_values)
+# Function to generate decision trees, predictions, confusion matrix, and accuracy
+generate_model <- function(target_var, train_data, test_data, model_name) {
+  # Generate decision tree
+  formula <- as.formula(paste(target_var, "~ age + highest_level_educ"))
+  tree <- rpart(formula, data = train_data)
+  
+  # Construct file path for saving the plot
+  png_file_path <- file.path(here::here("data/04-model_data"), paste0(model_name, "_tree.png"))
+  
+  # Plot the decision tree and save the plot as a .png
+  png(png_file_path)
+  plot(as.party(tree), gp = gpar(cex = 1), type = "simple")
+  dev.off()
+  
+  # Make predictions on the test dataset
+  predictions <- predict(tree, newdata = test_data, type = "class")
+  
+  # Generate the confusion matrix
+  confusion_matrix <- table(predictions, test_data[[target_var]])
+  
+  # Calculate and return accuracy
   accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix) * 100
   return(accuracy)
 }
 
-# Function to train and evaluate models
-train_and_evaluate_model <- function(target_var, model_name) {
-  # 80-20 Train-Test Split
+# Create a data frame to store the model names and their corresponding accuracies
+model_results <- data.frame(Model = character(0), Accuracy = numeric(0))
+
+# List of target variables and corresponding model names
+target_vars <- c("likelihood_home_improvement", "likelihood_reduce_hydro", "likelihood_minimize_car", 
+                 "likelihood_vehicle_electric", "likelihood_protein_alternative", "likelihood_reduce_waste", 
+                 "likelihood_green_product", "likelihood_short_distance", "likelihood_sort_waste")
+
+# Loop through each model, split the data, generate the model, and store the accuracy
+for (target_var in target_vars) {
+  # Train-test split
   train_data <- sample_n(climate_data, size = round(0.8 * nrow(climate_data)))
   test_data <- anti_join(climate_data, train_data)
   
-  # Generate a decision tree model
-  model <- rpart(as.formula(paste(target_var, "~ age + highest_level_educ")), data = train_data)
+  # Model name (from target variable), removing the "likelihood_" part
+  model_name <- gsub("likelihood_", "", target_var)
   
-  # Make predictions on the test dataset
-  predictions <- predict(model, newdata = test_data, type = "class")
+  # Generate model and calculate accuracy
+  accuracy <- generate_model(target_var, train_data, test_data, model_name)
   
-  # Calculate accuracy
-  accuracy <- calculate_accuracy(predictions, test_data[[target_var]])
-  
-  # Save model's accuracy in the list
-  model_accuracies <<- rbind(model_accuracies, data.frame(Model = model_name, Accuracy = accuracy))
-  
-  # Optionally, print the accuracy
-  cat(paste("Accuracy of", model_name, "Model:", round(accuracy, 2), "%\n"))
+  # Store the results in the data frame
+  model_results <- rbind(model_results, data.frame(Model = model_name, Accuracy = accuracy))
 }
 
-# Evaluate each model
+# Print the results table
+print(model_results)
 
-# Home Improvement Likelihood Model
-train_and_evaluate_model("likelihood_home_improvement", "Home Improvement Likelihood")
-
-# Reduce Hydro Likelihood Model
-train_and_evaluate_model("likelihood_reduce_hydro", "Reduce Hydro Likelihood")
-
-# Minimize Car Likelihood Model
-train_and_evaluate_model("likelihood_minimize_car", "Minimize Car Likelihood")
-
-# Electric Vehicle Likelihood Model
-train_and_evaluate_model("likelihood_vehicle_electric", "Electric Vehicle Likelihood")
-
-# Protein Alternative Likelihood Model
-train_and_evaluate_model("likelihood_protein_alternative", "Protein Alternative Likelihood")
-
-# Waste Reduction Likelihood Model
-train_and_evaluate_model("likelihood_reduce_waste", "Waste Reduction Likelihood")
-
-# Green Product Likelihood Model
-train_and_evaluate_model("likelihood_green_product", "Green Product Likelihood")
-
-# Short Distance Likelihood Model
-train_and_evaluate_model("likelihood_short_distance", "Short Distance Likelihood")
-
-# Sort Waste Likelihood Model
-train_and_evaluate_model("likelihood_sort_waste", "Sort Waste Likelihood")
-
-# Print the summary table of model accuracies
-print(model_accuracies)
-
-# Save the accuracy table as a CSV or a report
-write.csv(model_accuracies, here::here("data/02-analysis_data/model_accuracies.csv"), row.names = FALSE)
+# Save the results as a CSV in the correct location
+write_csv(model_results, here::here("data/04-model_data/model_accuracies.csv"))
