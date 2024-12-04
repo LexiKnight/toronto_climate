@@ -265,6 +265,29 @@ We will estimate the model parameters using a standard linear regression approac
 
 # Results
 
+## Model Takeaways
+summary table age and education in predicting likelihood of taking climate actions
+the accuracy of the models prediction matches the genuine data
+TODO 
+```{r}
+#| warning: false
+#| echo: false
+#| message: false
+#| label: table-five
+#| fig-cap: TODO
+
+# Load the model accuracy data from the saved CSV
+model_accuracies <- read.csv(here::here("data/02-analysis_data/model_accuracies.csv"))
+
+# Round numeric columns to whole numbers
+model_accuracies[] <- lapply(model_accuracies, function(x) if(is.numeric(x)) round(x) else x)
+
+# Check the first few rows of the data to ensure it loaded and rounded correctly
+head(model_accuracies)
+
+
+```
+
 ## Likelihood taking action by age
 @fig-six shows the relationship between age and the likelihood of engaging in various climate-related actions. The x-axis represents the age groups, and the y-axis indicates the percentage of respondents reporting different likelihood levels, from "Already doing this" to "Very unlikely." The trend lines across each action show how engagement varies by age.
 

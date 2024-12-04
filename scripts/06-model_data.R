@@ -17,164 +17,76 @@ library(arrow)
 library(rpart)
 library(partykit)
 
+# set seed for reproducibility
+set.seed(123)
+
 #### Read data ####
 # Load your analysis data
 climate_data <- read_csv(here::here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv"))
 
-#  confusion matrix allows us to understand our predictions and how well the model works. 
-# for the summary table in results
-# assess using the confusion matrix and chat to end up with 
-# look at accuracy 
+# List to store model names and accuracies
+model_accuracies <- data.frame(Model = character(), Accuracy = numeric(), stringsAsFactors = FALSE)
 
-# Required fixes
-# NA values in data
-# how to save - what goes where? scripts, paper model section vs. summary table for results 
+# Helper function to calculate accuracy
+calculate_accuracy <- function(predictions, actual_values) {
+  confusion_matrix <- table(predictions, actual_values)
+  accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix) * 100
+  return(accuracy)
+}
 
+# Function to train and evaluate models
+train_and_evaluate_model <- function(target_var, model_name) {
+  # 80-20 Train-Test Split
+  train_data <- sample_n(climate_data, size = round(0.8 * nrow(climate_data)))
+  test_data <- anti_join(climate_data, train_data)
+  
+  # Generate a decision tree model
+  model <- rpart(as.formula(paste(target_var, "~ age + highest_level_educ")), data = train_data)
+  
+  # Make predictions on the test dataset
+  predictions <- predict(model, newdata = test_data, type = "class")
+  
+  # Calculate accuracy
+  accuracy <- calculate_accuracy(predictions, test_data[[target_var]])
+  
+  # Save model's accuracy in the list
+  model_accuracies <<- rbind(model_accuracies, data.frame(Model = model_name, Accuracy = accuracy))
+  
+  # Optionally, print the accuracy
+  cat(paste("Accuracy of", model_name, "Model:", round(accuracy, 2), "%\n"))
+}
 
+# Evaluate each model
 
-# Model for home improvement likelihood hil
-# creating an 80 20 train test split cause cant assess our model on the same data that it is trained on. 
-hil_train <- sample_n (climate_data, size = round(0.8*nrow(climate_data)))
-hil_test <- anti_join(climate_data, hil_train)
+# Home Improvement Likelihood Model
+train_and_evaluate_model("likelihood_home_improvement", "Home Improvement Likelihood")
 
-# generating a decision tree to predict the home improvement likelihood based on age and education level
-hilTree <- rpart(likelihood_home_improvement ~ age + highest_level_educ, hil_train)
-plot(as.party(hilTree), gp = gpar(cex=1), type="simple")
+# Reduce Hydro Likelihood Model
+train_and_evaluate_model("likelihood_reduce_hydro", "Reduce Hydro Likelihood")
 
-# creating a confusion matrix based on our testing data
-predictions <- predict(hilTree, newdata=hil_test, type="class")
-confusion_matrix1 <- table(predictions, hil_test$likelihood_home_improvement)
-print(confusion_matrix1)
+# Minimize Car Likelihood Model
+train_and_evaluate_model("likelihood_minimize_car", "Minimize Car Likelihood")
 
-# save as parquet
-write_parquet(climate_data_cleaned, here::here("data/analysis_data/TODO.parquet"))
+# Electric Vehicle Likelihood Model
+train_and_evaluate_model("likelihood_vehicle_electric", "Electric Vehicle Likelihood")
 
+# Protein Alternative Likelihood Model
+train_and_evaluate_model("likelihood_protein_alternative", "Protein Alternative Likelihood")
 
+# Waste Reduction Likelihood Model
+train_and_evaluate_model("likelihood_reduce_waste", "Waste Reduction Likelihood")
 
-# Model for reduce hydro likelihood rhl
-# 80 20 train test split 
-rhl_train <- sample_n (climate_data, size = round(0.8*nrow(climate_data)))
-rhl_test <- anti_join(climate_data, rhl_train)
+# Green Product Likelihood Model
+train_and_evaluate_model("likelihood_green_product", "Green Product Likelihood")
 
-# generating decision tree to predict the reduction of hydro likelihood based on age and education level
-rhlTree <- rpart(likelihood_reduce_hydro ~ age + highest_level_educ, rhl_train)
-plot(as.party(rhlTree), gp = gpar(cex=1), type="simple")
+# Short Distance Likelihood Model
+train_and_evaluate_model("likelihood_short_distance", "Short Distance Likelihood")
 
-# creating a confusion matrix based on our testing data
-predictions <- predict(rhlTree, newdata=rhl_test, type="class")
-confusion_matrix2 <- table(predictions, rhl_test$likelihood_reduce_hydro)
-print(confusion_matrix2)
+# Sort Waste Likelihood Model
+train_and_evaluate_model("likelihood_sort_waste", "Sort Waste Likelihood")
 
+# Print the summary table of model accuracies
+print(model_accuracies)
 
-# Model for minimize car likelihood mcl
-# TODO: NOT WORKING (small plot)
-# 80 20 train test split 
-mcl_train <- sample_n (climate_data, size = round(0.8*nrow(climate_data)))
-mcl_test <- anti_join(climate_data, mcl_train)
-
-# generating decision tree to predict the minimizing car likelihood based on age and education level
-mclTree <- rpart(likelihood_minimize_car ~ age + highest_level_educ, mcl_train)
-plot(as.party(mclTree), gp = gpar(cex=1), type="simple")
-
-# creating a confusion matrix based on our testing data
-predictions <- predict(mclTree, newdata=mcl_test, type="class")
-confusion_matrix3 <- table(predictions, mcl_test$likelihood_minimize_car)
-print(confusion_matrix3)
-
-
-
-# Model for electric vehicle likelihood evl
-# 80 20 train test split 
-evl_train <- sample_n (climate_data, size = round(0.8*nrow(climate_data)))
-evl_test <- anti_join(climate_data, evl_train)
-
-# generating decision tree to predict the electric vehicle likelihood based on age and education level
-evlTree <- rpart(likelihood_vehicle_electric ~ age + highest_level_educ, evl_train)
-plot(as.party(evlTree), gp = gpar(cex=1), type="simple")
-
-# creating a confusion matrix based on our testing data
-predictions <- predict(evlTree, newdata=evl_test, type="class")
-confusion_matrix4 <- table(predictions, evl_test$likelihood_vehicle_electric)
-print(confusion_matrix4)
-
-
-
-# Model for protein alternative likelihood pal
-# 80 20 train test split 
-pal_train <- sample_n (climate_data, size = round(0.8*nrow(climate_data)))
-pal_test <- anti_join(climate_data, pal_train)
-
-# generating decision tree to predict the protein alternative likelihood based on age and education level
-palTree <- rpart(likelihood_protein_alternative ~ age + highest_level_educ, pal_train)
-plot(as.party(palTree), gp = gpar(cex=1), type="simple")
-
-# creating a confusion matrix based on our testing data
-predictions <- predict(palTree, newdata=pal_test, type="class")
-confusion_matrix5 <- table(predictions, pal_test$likelihood_protein_alternative)
-print(confusion_matrix5)
-
-
-
-# Model for waste reduciton likelihood wrl
-# 80 20 train test split 
-wrl_train <- sample_n (climate_data, size = round(0.8*nrow(climate_data)))
-wrl_test <- anti_join(climate_data, wrl_train)
-
-# generating decision tree to predict the waste reduction likelihood based on age and education level
-wrlTree <- rpart(likelihood_reduce_waste ~ age + highest_level_educ, wrl_train)
-plot(as.party(wrlTree), gp = gpar(cex=1), type="simple")
-
-# creating a confusion matrix based on our testing data
-predictions <- predict(wrlTree, newdata=wrl_test, type="class")
-confusion_matrix6 <- table(predictions, wrl_test$likelihood_reduce_waste)
-print(confusion_matrix6)
-
-
-
-# Model for green product likelihood gpl
-# TO DO: DOESNT WORK
-# 80 20 train test split 
-gpl_train <- sample_n (climate_data, size = round(0.8*nrow(climate_data)))
-gpl_test <- anti_join(climate_data, gpl_train)
-
-# generating decision tree to predict the green product likelihood based on age and education level
-gplTree <- rpart(likelihood_green_product ~ age + highest_level_educ, gpl_train)
-plot(as.party(gplTree), gp = gpar(cex=1), type="simple")
-
-# creating a confusion matrix based on our testing data
-predictions <- predict(gplTree, newdata=gpl_test, type="class")
-confusion_matrix7 <- table(predictions, gpl_test$likelihood_green_produt)
-print(confusion_matrix7)
-
-
-
-# Model for short distance likelihood sdl
-# 80 20 train test split 
-sdl_train <- sample_n (climate_data, size = round(0.8*nrow(climate_data)))
-sdl_test <- anti_join(climate_data, sdl_train)
-
-# generating decision tree to predict the short distance likelihood based on age and education level
-sdlTree <- rpart(likelihood_short_distance ~ age + highest_level_educ, sdl_train)
-plot(as.party(sdlTree), gp = gpar(cex=1), type="simple")
-
-# creating a confusion matrix based on our testing data
-predictions <- predict(sdlTree, newdata=sdl_test, type="class")
-confusion_matrix8 <- table(predictions, sdl_test$likelihood_short_distance)
-print(confusion_matrix8)
-
-
-
-# Model for sort waste likelihood swl
-# 80 20 train test split 
-swl_train <- sample_n (climate_data, size = round(0.8*nrow(climate_data)))
-swl_test <- anti_join(climate_data, swl_train)
-
-# generating decision tree to predict the sort waste likelihood based on age and education level
-swlTree <- rpart(likelihood_sort_waste ~ age + highest_level_educ, swl_train)
-plot(as.party(swlTree), gp = gpar(cex=1), type="simple")
-
-# creating a confusion matrix based on our testing data
-predictions <- predict(swlTree, newdata=swl_test, type="class")
-confusion_matrix9 <- table(predictions, swl_test$likelihood_sort_waste)
-print(confusion_matrix9)
-
+# Save the accuracy table as a CSV or a report
+write.csv(model_accuracies, here::here("data/02-analysis_data/model_accuracies.csv"), row.names = FALSE)
