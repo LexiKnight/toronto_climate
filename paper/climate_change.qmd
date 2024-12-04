@@ -32,7 +32,7 @@ The primary data source for this project is the Climate Perception Study dataset
 ## Software and R-packages
 This project was conducted using the statistical software `R` [@citeR]. Data cleaning and manipulation were primarily facilitated by the `tidyverse` package [@tidyverse], which encompasses various essential tools. Within this suite, `dplyr` [@dplyr] was employed for data manipulation tasks such as filtering, summarizing, and joining datasets, while `readr` [@readr] provided efficient functionality for reading and writing rectangular text data. Specifically, the `write_csv` function from `tidyverse` was used to save the raw 2018 dataset. To handle Excel files, we incorporated the `httr` package for downloading files directly from online sources and `readxl` [@readxl], which enabled us to read Excel files seamlessly. Additionally, the `openxlsx` package was utilized to create a new Excel workbook with multiple sheets, allowing us to store the 2021 dataset in a structured format.
 
-The `arrow` package was employed to handle large datasets efficiently, ensuring smooth data processing, while `forcats` was used for reordering factor levels to facilitate more insightful analyses and visualizations. In terms of data tidying, the `tidyr` and `stringr` packages allowed us to reshape and clean the data by managing character strings and handling missing values. For the final documentation and report generation, the `knitr` package was instrumental in integrating R code and outputs into a cohesive and reproducible report format. This suite of R packages collectively enabled us to conduct thorough data management, manipulation, and analysis, ultimately contributing to the successful completion of the project.
+The `arrow` package was employed to handle large datasets efficiently, ensuring smooth data processing, while `forcats` was used for reordering factor levels to facilitate more insightful analyses and visualizations. In terms of data tidying, the `tidyr` and `stringr` packages allowed us to reshape and clean the data by managing character strings and handling missing values. The [@rpart2024] and [@partykit2024] were used in to make the models. For the final documentation and report generation, the `knitr` package was instrumental in integrating R code and outputs into a cohesive and reproducible report format. This suite of R packages collectively enabled us to conduct thorough data management, manipulation, and analysis, ultimately contributing to the successful completion of the project. 
 
 ## Methodology 
 ### Data Collection
@@ -77,14 +77,24 @@ knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 #| echo: false
 #| message: false
 #| label: table-one
-#| fig-cap: "Comparison of Age Distribution Between 2018 and 2021 Surveys: This table highlights the age distribution of survey respondents in 2018 and 2021. Notable differences include a higher representation of individuals aged 18–23 in 2021 compared to 2018, while the distribution across other age groups remained relatively consistent between the two years."
+#| fig-cap: "This table highlights the age distribution of survey respondents in 2018 and 2021."
+
+# load libraries 
+library(kableExtra)
+library(knitr)
+library(here)
+library(dplyr)
+
 
 # Read the cleaned CSV into a data frame
 age_summary_combined <- read.csv(here("data/03-figures_data", "age_summary_combined.csv"))
 
+# Rename columns to "Age Group", "2018 Percentage", and "2021 Percentage"
+colnames(age_summary_combined) <- c("Age Group", "2018 Percentage", "2021 Percentage")
+
 # Print the cleaned table (using kable for styling)
 age_summary_combined %>%
-  kbl(caption = "Age Distribution Comparison for 2018 and 2021") %>%
+  kbl() %>%
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
@@ -109,23 +119,23 @@ knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png")
 #| warning: false
 #| echo: false
 #| message: false
-# #| label: table-education
-# #|  fig-cap: TODO
+#| label: table-two
+#| fig-cap: This table highlights the education distribution of survey respondents in 2018 and 2021."
 
 # Load necessary libraries
-# library(tinytable)
+library(tinytable)
 
 # Read the CSV into a data frame
-# education_summary_combined <- read.csv(here("data/03-figures_data", "education_summary_combined.csv"))
+education_summary_combined <- read.csv(here("data/03-figures_data", "education_summary_combined.csv"))
 
-# Remove the leading 'X' from column names
-# colnames(education_summary_combined) <- gsub("^X", "", colnames(education_summary_combined))
+# Rename columns 
+colnames(education_summary_combined) <- c("Education Level ", "2018 Percentage", "Education Level", "2021 Percentage")
 
 # Convert the data frame to tinytable
-# education_summary_combined_tiny <- tt(education_summary_combined)
+education_summary_combined_tiny <- tt(education_summary_combined)
 
 # Print the tinytable
-# education_summary_combined_tiny
+education_summary_combined_tiny
 
 
 ```
@@ -150,10 +160,28 @@ knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.p
 #| warning: false
 #| echo: false
 #| message: false
-# #| label: table-three
-# #| fig-cap: TODO
+#| label: table-three
+#| fig-cap: "This table highlights the extent feel informed distribution of survey respondents in 2018 and 2021."
 
-# print(informed_summary_combined)
+# Load libraries
+library(kableExtra)
+library(knitr)
+library(here)
+library(dplyr)    # For renaming columns
+library(arrow)    # For reading Parquet files
+
+# Read the Parquet file into a data frame
+informed_summary_combined <- arrow::read_parquet(here("data/03-figures_data", "informed_summary_combined_table.parquet"))
+
+# Rename columns
+colnames(informed_summary_combined) <- c("Extent Informed", "2018 Percentage", "Extent Informed", "2021 Percentage")
+
+# Print the table (using kable for styling)
+informed_summary_combined %>%
+  kbl() %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
+
+
 ```
 
 
@@ -180,10 +208,28 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 #| warning: false
 #| echo: false
 #| message: false
-# #| label: table-four
-# #| fig-cap: TODO
+#| label: table-four
+#| fig-cap: "This table highlights the prefered method of communication of survey respondents in 2018 and 2021."
 
-# print(communication_summary_combined_table)
+# Load libraries
+library(kableExtra)
+library(knitr)
+library(here)
+library(dplyr)    # For renaming columns
+library(arrow)    # For reading Parquet files
+
+# Read the Parquet file into a data frame
+communication_summary_combined <- arrow::read_parquet(here("data/03-figures_data", "communication_summary_combined_table.parquet"))
+
+# Rename columns
+colnames(communication_summary_combined) <- c("Communication Method", "2018 Percentage", "Communication Method", "2021 Percentage")
+
+# Print the table (using kable for styling)
+communication_summary_combined %>%
+  kbl() %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
+
+
 ```
 ### Likelihood Taking Action
 #### Individual 2018
@@ -265,7 +311,6 @@ We fit nine separate probability tree models, one for each climate-friendly acti
 Each model is built using the same structure but predicts a different outcome variable. This approach allows us to analyze the specific impact of age and education on each climate-friendly action.
 
 ### Likelihood of investing in an electric or hybrid vehicle
-@model-one
 ```{r}
 #| warning: false
 #| echo: false
@@ -278,7 +323,6 @@ knitr::include_graphics(here::here("data/04-model_data/vehicle_electric_tree.png
 ```
 
 ### Likelihood of making home improvements
-@model-two
 ```{r}
 #| warning: false
 #| echo: false
@@ -291,7 +335,6 @@ knitr::include_graphics(here::here("data/04-model_data/home_improvement_tree.png
 ```
 
 ### Likelihood of adopting meat alternatives
-@model-three
 ```{r}
 #| warning: false
 #| echo: false
@@ -304,7 +347,6 @@ knitr::include_graphics(here::here("data/04-model_data/protein_alternative_tree.
 ```
 
 ### Likelihood of minimizing car use
-@model-four
 ```{r}
 #| warning: false
 #| echo: false
@@ -317,7 +359,6 @@ knitr::include_graphics(here::here("data/04-model_data/minimize_car_tree.png"))
 ```
 
 ### Likelihood of purchasing green products
-@model-five
 ```{r}
 #| warning: false
 #| echo: false
@@ -331,7 +372,6 @@ knitr::include_graphics(here::here("data/04-model_data/green_product_tree.png"))
 
 
 ### Likelihood of reducing hydro usage
-@model-six
 ```{r}
 #| warning: false
 #| echo: false
@@ -345,7 +385,6 @@ knitr::include_graphics(here::here("data/04-model_data/reduce_hydro_tree.png"))
 
 
 ###  Likelihood of reducing waste
-@model-seven
 ```{r}
 #| warning: false
 #| echo: false
@@ -359,7 +398,6 @@ knitr::include_graphics(here::here("data/04-model_data/reduce_waste_tree.png"))
 
 
 ###  Likelihood of sorting waste correctly
-@model-eight
 ```{r}
 #| warning: false
 #| echo: false
@@ -372,7 +410,6 @@ knitr::include_graphics(here::here("data/04-model_data/sort_waste_tree.png"))
 ```
 
 ###  Likelihood of walking or cycling shorter distances
-@model-nine
 ```{r}
 #| warning: false
 #| echo: false

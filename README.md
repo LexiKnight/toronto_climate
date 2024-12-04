@@ -23,8 +23,8 @@ The repo is structured as:
 -   `data/00-simulated_data`: Contains the simulated data based on climate change perspectives data obtained from OpenDataToronto.
 -   `data/01-raw_data`: Contains the original datasets from OpenDataToronto for 2018 and 2021.
 -   `data/02-analysis_data`: Contains the cleaned and processed datasets used for analysis.
--   `data/03-figures`: Contains the summary figures for 2018 and 2021.
--   `model`: Contains the fitted linear regression model.
+-   `data/03-figures_data`: Contains the summary figures for 2018 and 2021.
+-   `data/04-model_data`: Contains model figures and summary table for 2018..
 -   `other`: Contains relevant literature, details about interactions with LLMs (Large Language Models), and sketches.
 -   `paper`: Contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
 -   `scripts`: Contains the R scripts used to simulate, download, clean data, test, explore and model the data. 
