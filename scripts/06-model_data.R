@@ -7,7 +7,6 @@
 # Pre-requisites: complete 01-download_data.R and 03-clean_data.R in scripts folder in order to access data.
 
 
-#### Workspace setup ####
 
 #### Workspace setup ####
 
@@ -23,6 +22,25 @@ set.seed(853)
 
 #### Read data ####
 climate_data <- read_csv(here::here("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv"))
+
+#### Shorten education level names ####
+# Function to map long education names to shorter, more concise names
+shorten_education_levels <- function(education) {
+  case_when(
+    education == "High school or less" ~ "High School",
+    education == "Some community college, vocational, trade school" ~ "Some Community / Trade School",
+    education == "Completed community college, vocational, trade school" ~ "Community / Trade School",
+    education == "Some university" ~ "Some University",
+    education == "Completed undergraduate degree" ~ "Undergrad",
+    education == "Post graduate/professional school" ~ "Postgrad",
+    education == "Prefer not to answer" ~ "Pref no Answer",
+    TRUE ~ education # Default: keep original value if not matched
+  )
+}
+
+# Apply the function to shorten names in the dataset
+climate_data <- climate_data %>%
+  mutate(highest_level_educ = shorten_education_levels(highest_level_educ))
 
 # Function to generate decision trees, predictions, confusion matrix, and accuracy
 generate_model <- function(target_var, train_data, test_data, model_name) {
@@ -53,6 +71,7 @@ generate_model <- function(target_var, train_data, test_data, model_name) {
   return(accuracy)
 }
 
+#### Loop to create models for different target variables ####
 # Create a data frame to store the model names and their corresponding accuracies
 model_results <- data.frame(Model = character(0), Accuracy = numeric(0))
 

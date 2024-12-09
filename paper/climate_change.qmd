@@ -69,6 +69,8 @@ library(here)
 knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 
 ```
+\newpage
+
 #### Comparison 2018 to 2021
 @table-one illustrates the different age ditribution for 2018 and 2021 surveys. The major difference is that there was greater representation of younger inviduals ranging from 18 to 23 in 2021 compared to 2018. The remaining age groups were not very different. 
 
@@ -310,7 +312,20 @@ We fit nine separate probability tree models, one for each climate-friendly acti
 
 Each model is built using the same structure but predicts a different outcome variable. This approach allows us to analyze the specific impact of age and education on each climate-friendly action.
 
-### Likelihood of investing in an electric or hybrid vehicle
+### Decision Trees
+A decision tree is a machine learning model used to make predictions by recursively splitting data into subsets based on specific conditions of the predictor variables. It is structured like a tree, where the top node is the root node, representing the entire dataset, and subsequent nodes represent splits based on decision rules. The branches indicate the outcomes of these rules, and the leaf nodes (terminal nodes) provide the final prediction for each subset.
+
+Each split is determined by the predictor variable most strongly associated with the target outcome, maximizing predictive accuracy. A split separates individuals by age or educational level. The prediction in each terminal node includes the majority class (e.g., "Very likely") and additional information such as sample size (n) and error percentage. The error percentage reflects the proportion of cases in that node misclassified by the model. A higher error percentage indicates greater uncertainty or variability within the group, while a lower error percentage suggests a more precise classification.
+
+#### Likelihood of investing in an electric or hybrid vehicle
+The decision tree predicts individuals’ likelihood to invest in an electric or hybrid vehicle based on their highest level of education and age. The model identifies highest level of education as the most important variable for the initial split. At the root node, individuals are divided into two groups: those with "Some Community/Trade School" or "Some University" education and those with other educational backgrounds such as "High School," "Undergrad," "Postgrad," or "Prefer Not to Answer."
+
+For individuals with "Some Community/Trade School" or "Some University" education, the tree predicts that they are "Very likely" to invest, with a sample size of 47 and an error rate of 63.8%. This indicates moderate variability within this group.
+
+For those with other educational backgrounds, further splits are based on age. Younger individuals (below 38.5 years) are segmented further. A subset aged under 34.5 years is split into two groups, with one group (n = 10) being "Very likely" to invest, with a lower error rate of 30%. The other group is classified as "Somewhat likely," with a higher error rate of 60.7%. Older individuals (38.5 years or older) are less likely to invest. For instance, those aged above 68.5 years are predicted as "Very unlikely" with a sample size of 18 and an error rate of 61.1%, while those aged between 34.5 and 68.5 years are divided into "Somewhat unlikely" or "Somewhat likely" categories.
+
+Overall, the decision tree reveals distinct patterns where educational attainment and age interact to predict investment likelihood, with younger individuals and those with less formal education being more likely to invest.
+
 ```{r}
 #| warning: false
 #| echo: false
@@ -322,7 +337,12 @@ knitr::include_graphics(here::here("data/04-model_data/vehicle_electric_tree.png
 
 ```
 
-### Likelihood of making home improvements
+#### Likelihood of making home improvements
+The decision tree classifies individuals based on their likelihood of making home improvements to minimize climate change, using age and educational level as predictor variables. The root node splits the data at age 35.5, indicating that age is the most influential factor in determining climate-related home improvement behavior. Individuals aged 36 years or older are predominantly classified as "Already doing this or have done this," with a large sample size (n = 223) but a moderate error rate of 59.6%, reflecting variability in this group.
+
+For individuals younger than 36 years, the tree introduces education as the next important factor. Those with higher educational attainment ("Community/Trade School," "Some University," or "Postgraduate") are classified as "Very likely" to make climate-conscious home improvements (n = 40) with an error rate of 55.0%. Conversely, individuals with lower education levels, such as "High School" or "Some Community/Trade School," are classified as "Somewhat likely" (n = 46) but have a higher error rate of 67.4%, indicating less predictive certainty. A smaller subset of younger individuals with similar educational attainment is classified as "Somewhat likely" (n = 10) with a lower error rate of 40.0%, suggesting higher confidence in this classification. The decision tree highlights clear trends based on age and education, with older age groups and higher educational attainment linked to greater engagement in making home improvements.
+
+
 ```{r}
 #| warning: false
 #| echo: false
@@ -334,7 +354,7 @@ knitr::include_graphics(here::here("data/04-model_data/home_improvement_tree.png
 
 ```
 
-### Likelihood of adopting meat alternatives
+#### Likelihood of adopting meat alternatives
 ```{r}
 #| warning: false
 #| echo: false
@@ -346,7 +366,7 @@ knitr::include_graphics(here::here("data/04-model_data/protein_alternative_tree.
 
 ```
 
-### Likelihood of minimizing car use
+#### Likelihood of minimizing car use
 ```{r}
 #| warning: false
 #| echo: false
@@ -358,7 +378,7 @@ knitr::include_graphics(here::here("data/04-model_data/minimize_car_tree.png"))
 
 ```
 
-### Likelihood of purchasing green products
+#### Likelihood of purchasing green products
 ```{r}
 #| warning: false
 #| echo: false
@@ -371,7 +391,7 @@ knitr::include_graphics(here::here("data/04-model_data/green_product_tree.png"))
 ```
 
 
-### Likelihood of reducing hydro usage
+#### Likelihood of reducing hydro usage
 ```{r}
 #| warning: false
 #| echo: false
@@ -384,7 +404,7 @@ knitr::include_graphics(here::here("data/04-model_data/reduce_hydro_tree.png"))
 ```
 
 
-###  Likelihood of reducing waste
+####  Likelihood of reducing waste
 ```{r}
 #| warning: false
 #| echo: false
@@ -397,7 +417,7 @@ knitr::include_graphics(here::here("data/04-model_data/reduce_waste_tree.png"))
 ```
 
 
-###  Likelihood of sorting waste correctly
+####  Likelihood of sorting waste correctly
 ```{r}
 #| warning: false
 #| echo: false
@@ -409,7 +429,7 @@ knitr::include_graphics(here::here("data/04-model_data/sort_waste_tree.png"))
 
 ```
 
-###  Likelihood of walking or cycling shorter distances
+####  Likelihood of walking or cycling shorter distances
 ```{r}
 #| warning: false
 #| echo: false
@@ -453,10 +473,18 @@ head(model_accuracies)
 @fig-six shows the relationship between age and the likelihood of engaging in various climate-related actions. The x-axis represents the age groups, and the y-axis indicates the percentage of respondents reporting different likelihood levels, from "Already doing this" to "Very unlikely." The trend lines across each action show how engagement varies by age.
 
 ### Electric / Hybrid Vehicle Adoption
-Younger respondents (15-24, 25-34) are less likely to adopt electric or hybrid vehicles, with only a small proportion already using or considering them. Adoption rates increase slightly in the 55-64 age group, then decline again in the 65+ group. This suggests that older individuals may have more resources or stability to invest in electric vehicles.
+The model indicates that individuals with "Some Community/Trade School" or "Some University" education are the most likely to invest in electric or hybrid vehicles. This group is classified as "Very likely" (n = 47) with an error rate of 64%, suggesting that while many in this category are inclined to invest, there is notable variability. Among individuals with other educational backgrounds, age plays a key role. Younger individuals under 35 years old, particularly those classified as "Very likely" (n = 10, error = 30%), demonstrate a strong tendency to invest, reflecting high confidence in this prediction. However, another subset of younger individuals (n = 28) is "Somewhat likely," with a higher error rate of 61%, indicating less certainty. These trends suggest younger people are more open to adopting electric or hybrid vehicles, likely due to environmental awareness or familiarity with emerging technologies.
+
+Older individuals, particularly those over 69 years old, are the least likely to invest. This group is classified as "Very unlikely" (n = 18) with an error rate of 61.1%, highlighting some uncertainty but an overall low likelihood of adoption. Middle-aged individuals (35 to 69 years old) show more mixed results, with some classified as "Somewhat unlikely" (n = 84, error = 54%) and others as "Somewhat likely" (n = 46, error = 57%). These findings suggest that barriers such as cost, resistance to change, or lower interest in alternative vehicles may deter older age groups.
+
+In summary, the model suggests that younger individuals, particularly those under 35 years old, and those with mid-level education are the most likely to invest in electric or hybrid vehicles. In contrast, older individuals and those with minimal or advanced education are less likely to adopt these technologies. While the model provides insights into these trends, the error rates indicate variability in some predictions, particularly among "Somewhat likely" and "Somewhat unlikely" groups.
 
 ### Home Improvement for Energy Efficiency
-Middle-aged individuals (35-54) are the most likely to engage in home improvement actions aimed at increasing energy efficiency. Younger age groups (15-24, 25-34) report lower likelihoods, likely due to barriers such as homeownership and disposable income.
+The results reveal that age is the most significant predictor of climate-conscious home improvement behavior. Individuals aged 36 years or older are the most likely to already be taking or have taken such actions. This group represents the largest sample size (n = 223) but also exhibits a moderate error rate (59.6%), indicating some variation in their behaviors.
+
+For younger individuals (under 36 years), educational attainment is a key determinant. Those with higher education levels, such as "Community/Trade School," "Some University," or "Postgraduate," are the most likely to take action ("Very likely") with an error rate of 55%. However, younger individuals with lower levels of education, such as "High School" or "Some Community/Trade School," are less likely to engage in these actions, being classified as "Somewhat likely" but with a higher error rate of 67%, indicating greater variability in this group.
+
+Overall, individuals aged 36 or older are more likely to have already engaged in climate-conscious home improvements, regardless of education level. Younger individuals with higher education are more likely to adopt such changes in the future, while those with lower education are less likely, with predictions for this group being less certain. These findings underscore the importance of both age and education in shaping environmental engagement and suggest that outreach efforts might need to target younger, less-educated groups to increase participation.
 
 ### Consumption of Meat Alternatives
 Younger age groups, especially 15-24 and 25-34, are more likely to adopt meat alternatives. As age increases, the likelihood of doing so decreases, possibly due to established dietary habits in older generations.
