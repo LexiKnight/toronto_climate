@@ -355,6 +355,12 @@ knitr::include_graphics(here::here("data/04-model_data/home_improvement_tree.png
 ```
 
 #### Likelihood of adopting meat alternatives
+The decision tree predicts individuals’ likelihood of consuming meat alternatives to minimize the effects of climate change based on their age and highest level of education. The model identifies age as the most important variable for the initial split. At the root node, individuals are divided into two groups: those under 34.5 years old and those 34.5 years or older. This highlights age as a critical factor influencing the likelihood of adopting meat alternatives.
+
+In the subgroup of individuals under 34.5 years old, the decision tree further splits based on age at 31.5 years, classifying younger individuals into categories of “Somewhat likely” (n = 25, error = 44%) and “Somewhat unlikely” (n = 62, error = 62.9%). On the other hand, for individuals aged 34.5 years or older, the model considers highest level of education as the next key variable, separating those with community/trade school, undergraduate, and postgraduate education from those with high school education. This distinction reflects how educational attainment moderates the impact of age on the decision to adopt meat alternatives.
+
+Within the older age group, additional splits occur based on age, such as at 49 years and 65.5 years, leading to further classifications like “Already doing this or have done this” or “Somewhat likely.” These splits indicate how the interaction between age and education level shapes patterns of meat alternative adoption, resulting in more granular predictions.
+
 ```{r}
 #| warning: false
 #| echo: false
@@ -367,6 +373,9 @@ knitr::include_graphics(here::here("data/04-model_data/protein_alternative_tree.
 ```
 
 #### Likelihood of minimizing car use
+The decision tree predicts individuals' likelihood of minimizing car use as a measure to mitigate climate change. In this case, the tree structure is straightforward, containing only a single root node. The model classifies all individuals into one category, "Already doing this or have done this," with a sample size of 320 and an error rate of 61.9%. The absence of splits in the tree indicates that no other variables, such as age or education, contributed sufficient predictive power to justify further segmentation.
+
+This outcome suggests that either the input data lacks variability in relevant features, or the behavior of minimizing car use is widespread and consistent across the sample population. Consequently, the model does not differentiate between subgroups and treats all individuals as having the same likelihood of engaging in this behavior.
 ```{r}
 #| warning: false
 #| echo: false
@@ -379,6 +388,11 @@ knitr::include_graphics(here::here("data/04-model_data/minimize_car_tree.png"))
 ```
 
 #### Likelihood of purchasing green products
+The decision tree predicts individuals' likelihood of purchasing green products to minimize the effects of climate change based on age and highest level of education. The model identifies age as the most important variable for the initial split. At the root node, individuals are divided into two groups: those younger than 37.5 years old and those 37.5 years or older. This division highlights age as a key determinant in predicting green product purchasing likelihood.
+
+For individuals aged 37.5 years or older, the next split is determined by the highest level of education. Those with educational backgrounds such as "High School," "Postgrad," "Some Community/Trade School," "Some University," or "Prefer Not to Answer" are further analyzed. Within this group, additional splits are made based on age thresholds of 50.5 years and 47.5 years. These splits refine the classification into categories such as "Somewhat likely" or "Already doing this or have done this," with varying error rates and sample sizes.
+
+Among individuals younger than 37.5 years, the highest level of education again plays a crucial role in the split. Individuals with educational backgrounds such as "Postgrad," "Community/Trade School," "High School," or "Some University" are further segmented. Within this subgroup, age thresholds of 27.5 years and 22.5 years are used to differentiate individuals into categories such as "Very likely" or "Somewhat likely," reflecting diverse levels of engagement with green product purchasing. Overall, the decision tree incorporates age and education as the primary variables to segment individuals into likelihood categories.
 ```{r}
 #| warning: false
 #| echo: false
@@ -487,13 +501,25 @@ For younger individuals (under 36 years), educational attainment is a key determ
 Overall, individuals aged 36 or older are more likely to have already engaged in climate-conscious home improvements, regardless of education level. Younger individuals with higher education are more likely to adopt such changes in the future, while those with lower education are less likely, with predictions for this group being less certain. These findings underscore the importance of both age and education in shaping environmental engagement and suggest that outreach efforts might need to target younger, less-educated groups to increase participation.
 
 ### Consumption of Meat Alternatives
-Younger age groups, especially 15-24 and 25-34, are more likely to adopt meat alternatives. As age increases, the likelihood of doing so decreases, possibly due to established dietary habits in older generations.
+The model suggests that age is the strongest predictor of individuals’ likelihood to adopt meat alternatives for climate change mitigation. Younger individuals, particularly those under 34.5 years old, show varying tendencies. Among this group, those aged 31.5 years or younger are divided into “Somewhat likely” (n = 25, error = 44%) and “Somewhat unlikely” (n = 62, error = 62.9%), indicating considerable variability in predictions. These findings suggest that while younger individuals are more open to meat alternatives, their likelihood of adoption is not uniform.
+
+For individuals aged 34.5 years or older, education becomes a significant predictor. Those with community/trade school, undergraduate, or postgraduate education are more likely to consider or adopt meat alternatives. Within this group, further splits by age highlight nuanced behaviors. For instance, individuals over 65.5 years old are classified as “Already doing this or have done this” (n = 30, error = 56.7%), reflecting a subset of older adults who actively embrace meat alternatives, possibly due to increased awareness or health considerations.
+
+Conversely, individuals with high school education in this older age group show lower likelihoods of adopting meat alternatives, with many classified as “Somewhat unlikely” (n = 22, error = 68.2%). These results underscore the interplay of age and education, where younger individuals and those with higher education levels are more inclined toward adopting meat alternatives. However, the variability in error rates across groups indicates that other unmeasured factors, such as income or cultural attitudes, may also influence these decisions.
 
 ### Minimizing Car Use
-A trend similar to that of meat alternatives is observed, with younger individuals more likely to minimize car use. Older respondents, particularly those 65 and older, show less inclination to reduce car usage, possibly due to mobility needs or lifestyle factors like suburban living.
+The decision tree indicates that the majority of individuals in the dataset are classified as "Already doing this or have done this," with a sample size of 320 and an error rate of 61.9%. This classification implies that minimizing car use is a prevalent behavior among the population studied. However, the relatively high error rate suggests notable variability within this group, indicating that while many individuals report minimizing car use, there may be discrepancies or inconsistencies in the data.
+
+The lack of further splits in the decision tree highlights the uniformity of responses or the insufficiency of the input variables to explain differences in behavior. This uniform classification could reflect widespread adoption of car use minimization practices due to shared motivations, such as environmental awareness or accessibility to alternatives like public transportation or carpooling.
+
+In summary, the model reveals that minimizing car use is a broadly practiced behavior within the sample population. However, the high error rate points to potential data quality issues or the influence of unmeasured factors. Future research could benefit from incorporating additional variables, such as geographic location, income level, or access to transportation infrastructure, to better understand the drivers and barriers to minimizing car use.
 
 ### Purchasing Green Products
-The likelihood of purchasing green products is relatively uniform across age groups. Middle-aged and older demographics show a slight increase in engagement, but the trend line remains mostly flat, indicating that this behavior is more influenced by factors such as income or environmental awareness rather than age.
+The model reveals distinct patterns regarding the likelihood of purchasing green products based on age and education. Among individuals aged 37.5 years or older, a notable segment is classified as "Somewhat likely" (n = 66, error = 54.5%). However, older individuals with age thresholds of 47.5 years and above show increased tendencies to fall into the category of "Already doing this or have done this." For instance, individuals aged over 50.5 years are predominantly classified as "Already doing this or have done this" (n = 7, error = 42.9%). These findings suggest that age plays a significant role in influencing behavior, with older age groups showing stronger commitment to green product purchases.
+
+For younger individuals under 37.5 years, the likelihood of purchasing green products varies based on education and finer age splits. Those under 27.5 years are more likely to be classified as "Very likely" (n = 24, error = 54.2%), while individuals under 22.5 years exhibit an even higher likelihood, with a smaller error rate (n = 8, error = 37.5%). This trend indicates that younger individuals, particularly those in the youngest age brackets, are more inclined toward green product purchasing, possibly reflecting heightened environmental awareness or greater receptiveness to sustainable practices.
+
+Overall, the decision tree highlights the interplay of age and education in predicting green product purchasing behavior. Younger individuals, especially those with mid-range education, demonstrate a stronger inclination toward adopting sustainable practices. In contrast, older individuals, particularly those above 50 years, are more likely to have already adopted these behaviors. While the model provides valuable insights, the variability in error rates across different nodes suggests that other unmeasured factors may also influence green product purchasing behavior.
 
 ### Reducing Hydro Usage
 Older respondents (55-64 and 65+) are the most likely to reduce hydro usage, likely driven by cost-saving measures or environmental concerns. The trend line shows a steady increase with age.
