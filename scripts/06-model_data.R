@@ -49,7 +49,7 @@ generate_model <- function(target_var, train_data, test_data, model_name) {
   tree <- rpart(formula, data = train_data)
   
   # Construct file path for saving the plot
-  png_file_path <- file.path(here::here("data/04-model_data"), paste0(model_name, "_tree.png"))
+  png_file_path <- file.path(here::here("models/"), paste0(model_name, "_tree.png"))
   
   # Adjust PNG size to avoid cutting off the tree
   png(png_file_path, width = 3200, height = 1500, res = 150)  # Increase size and resolution
@@ -100,5 +100,5 @@ for (target_var in target_vars) {
 print(model_results)
 
 # Save the results as a CSV in the correct location
-write_csv(model_results, here::here("data/04-model_data/model_accuracies.csv"))
+write_csv(model_results, here::here("models/model_accuracies.csv"))
 

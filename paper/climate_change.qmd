@@ -333,7 +333,7 @@ Overall, the decision tree reveals distinct patterns where educational attainmen
 #| label: fig-ten
 #| fig-cap: Probability tree for likelihood of investing in an electric or hybrid vehicle, predicted by age and education.
 
-knitr::include_graphics(here::here("data/04-model_data/vehicle_electric_tree.png"))
+knitr::include_graphics(here::here("models/vehicle_electric_tree.png"))
 
 ```
 
@@ -350,7 +350,7 @@ For individuals younger than 36 years, the tree introduces education as the next
 #| label: fig-eleven
 #| fig-cap: Probability tree for likelihood of making home improvements predicted by age and education.
 
-knitr::include_graphics(here::here("data/04-model_data/home_improvement_tree.png"))
+knitr::include_graphics(here::here("models/home_improvement_tree.png"))
 
 ```
 
@@ -368,7 +368,7 @@ Within the older age group, additional splits occur based on age, such as at 49 
 #| label: fig-twelve
 #| fig-cap: Probability tree for likelihood of adopting meat alternatives, predicted by age and education.
 
-knitr::include_graphics(here::here("data/04-model_data/protein_alternative_tree.png"))
+knitr::include_graphics(here::here("models/protein_alternative_tree.png"))
 
 ```
 
@@ -380,10 +380,10 @@ This outcome suggests that either the input data lacks variability in relevant f
 #| warning: false
 #| echo: false
 #| message: false
-#| label: @fig-thirteen
+#| label: fig-thirteen
 #| fig-cap: Probability tree for likelihood of minimizing car use, predicted by age and education.
 
-knitr::include_graphics(here::here("data/04-model_data/minimize_car_tree.png"))
+knitr::include_graphics(here::here("models/minimize_car_tree.png"))
 
 ```
 
@@ -400,7 +400,7 @@ Among individuals younger than 37.5 years, the highest level of education again 
 #| label: fig-forteen
 #| fig-cap: Probability tree for likelihood of purchasing green products, predicted by age and education.
 
-knitr::include_graphics(here::here("data/04-model_data/green_product_tree.png"))
+knitr::include_graphics(here::here("models/green_product_tree.png"))
 
 ```
 
@@ -416,7 +416,7 @@ Among middle-aged individuals (34.5–64.5 years), the decision tree highlights 
 #| label: fig-fifteen
 #| fig-cap: Probability tree for likelihood of reducing hydro usage, predicted by age and education.
 
-knitr::include_graphics(here::here("data/04-model_data/reduce_hydro_tree.png"))
+knitr::include_graphics(here::here("models/reduce_hydro_tree.png"))
 
 ```
 
@@ -434,7 +434,7 @@ The decision tree demonstrates that age is the primary driver of waste-reduction
 #| label: fig-sixteen
 #| fig-cap: Probability tree for likelihood of reducing waste, predicted by age and education.
 
-knitr::include_graphics(here::here("data/04-model_data/reduce_waste_tree.png"))
+knitr::include_graphics(here::here("models/reduce_waste_tree.png"))
 
 ```
 
@@ -452,7 +452,7 @@ This decision tree underscores that education plays a dominant role in predictin
 #| label: fig-seventeen
 #| fig-cap: Probability tree for likelihood of sorting waste correctly, predicted by age and education.
 
-knitr::include_graphics(here::here("data/04-model_data/sort_waste_tree.png"))
+knitr::include_graphics(here::here("models/sort_waste_tree.png"))
 
 ```
 
@@ -467,7 +467,7 @@ For those with lower education levels (community/trade school, high school, or p
 #| label: fig-eighteen
 #| fig-cap: Probability tree for likelihood of walking or cycling shorter distances, predicted by age and education.
 
-knitr::include_graphics(here::here("data/04-model_data/short_distance_tree.png"))
+knitr::include_graphics(here::here("models/short_distance_tree.png"))
 
 ```
 
@@ -488,7 +488,7 @@ The probability tree model estimates how the predictors age and education influe
 #| fig-cap: This table presents the accuracy of models predicting the likelihood of various climate-friendly actions based on age and education. The accuracy values reflect how closely the model predictions align with the actual observed data. Higher accuracy values indicate better model performance.
 
 # Load the model accuracy data from the saved CSV
-model_accuracies <- read.csv(here::here("data/04-model_data/model_accuracies.csv"))
+model_accuracies <- read.csv(here::here("models/model_accuracies.csv"))
 
 # Round numeric columns to whole numbers
 model_accuracies[] <- lapply(model_accuracies, function(x) if(is.numeric(x)) round(x) else x)
