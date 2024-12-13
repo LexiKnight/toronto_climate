@@ -262,39 +262,35 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot
 
 
 # Model {#sec-model}
-The goal of our modeling strategy is twofold: first, to predict the likelihood of individuals engaging in climate-friendly actions based on their demographics, and second, to understand how age and education shape these behaviors. The actions considered include investing in electric vehicles, reducing hydro usage, adopting meat alternatives, and walking or cycling shorter distances. To uncover these patterns, we employ a decision tree model, providing a clear and interpretable framework for analyzing how demographic factors influence climate-positive behaviors.
+The goal of our modeling strategy is twofold: first, to predict how demographic factors influence individuals’ likelihood of engaging in climate-friendly behaviors, and second, to uncover the role of age and education in shaping these actions. The actions considered include investing in electric vehicles, reducing hydro usage, adopting meat alternatives, and walking or cycling shorter distances. We use a decision tree model to provide a clear, interpretable framework for analyzing these relationships.
 
 ## Model set-up
-Our model predicts the likelihood of engaging in specific climate-friendly actions using age and education level as predictors. Likelihood is quantified on a five-point scale, ranging from "Very unlikely" to "Already doing this or have done this."
+Our model predicts the likelihood of engaging in specific climate-positive actions, with age and education level serving as predictors. Likelihood is measured on a five-point scale, ranging from "Already doing this or have done this" to "Very unlikely."
 
 ### Model Specifications
-In this analysis, we use a decision tree model for each action, where age (continuous) and education (categorical) drive the predictions. The decision tree splits the data at each node based on these predictors, identifying demographic conditions linked to climate-positive behaviors.
-
-The outcome variable, likelihood of taking action, is measured using a Likert scale ranging from 1 ("Very unlikely") to 5 ("Already doing this or have done this"). The decision tree model helps us understand which combinations of age and education influence these behaviors.
+We employ separate decision tree models for each action. Age (continuous) and education (categorical) are the key predictors driving predictions. Each tree splits the data at nodes based on these variables, revealing demographic conditions associated with greater or lesser likelihoods of climate-positive behaviors.
 
 ### Model Justification 
-This approach sheds light on how demographic factors like age and education impact the likelihood of engaging in climate-friendly behaviors. By focusing on actions like reducing energy consumption, adopting sustainable practices, and investing in green technologies, the model provides insights that can inform targeted interventions.
+This approach provides insights into how demographic factors influence climate-friendly actions, including energy reduction, sustainable practices, and green technology adoption. By identifying demographic groups more likely to take these actions, the model can inform targeted interventions.
 
 #### Response Variable
-The response variable measures the likelihood of engaging in climate-friendly behaviors, represented on a Likert scale. This captures an individual’s readiness to adopt sustainable actions in daily life.
+The response variable measures the likelihood of engaging in specific climate-friendly behaviors, represented on a five-point scale: "Already doing this or have done this," "Very likely," "Somewhat likely," "Somewhat unlikely," and "Very unlikely." This scale reflects an individual’s readiness to adopt sustainable practices.
 
 #### Input Variables
 Our predictors are:
 
-- **Age**: Research shows that younger individuals tend to exhibit greater environmental awareness and a higher likelihood of adopting climate-friendly behaviors (Leiserowitz et al., 2010; Gifford, 2013).
+- **Age**: Research shows that younger individuals often demonstrate greater environmental awareness and a stronger inclination toward sustainable actions (Leiserowitz et al., 2010; Gifford, 2013).
 
-- **Education**: Higher education levels correlate with increased environmental awareness and a higher likelihood of adopting sustainable behaviors (Kollmuss & Agyeman, 2002). Education is treated as a categorical variable, divided into distinct levels for analysis.
+- **Education**: Previous studies illustrate that higher education correlates with increased environmental awareness and sustainable behavior adoption (Kollmuss & Agyeman, 2002). 
 
 #### Model Structure
-The decision tree splits data based on age and education, revealing how different demographic groups are more or less likely to engage in climate-friendly actions. Unlike linear models, decision trees do not assume a direct relationship between predictors and outcomes but instead identify the conditions under which individuals are more likely to adopt sustainable practices.
-
-This model assumes that the effects of age and education on behavior are independent, allowing for a clear interpretation of each factor’s influence on the likelihood of taking climate-positive actions.
+The decision tree splits data based on age and education, uncovering demographic patterns in climate-positive behaviors. Unlike linear models, decision trees do not assume direct relationships but instead identify conditions under which certain behaviors are more likely to occur. This assumption of independence allows clear interpretation of each factor’s influence.
 
 ## Understanding Decision Trees
-A decision tree recursively splits data based on predictor variables, starting with a root node that represents the entire dataset. It branches out based on decision rules, leading to terminal nodes that predict outcomes, such as the likelihood of a climate-friendly action. Each split maximizes predictive accuracy, and the model's predictions are accompanied by error rates, which indicate the reliability of the classification.
+Decision trees predict outcomes by recursively splitting data based on predictor variables. Starting at the root node (entire dataset), the tree branches into nodes based on decision rules, ultimately reaching terminal nodes that represent specific predictions, such as the likelihood of adopting sustainable behaviors. Each split aims to maximize prediction accuracy, and error rates indicate the reliability of classifications.
 
-## Decision Trees for Climate-Friendly Actions
-We fit nine decision tree models to predict the likelihood of various climate-friendly actions, using age and education as predictors:
+### Decision Trees for Climate-Friendly Actions
+We fit nine decision tree models to predict the likelihood of the following climate-friendly actions, using age and education as predictors:
 
 1. Likelihood of switching in an electric or hybrid vehicle
 2. Likelihood of minimizing car use
@@ -306,7 +302,10 @@ We fit nine decision tree models to predict the likelihood of various climate-fr
 8. Likelihood of adopting meat alternatives
 9. Likelihood of reducing hydro usage
 
-Each model follows a similar structure, revealing how age and education influence each action.
+Each model follows a consistent structure, highlighting how age and education influence these behaviors.
+
+## Model Estimation and Interpretation 
+The model predicts that younger individuals with higher education levels are more likely to adopt climate-friendly behaviors. The decision tree identifies key splits in the data and evaluates prediction reliability using error rates, providing insight into the impact of age and education on sustainable actions.
 
 ### Transportation Actions
 
@@ -396,9 +395,7 @@ knitr::include_graphics(here::here("models/sort_waste_tree.png"))
 
 ### Home and Lifestyle Changes
 #### Likelihood of making home improvements
-In @fig-sixteen, the root node splits the data at age 35.5, indicating that age is the most influential factor in determining climate-related home improvement behavior. Individuals aged 36 years or older are predominantly classified as "Already doing this or have done this," with a large sample size (n = 223) but a moderate error rate of 59.6%, reflecting variability in this group.
-
-For individuals younger than 36 years, the tree introduces education as the next important factor. Those with higher educational attainment ("Community/Trade School," "Some University," or "Postgraduate") are classified as "Very likely" to make climate-conscious home improvements (n = 40) with an error rate of 55.0%. Conversely, individuals with lower education levels, such as "High School" or "Some Community/Trade School," are classified as "Somewhat likely" (n = 46) but have a higher error rate of 67.4%, indicating less predictive certainty. A smaller subset of younger individuals with similar educational attainment is classified as "Somewhat likely" (n = 10) with a lower error rate of 40.0%, suggesting higher confidence in this classification. The decision tree highlights clear trends based on age and education, with older age groups and higher educational attainment linked to greater engagement in making home improvements.
+@fig-sixteen shows that age is the key predictor for home improvement behavior. Individuals aged 36 years and older are predominantly classified as "Already doing this or have done this," with an error rate of 59.6%. For younger individuals (under 36), education plays a role: those with higher educational attainment ("Community/Trade School," "Some University," or "Postgraduate") are "Very likely" to make home improvements, with an error rate of 55%. Conversely, individuals with lower education levels are classified as "Somewhat likely," with a higher error rate of 67.4%. This model highlights how age and education interact to influence home improvement decisions.
 
 ```{r}
 #| warning: false
@@ -412,11 +409,7 @@ knitr::include_graphics(here::here("models/home_improvement_tree.png"))
 ```
 
 #### Likelihood of adopting meat alternatives
-@fig-seventeen predicts individuals’ likelihood of consuming meat alternatives to minimize the effects of climate change based on their age and highest level of education. The model identifies age as the most important variable for the initial split. At the root node, individuals are divided into two groups: those under 34.5 years old and those 34.5 years or older. This highlights age as a critical factor influencing the likelihood of adopting meat alternatives.
-
-In the subgroup of individuals under 34.5 years old, the decision tree further splits based on age at 31.5 years, classifying younger individuals into categories of “Somewhat likely” (n = 25, error = 44%) and “Somewhat unlikely” (n = 62, error = 62.9%). On the other hand, for individuals aged 34.5 years or older, the model considers highest level of education as the next key variable, separating those with community/trade school, undergraduate, and postgraduate education from those with high school education. This distinction reflects how educational attainment moderates the impact of age on the decision to adopt meat alternatives.
-
-Within the older age group, additional splits occur based on age, such as at 49 years and 65.5 years, leading to further classifications like “Already doing this or have done this” or “Somewhat likely.” These splits indicate how the interaction between age and education level shapes patterns of meat alternative adoption, resulting in more granular predictions.
+@fig-seventeen demonstrates that age is the primary factor for adopting meat alternatives. Younger individuals (under 35 years) are more likely to adopt meat alternatives, with an error rate of 44%. For individuals aged 35 years or older, education becomes a key predictor. Those with community/trade school, undergraduate, or postgraduate education are more likely to adopt meat alternatives, with varying error rates, including "Somewhat unlikely" for younger individuals at 62.9%. This model highlights how age and education together shape dietary choices.
 
 ```{r}
 #| warning: false
@@ -431,9 +424,8 @@ knitr::include_graphics(here::here("models/protein_alternative_tree.png"))
 
 
 #### Likelihood of reducing hydro usage
-@fig-eighteen identifies age and highest level of education as key predictors influencing the likelihood of reducing hydro usage. The root node of the tree reveals that individuals younger than 34.5 years old are categorized as "Very likely" to reduce hydro usage, with a sample size of 87 and an error rate of 60.9%. This suggests that younger individuals may demonstrate a greater propensity to adopt hydro-reduction practices. Conversely, individuals over 34.5 years are further split by age, with those older than 64.5 years also categorized as "Very likely," albeit with a smaller sample size of 16 and a lower error rate of 37.5%. This bifurcation highlights that age groups at the extremes of the spectrum (younger and older individuals) are more inclined toward hydro-use reduction.
+@fig-eighteen reveals that age and education influence hydro usage reduction. Younger individuals (under 35 years) are "Very likely" to reduce hydro usage, with an error rate of 60.9%. Older individuals (35 years and above) are further split by education and age, with those over 64 years also "Very likely" to engage in hydro conservation, with a lower error rate of 37.5%. Middle-aged individuals (35–64 years) with higher education are either "Already doing this or have done this" (error rate 56.3%) or "Somewhat likely" (error rate 50.0%). This model underscores the combined role of age and education in promoting energy-saving behaviors.
 
-Among middle-aged individuals (34.5–64.5 years), the decision tree highlights the role of education. Those younger than 61.5 years and possessing higher levels of education, including university degrees, are either "Already doing this or have done this" (n=151, err=56.3%) or "Somewhat likely" (n=14, err=50.0%) to engage in hydro-use reduction. On the other hand, individuals with lower educational attainment, particularly trade school or community-level education, are less likely to implement such measures. For individuals aged 61.5–71.5 years, there remains a balance between those already reducing hydro usage and those who are very likely to adopt it in the future, with clear variability based on educational level.
 ```{r}
 #| warning: false
 #| echo: false
@@ -446,12 +438,17 @@ knitr::include_graphics(here::here("models/reduce_hydro_tree.png"))
 ```
 
 
-## Model Estimation and Interpretation ##
-The probability tree model estimates how the predictors age and education influence the likelihood of adopting climate-friendly behaviors. By splitting the data into branches based on these variables, the model helps identify decision rules that predict individuals' likelihood of taking actions such as reducing waste or investing in green products. We anticipate that younger individuals, due to greater environmental awareness, are more likely to engage in climate-positive actions, while those with higher levels of education may also be more inclined to adopt such behaviors, given their increased awareness of climate change and sustainable practices. The model estimates the parameters for age and education using regression techniques, providing coefficients that indicate how each factor influences the likelihood of taking climate-friendly actions.
+
+
+
+
+
 
 
 
 # Results
+
+## Model Predictions
 
 ## Model Summary Table
 @fig-nineteen presents the accuracy of models predicting the likelihood of various climate-friendly actions based on demographic factors such as age and education. Each row represents a different climate action (e.g., home improvement, reducing hydro, minimizing car use), with the corresponding accuracy of the model's predictions. The accuracy values reflect how well the models, which use age and education as predictors, align with the actual data. An accuracy of 33 percent  for home improvement" indicates that the model correctly predicted the outcome 33% of the time for this action. These accuracy values help evaluate the effectiveness of age and education as predictors for each specific climate action.
@@ -473,6 +470,7 @@ head(model_accuracies)
 
 
 ```
+
 
 ## Likelihood taking action by age
 @fig-twenty shows the relationship between age and the likelihood of engaging in various climate-related actions. The x-axis represents the age groups, and the y-axis indicates the percentage of respondents reporting different likelihood levels, from "Already doing this" to "Very unlikely." The trend lines across each action show how engagement varies by age.
