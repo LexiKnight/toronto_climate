@@ -10,22 +10,22 @@
 
 # Install the necessary packages
 install.packages(c(
-  "readr",      # For reading data
-  "dplyr",      # For data manipulation
-  "openxlsx",   # For working with Excel files
-  "readxl",     # For reading Excel files
   "arrow",      # For saving files as Parquet
-  "tidyverse",  # For data manipulation and visualization
-  "tidyr",      # For tidying data
-  "stringr",    # For string manipulation
-  "tinytable",  # For rendering tables
-  "here",       # For working with relative paths
-  "knitr",      # For dynamic report generation
+  "dplyr",      # For data manipulation
   "forcats",    # For reordering factor levels
+  "ggplot2",    # For data visualization
+  "here",       # For working with relative paths
+  "httr",       # For downloading data
   "kableExtra", # For rendering tables with extra features
-  "broom",      # For tidying model output
-  "testthat",   # For testing data
+  "openxlsx",   # For working with Excel files
+  "partykit",   # For running the model
+  "readr",      # For reading data
+  "readxl",     # For reading Excel files
   "rpart",      # For running the model
-  "partykit"    # For running the model
-  
+  "stringr",    # For string manipulation
+  "testthat",   # For testing data
+  "tidyr",      # For tidying data
+  "tidyverse",  # For data manipulation and visualization
+  "tinytable"   # For rendering tables
 ))
+
