@@ -10,16 +10,12 @@
 #### Workspace setup ####
 
 # load necessary packages
-library(readr)
-library(dplyr) # for combining data frames
-library(openxlsx)
-library(readxl)
-library(arrow) # for saving file as parquet
-library(tidyverse)
-library(tidyr)
-library(stringr)
-library(tinytable)
-library(here)
+library(readr)       # reads csv files
+library(dplyr)       # data manipulation; selecting, renaming, mutating columns
+library(arrow)       # saves data as parquet
+library(stringr)     # string manipulation
+library(here)        # constructs file paths
+library(tinytable)   # creates and formats tables
 
 #### Clean individual 2018 data ####
 

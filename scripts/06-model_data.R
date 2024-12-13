@@ -11,11 +11,10 @@
 #### Workspace setup ####
 
 # load packages
-library(tidyverse)
-library(rpart)
-library(partykit)
-library(here)
-library(arrow)
+library(tidyverse)    # core functions for data manipulation
+library(rpart)        # creates decision tree models
+library(partykit)     # plots decision tree models
+library(here)         # constructs file paths
 
 # Set seed for reproducibility
 set.seed(853)

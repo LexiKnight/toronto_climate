@@ -8,10 +8,9 @@
 
 
 #### Workspace setup ####
-library(tidyverse)
-library(testthat)
-library(here)
-library(arrow)
+library(tidyverse)     # reads csv file
+library(testthat)      # write and execute tests
+
 
 ### Load data outside of test block ###
 analysis_data <- read_csv("data/02-analysis_data/twenty_eighteen_individual_analysis_data.csv", col_names = TRUE)

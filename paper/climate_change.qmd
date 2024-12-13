@@ -25,10 +25,11 @@ The heart of this study is to measure how age, education, and knowledge of clima
 
 Understanding these patterns is crucial for crafting effective climate policies. By identifying which groups are more likely to act and which face significant barriers, we can better design interventions that speak to people’s concerns and motivations [@Stern2000]. The implications of this study go beyond simply knowing what people think about climate change—they offer a roadmap for shaping messages and policies that could shift behavior on a larger scale [@Fulton2022].
 
-The remainder of this paper is structured as follows: @sec-data details the data and methods used in our analysis. @sec-model describes how we assess the factors influencing climate-friendly behaviors across demographic groups. @sec-results highlights key differences in behavior based on age, education, and knowledge of climate change. @sec-discussion discusses the findings, addresses the study's limitations, and suggests directions for future research. @sec-conclusion concludes with a summary of the key takeaways and actionable recommendations for enhancing climate action engagement. Finally, @sec-appendix contains supplementary material.
+The remainder of this paper is structured as follows: @sec-data details the data and methods used in our analysis. @sec-model describes how we assess the factors influencing climate-friendly behaviors across demographic groups. @sec-results highlights key differences in behavior based on age, education, and knowledge of climate change. @sec-discussion examines the findings, addresses limitations, and suggests directions for future research. @sec-conclusion concludes with a summary of the key takeaways and actionable recommendations for enhancing climate action engagement. Finally, @sec-appendix contains supplementary material including an idealized methodology, the simulation process and data cleaning procedure.
 
 # Data {#sec-data}
-The primary data source for this project is the Climate Perception Study dataset, provided by the City of Toronto via the Open Data Toronto platform [@climateperceptionstudy]. This dataset offers insights into public perceptions of climate change in Toronto and was accessed from Open Data Toronto [@opendatatoronto] on 6 November 2024.
+The primary data source for this project is the Climate Perception Study dataset, provided by the City of Toronto via the Open Data Toronto platform [@climateperceptionstudy]. This dataset offers insights into public perceptions of climate change in Toronto in the years 2018 and 2021. This dataset was accessed from Open Data Toronto [@opendatatoronto] on 6 November 2024.
+
 ## Software and R-packages
 This project was conducted using the statistical software `R` [@citeR]. Data cleaning and manipulation were primarily facilitated by the `tidyverse` package [@tidyverse], which encompasses various essential tools. Within this suite, `dplyr` [@dplyr] was employed for data manipulation tasks such as filtering, summarizing, and joining datasets, while `readr` [@readr] provided efficient functionality for reading and writing rectangular text data. Specifically, the `write_csv` function from `tidyverse` was used to save the raw 2018 dataset. To handle Excel files, we incorporated the `httr` package for downloading files directly from online sources and `readxl` [@readxl], which enabled us to read Excel files seamlessly. Additionally, the `openxlsx` package was utilized to create a new Excel workbook with multiple sheets, allowing us to store the 2021 dataset in a structured format.
 
@@ -166,11 +167,10 @@ knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.p
 #| fig-cap: "This table highlights the extent feel informed distribution of survey respondents in 2018 and 2021."
 
 # Load libraries
-library(kableExtra)
-library(knitr)
-library(here)
-library(dplyr)    # For renaming columns
-library(arrow)    # For reading Parquet files
+library(kableExtra)  # styling tables
+library(here)        # manage file paths
+library(dplyr)       # data manipulation; renames columns
+library(arrow)       # reads Parquet files
 
 # Read the Parquet file into a data frame
 informed_summary_combined <- arrow::read_parquet(here("data/03-figures_data", "informed_summary_combined_table.parquet"))
@@ -189,7 +189,7 @@ informed_summary_combined %>%
 
 ### Best Mode of Delivery
 #### Individual 2018
-T@ fig-seven, shows the analysis of the best method for delivering climate change information portrayed in @fig-four revealed that the majority of individuals in the 2018 dataset preferred receiving information firstly from advertising campaigns with about 55 percent, newsletters with about 52 percent, followed by the toronto website wiht about 46 percent. On the other side of the spectrum, few said they were uninterested in receiving climate action information  with about 5 percent, about 12 percent indicated twitter and then 17 percent mentioned instagram. Overall social media platforms Facebook, Instagram and Twtitter were less popular methods of communciation. This could be because the survey only included individals over the age of 18. Moreover, the median sample was in the 40s. 
+@fig-seven, shows the analysis of the best method for delivering climate change information portrayed in @fig-four revealed that the majority of individuals in the 2018 dataset preferred receiving information firstly from advertising campaigns with about 55 percent, newsletters with about 52 percent, followed by the toronto website wiht about 46 percent. On the other side of the spectrum, few said they were uninterested in receiving climate action information  with about 5 percent, about 12 percent indicated twitter and then 17 percent mentioned instagram. Overall social media platforms Facebook, Instagram and Twtitter were less popular methods of communciation. This could be because the survey only included individals over the age of 18. Moreover, the median sample was in the 40s. 
 
 ```{r}
 #| warning: false
@@ -214,11 +214,11 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 #| fig-cap: "This table highlights the prefered method of communication of survey respondents in 2018 and 2021."
 
 # Load libraries
-library(kableExtra)
-library(knitr)
-library(here)
-library(dplyr)    # For renaming columns
-library(arrow)    # For reading Parquet files
+library(kableExtra)  # styling tables
+library(here)        # manage file paths
+library(dplyr)       # data manipulation; renames columns
+library(arrow)       # reads Parquet files
+
 
 # Read the Parquet file into a data frame
 communication_summary_combined <- arrow::read_parquet(here("data/03-figures_data", "communication_summary_combined_table.parquet"))

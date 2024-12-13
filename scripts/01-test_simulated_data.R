@@ -8,8 +8,10 @@
 #### Workspace setup ####
 # Load required packages
 library(tidyverse)  # For data manipulation and visualization
-library(testthat)   # For testing
+library(testthat)   # For writing and running tests
 library(arrow)      # For reading parquet files
+library(here)       # for file path management
+
 
 #### Test data ####
 

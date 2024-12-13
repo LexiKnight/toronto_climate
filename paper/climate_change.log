@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.12.3)  10 DEC 2024 19:14
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.12.3)  10 DEC 2024 19:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -559,7 +559,7 @@ Package: tabularray 2024-02-16 v2024A Typeset tabulars and arrays with LaTeX3
 \l__tblr_cell_ht_dim=\dimen290
 \l__tblr_diag_box=\box100
 ) (c:/Users/Lexi/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/siunitx/siunitx.sty
-Package: siunitx 2024-11-19 v3.3.24 A comprehensive (SI) units package
+Package: siunitx 2024-12-06 v3.4.0 A comprehensive (SI) units package
 \l__siunitx_number_uncert_offset_int=\count344
 \l__siunitx_number_exponent_fixed_int=\count345
 \l__siunitx_number_min_decimal_int=\count346
@@ -1113,12 +1113,12 @@ Type  H <return>  for immediate help.
 l.437 \centering
                  
 Here is how much of TeX's memory you used:
- 28023 strings out of 475964
- 589238 string characters out of 5776217
- 1236241 words of memory out of 5000000
- 50515 multiletter control sequences out of 15000+600000
+ 28115 strings out of 475964
+ 591635 string characters out of 5776217
+ 1236839 words of memory out of 5000000
+ 50607 multiletter control sequences out of 15000+600000
  566598 words of font info for 101 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 108i,7n,123p,10909b,787s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 108i,7n,123p,10909b,912s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on climate_change.pdf (5 pages).

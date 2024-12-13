@@ -8,8 +8,8 @@
 
 #### Workspace setup ####
 # load packages
-library(tidyverse)
-library(arrow)
+library(tidyverse)      # for collection of tools to manipulate and visualize the data
+library(arrow)          # used for write_parquet function
 
 #### Simulate data ####
 

@@ -10,18 +10,15 @@
 #### Workspace setup ####
 
 # Load necessary libraries
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
-library(here) # for working with relative paths
-library(stringr) # was this used?
-library(knitr)
-library(arrow) # for reading parquet files
-library(tidyr)
-library(forcats) # for reordering factor levels
-library(kableExtra) # for rendering tables
-library(tinytable)
-
+library(tidyverse) # core functions for data manipulation
+library(here)      # constructs file paths
+library(arrow)     # reads parquet files
+library(forcats)   # reorders factor levels and factor-related manipulations
+library(stringr)   # used in str-wrap to wrap long text labels on axes
+library(dplyr)     # manipulating data; filtering, grouping, mutating and recording
+library(ggplot2)   # creating visualizations; stacked bar plots and facet plots
+library(tidyr)     # reshaping data with pivot_longer function
+library(readr)     # managing csv files
 
 
 # Read in the data 
