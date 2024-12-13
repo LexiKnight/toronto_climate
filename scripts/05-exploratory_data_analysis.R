@@ -261,16 +261,16 @@ data_summary <- data_summary %>%
   mutate(
     delivery_method = case_when(
       str_detect(delivery_method, "toronto.ca_website") ~ "Toronto.ca website",
-      str_detect(delivery_method, "events") ~ "City of Toronto events",
+      str_detect(delivery_method, "events") ~ "City events",
       str_detect(delivery_method, "twitter") ~ "Twitter",
       str_detect(delivery_method, "facebook") ~ "Facebook",
       str_detect(delivery_method, "instagram") ~ "Instagram",
-      str_detect(delivery_method, "enewsletter_email") ~ "City of Toronto e-newsletters / email",
+      str_detect(delivery_method, "enewsletter_email") ~ "City e-newsletters / email",
       str_detect(delivery_method, "councillor_communication") ~ "Councillor communications",
       str_detect(delivery_method, "advertising_campaigns") ~ "Advertising campaigns",
       str_detect(delivery_method, "brochures_pamphlets") ~ "Brochures, pamphlets",
       str_detect(delivery_method, "other") ~ "Other",
-      str_detect(delivery_method, "not_interested_receiving") ~ "Not interested in receiving information",
+      str_detect(delivery_method, "not_interested_receiving") ~ "Not interested",
       TRUE ~ delivery_method  # Default case if something unexpected
     )
   )

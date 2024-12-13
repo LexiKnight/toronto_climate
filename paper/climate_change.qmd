@@ -311,13 +311,7 @@ Each model follows a similar structure, revealing how age and education influenc
 ### Transportation Actions
 
 #### Likelihood of switching to an electric or hybrid vehicle
-@fig-ten predicts individuals’ likelihood to invest in an electric or hybrid vehicle based on their highest level of education and age. The model identifies highest level of education as the most important variable for the initial split. At the root node, individuals are divided into two groups: those with "Some Community/Trade School" or "Some University" education and those with other educational backgrounds such as "High School," "Undergrad," "Postgrad," or "Prefer Not to Answer."
-
-For individuals with "Some Community/Trade School" or "Some University" education, the tree predicts that they are "Very likely" to invest, with a sample size of 47 and an error rate of 63.8%. This indicates moderate variability within this group.
-
-For those with other educational backgrounds, further splits are based on age. Younger individuals (below 38.5 years) are segmented further. A subset aged under 34.5 years is split into two groups, with one group (n = 10) being "Very likely" to invest, with a lower error rate of 30%. The other group is classified as "Somewhat likely," with a higher error rate of 60.7%. Older individuals (38.5 years or older) are less likely to invest. For instance, those aged above 68.5 years are predicted as "Very unlikely" with a sample size of 18 and an error rate of 61.1%, while those aged between 34.5 and 68.5 years are divided into "Somewhat unlikely" or "Somewhat likely" categories.
-
-Overall, the decision tree reveals distinct patterns where educational attainment and age interact to predict investment likelihood, with younger individuals and those with less formal education being more likely to invest.
+@fig-ten reveals that education is the primary predictor for the likelihood of switching to an electric or hybrid vehicle. Individuals with "Some Community/Trade School" or "Some University" education are "Very likely" to invest, though with moderate variability (error rate 63.8%). Those with higher education show more age-based segmentation. Younger individuals under 35 years are more likely to invest, with a lower error rate (30%). Older individuals, particularly those over 69 years, are "Very unlikely" to invest. This model demonstrates how age and education interact to influence vehicle choice.
 
 ```{r}
 #| warning: false
@@ -331,9 +325,8 @@ knitr::include_graphics(here::here("models/vehicle_electric_tree.png"))
 ```
 
 #### Likelihood of minimizing car use
-@fig-eleven predicts individuals' likelihood of minimizing car use as a measure to mitigate climate change. In this case, the tree structure is straightforward, containing only a single root node. The model classifies all individuals into one category, "Already doing this or have done this," with a sample size of 320 and an error rate of 61.9%. The absence of splits in the tree indicates that no other variables, such as age or education, contributed sufficient predictive power to justify further segmentation.
+@fig-eleven shows that the likelihood of minimizing car use is consistent across the sample, with a high error rate (61.9%). The model classifies all individuals into the "Already doing this or have done this" category, indicating widespread adoption of this behavior, regardless of age or education
 
-This outcome suggests that either the input data lacks variability in relevant features, or the behavior of minimizing car use is widespread and consistent across the sample population. Consequently, the model does not differentiate between subgroups and treats all individuals as having the same likelihood of engaging in this behavior.
 ```{r}
 #| warning: false
 #| echo: false
@@ -346,9 +339,8 @@ knitr::include_graphics(here::here("models/minimize_car_tree.png"))
 ```
 
 #### Likelihood of walking or cycling shorter distances
-@fig-twelve predicts the likelihood of individuals walking or cycling short distances based on their highest level of education and age. The root node identifies education level as the most significant factor. Individuals with postgraduate, undergraduate, or some university education are classified as “Already doing this or have done this” (n = 231, error = 51.9%). This indicates a strong relationship between higher education levels and the adoption of walking or cycling short distances.
+@fig-twelve indicates that education is the primary factor influencing short-distance walking or cycling. Those with higher education (postgraduate, undergraduate, or some university) are more likely to engage in this behavior, with an error rate of 51.9%. For those with lower education, age plays a significant role, with younger individuals (under 66 years) more likely to walk or cycle, with an error rate of 60%. This model highlights how education and age together shape short-distance mobility, with error rates reflecting the model's predictive variability.
 
-For those with lower education levels (community/trade school, high school, or preferring not to answer), the model further splits based on age. The first division occurs at 65.5 years, distinguishing those “Very likely” to walk or cycle short distances (n = 15, error = 60%) from others. Additional splits by age at 33.5 years and 60.5 years, along with education, refine the classification. This stepwise approach demonstrates how age interacts with education to influence short-distance mobility choices.
 ```{r}
 #| warning: false
 #| echo: false
@@ -363,11 +355,7 @@ knitr::include_graphics(here::here("models/short_distance_tree.png"))
 
 ### Waste and Product Actions
 #### Likelihood of purchasing green products
-@fig-thirteen predicts individuals' likelihood of purchasing green products to minimize the effects of climate change based on age and highest level of education. The model identifies age as the most important variable for the initial split. At the root node, individuals are divided into two groups: those younger than 37.5 years old and those 37.5 years or older. This division highlights age as a key determinant in predicting green product purchasing likelihood.
-
-For individuals aged 37.5 years or older, the next split is determined by the highest level of education. Those with educational backgrounds such as "High School," "Postgrad," "Some Community/Trade School," "Some University," or "Prefer Not to Answer" are further analyzed. Within this group, additional splits are made based on age thresholds of 50.5 years and 47.5 years. These splits refine the classification into categories such as "Somewhat likely" or "Already doing this or have done this," with varying error rates and sample sizes.
-
-Among individuals younger than 37.5 years, the highest level of education again plays a crucial role in the split. Individuals with educational backgrounds such as "Postgrad," "Community/Trade School," "High School," or "Some University" are further segmented. Within this subgroup, age thresholds of 27.5 years and 22.5 years are used to differentiate individuals into categories such as "Very likely" or "Somewhat likely," reflecting diverse levels of engagement with green product purchasing. Overall, the decision tree incorporates age and education as the primary variables to segment individuals into likelihood categories.
+@fig-thirteen reveals that age is the initial split for green product purchasing behavior. Younger individuals (under 38 years) are more likely to purchase green products, with an error rate of 51.9%. Education further refines the prediction. Older individuals (over 38 years) are classified by both age and education, with postgraduate education leading to higher engagement in purchasing green products, with an error rate of 60%. This model shows how age and education influence consumer choices in sustainable products.
 ```{r}
 #| warning: false
 #| echo: false
@@ -380,11 +368,7 @@ knitr::include_graphics(here::here("models/green_product_tree.png"))
 ```
 
 #### Likelihood of reducing waste by repurposing used product
-@fig-fourteen predicts the likelihood of reducing waste is based on age and highest level of education. The root node splits individuals by age at 34.5 years, indicating that younger and older individuals exhibit distinct waste-reduction behaviors. For those under 34.5 years, the model uses highest level of education as a key determinant, classifying them as either "Somewhat likely" or "Very likely" to reduce waste.
-
-For individuals aged 34.5 years or older, the tree splits again by education and further refines predictions using additional age thresholds at 61.5 and 75.5 years. Older individuals with higher education levels are more likely to have "Already done this or are doing this," while those with lower education levels are categorized as "Somewhat likely" or "Very likely." This structure highlights the combined influence of education and age on waste-reduction behaviors, with clear thresholds that differentiate groups.
-
-The decision tree demonstrates that age is the primary driver of waste-reduction behavior, with education acting as an important secondary factor. These variables together capture differences in sustainability habits, showing how younger, middle-aged, and older populations vary in their likelihood to engage in reducing waste.
+@fig-fourteen shows that age is the primary factor for waste reduction behaviors. Younger individuals (under 35 years) are more likely to repurpose waste, with an error rate of 57.1%. Education further refines the classification. Older individuals (over 35 years) show varied likelihoods based on education, with more highly educated individuals more likely to repurpose waste, with an error rate of 60%. This highlights the influence of both age and education on waste-reduction habits.
 ```{r}
 #| warning: false
 #| echo: false
@@ -397,11 +381,7 @@ knitr::include_graphics(here::here("models/reduce_waste_tree.png"))
 ```
 
 #### Likelihood of sorting waste correctly
-@fig-fifteen predicts the likelihood of sorting waste correctly identifies highest level of education as the primary determinant. Individuals with education levels at or above Community/Trade School, Postgraduate, or Some University are categorized as "Already doing this or have done this," accounting for the majority of respondents (n = 295, err = 37.3%). This demonstrates that higher educational attainment correlates with proactive waste-sorting behaviors.
-
-For individuals whose highest level of education is High School, the model introduces a secondary split based on age at 37 years. Younger individuals under 37 years are categorized as "Already doing this or have done this," albeit with a higher error rate (n = 7, err = 57.1%). Older individuals aged 37 or above are more likely classified as "Very likely" to sort waste correctly (n = 17, err = 35.3%). These splits highlight the combined influence of education and age on waste-sorting behavior, with specific subgroups showing varying levels of commitment and accuracy.
-
-This decision tree underscores that education plays a dominant role in predicting waste-sorting behavior, while age further refines these predictions, especially for those with lower education levels. The model provides straightforward insights into how demographics shape sustainable practices.
+@fig-fifteen identifies education as the primary factor for sorting waste. Those with higher education (at least community/trade school or postgraduate) are more likely to sort waste correctly, with an error rate of 37.3%. Age further refines the predictions for those with lower education levels, with younger individuals under 37 years being more likely to sort waste correctly, albeit with a higher error rate of 57.1%. Older individuals (37 years and above) are more likely to sort waste correctly, with an error rate of 35.3%. The model emphasizes the role of education in fostering proper waste-sorting behaviors, with age providing additional nuance.
 ```{r}
 #| warning: false
 #| echo: false
