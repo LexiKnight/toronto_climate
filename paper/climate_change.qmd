@@ -28,42 +28,42 @@ Understanding these patterns is crucial for crafting effective climate policies.
 The remainder of this paper is structured as follows: @sec-data details the data and methods used in our analysis. @sec-model describes how we assess the factors influencing climate-friendly behaviors across demographic groups. @sec-results highlights key differences in behavior based on age, education, and knowledge of climate change. @sec-discussion examines the findings, addresses limitations, and suggests directions for future research. @sec-conclusion concludes with a summary of the key takeaways and actionable recommendations for enhancing climate action engagement. Finally, @sec-appendix contains supplementary material including an idealized methodology, the simulation process and data cleaning procedure.
 
 # Data {#sec-data}
-The primary data source for this project is the Climate Perception Study dataset, provided by the City of Toronto via the Open Data Toronto platform [@climateperceptionstudy]. This dataset offers insights into public perceptions of climate change in Toronto in the years 2018 and 2021. This dataset was accessed from Open Data Toronto [@opendatatoronto] on 6 November 2024.
+The primary data source for this project is the Climate Perception Study dataset, provided by the City of Toronto via the Open Data Toronto platform [@climateperceptionstudy]. This dataset offers insights into public perceptions of climate change in Toronto in the years 2018 and 2021. This dataset was accessed from `Open Data Toronto` [@opendatatoronto] on 6 November 2024.
 
 ## Software and R-packages
-This project was conducted using the statistical software `R` [@citeR]. Data cleaning and manipulation were primarily facilitated by the `tidyverse` package [@tidyverse], which encompasses various essential tools. Within this suite, `dplyr` [@dplyr] was employed for data manipulation tasks such as filtering, summarizing, and joining datasets, while `readr` [@readr] provided efficient functionality for reading and writing rectangular text data. Specifically, the `write_csv` function from `tidyverse` was used to save the raw 2018 dataset. To handle Excel files, we incorporated the `httr` package for downloading files directly from online sources and `readxl` [@readxl], which enabled us to read Excel files seamlessly. Additionally, the `openxlsx` package was utilized to create a new Excel workbook with multiple sheets, allowing us to store the 2021 dataset in a structured format.
+This project was conducted using the statistical software `R` [@citeR], with several packages facilitating data cleaning, analysis and reporting. The `tidyverse` package [@tidyverse] was central to the project, with `dplyr` [@dplyr] used in the cleaning and exploratory data analysis scripts for filtering, summarizing, and joining datasets. `readr` [@readr] handled reading and writing text data, while `tidyr` [@tidyr] reshaped data. `stringr` [@stringr] managed character strings, and `forecats` [@forecats] reordered factor levels for visualizations. 
 
-The `arrow` package was employed to handle large datasets efficiently, ensuring smooth data processing, while `forcats` was used for reordering factor levels to facilitate more insightful analyses and visualizations. In terms of data tidying, the `tidyr` and `stringr` packages allowed us to reshape and clean the data by managing character strings and handling missing values. The [@rpart2024] and [@partykit2024] were used in to make the models. For the final documentation and report generation, the `knitr` package was instrumental in integrating R code and outputs into a cohesive and reproducible report format. This suite of R packages collectively enabled us to conduct thorough data management, manipulation, and analysis, ultimately contributing to the successful completion of the project. 
+In the download script, `httr`[@httr] retrieved files from `Open Data Toronto` [@opendatatoronto], while`readxl` [@readxl] read Excel files, and `openxlsx` [@openxlsx] created structured Excel workbooks. The `arrow` package [@arrow] optimized data storage and was used in the simulation and cleaning scripts to save datasets as Parquet files. 
+
+For modeling, `rpart` [@rpart] and `partykit` [@partykit] built and visualized decision trees in the model script. The `testthat` package [@testthat] validated simulated and cleaned datasets in their respective scripts. Visualizations were created using `ggplot2` [@ggplot2] in the exploratory data analysis. Reporting relied on `knitr` [@knitr] and `kableExtra` [@kableExtra] to integrate code, outputs, and styled tables. The `tinytable`package [@tinytable] generated compact tables in both the exploratory data analysis script as well as in the paper. These packages ensured efficient and streamlined data management, analysis and reporting throughout the project. 
 
 ## Methodology 
 ### Data Collection
-The data for this analysis comes from two surveys commissioned by the City of Toronto to assess residents' perceptions of climate change and their willingness to take community action. In 2018, Environics Research conducted n=404 online interviews with Toronto residents aged 18 and older between October 11 and October 18. Each interview lasted approximately 10 minutes. The sample was drawn from an online panel, with quotas set by region, age, and gender to reflect the city’s population based on the 2016 Census, and minor weighting was applied. Due to the non-random nature of the online survey, no margin of error was assigned, though a random sample of this size would typically have a margin of ±4.9 percentage points, 19 times out of 20.
+To embark on this analysis, we turn to two pivotal surveys commissioned by the City of Toronto to capture residents' perceptions of climate change and their readiness to take action. Our journey begins in 2018, when Environics Research conducted an online survey with 404 Toronto residents aged 18 and older, from October 11 to 18. The sample, drawn from an online panel, was carefully crafted with quotas based on region, age, and gender to mirror the 2016 Census. A touch of minor weighting ensured a more representative reflection of the population. However, it’s important to note that this non-random sample introduces some potential bias, an aspect we keep in mind as we move forward.
 
-In 2021, a second survey was conducted by Ipsos, a global market research company. This survey included n=1,400 Toronto residents aged 18 and older and used a mixed-method approach. The sample consisted of 1,000 respondents from an online panel, 300 recruited via cell phone and landline, and 100 online interviews conducted in Mandarin, Cantonese, and Punjabi. This combination of methods aimed to enhance the survey's representativeness. For analysis, Version 2 of the 2021 dataset, which presents responses in a numeric format, was used.
+The path continues in 2021 with Ipsos at the helm, stepping in with a more expansive survey, engaging 1,400 residents from a mix of methods: 1,000 from an online panel, 300 via phone, and 100 through online interviews conducted in Mandarin, Cantonese, and Punjabi. This diverse approach sought to enhance the survey’s representativeness across Toronto’s varied communities. For our analysis, we used Version 2 of the 2021 dataset, where responses were presented in a clear, numeric format, offering a solid foundation for our exploration.
+
+With this data in hand, we are now ready to delve into the intricacies of the findings, unearthing patterns, and understanding the deeper story they tell about Toronto’s residents and their views on climate change and collective action.
 
 ### Data Analysis
-The primary focus of this analysis was the 2018 dataset, examining six key variables: age, education, extent informed, likelihood to take action, reasons for not taking action, and the best method for delivering information regarding climate change action. I analyzed these variables at the individual level in the 2018 dataset by calculating the percentages within each category, which provided a clear understanding of the distribution and trends within the population.
+The focus of this analysis was the 2018 dataset, which examined five key variables: age, education, extent informed, likelihood to take action, and preferred methods for delivering information about climate change action. These variables were analyzed at the individual level, allowing for an in-depth exploration of residents' perspectives.
 
-In addition, I compared the 2018 dataset to the 2021 summary data to assess changes over the years. By calculating the percentage distribution for each variable in both years, I was able to identify any shifts in public awareness, engagement, and preferences regarding climate change action. This comparison revealed whether there have been notable changes in factors like the public’s level of information about climate change, their likelihood to take action, and their preferred communication methods.
-
-This two-step approach allowed for a comprehensive understanding: a detailed exploration of the 2018 data combined with a broader comparison of trends between 2018 and 2021.
+For 2021, summary data was available instead of individual-level data. To compare trends, I created summary data for 2018. Calculating the percentage distribution for each variable in both years helped identify shifts in demographics, public awareness, and engagement, as well as changes in preferred communication methods. Although the absence of individual data for 2021 posed a challenge, this comparison still provided a dynamic view of evolving climate change perspectives in Toronto. The two-step approach—detailing 2018 data and then comparing it with 2021 trends—created a comprehensive narrative of change.
 
 
 ## Features
 ### Age
 #### Individual 2018
-@fig-one illustrates the age distribution of survey respondents in 2018. The histogram displays the frequency of respondents across different age groups, with the x-axis representing age intervals and the y-axis indicating the number of respondents within each interval. The distribution is relatively balanced, with two noticeable peaks around the 30–40 and 50–60 age ranges, suggesting these age groups are the most represented in the survey.
+@fig-one presents the age distribution of survey respondents in 2018. The histogram shows the frequency of respondents across age groups, with age intervals on the x-axis and the number of respondents on the y-axis. The distribution is fairly balanced, with peaks around the 30–40 and 50–60 age ranges, indicating that these groups were the most represented in the survey.
 
-The vertical dotted lines in the figure highlight key statistical measures: the green dotted line represents the median age, while the blue dashed line indicates the mean age of the respondents. Both measures fall near the center of the distribution, reinforcing the observation that the sample is primarily composed of middle-aged individuals. Although the distribution appears fairly symmetrical, there is a gradual decline in respondent frequency after the age of 60, with fewer participants aged 90 and above, indicating a smaller representation of older individuals.
-
-Overall, @fig-one provides valuable context for understanding the demographic composition of the survey sample. The predominance of middle-aged respondents may influence the interpretation of survey results, particularly if age is a factor in attitudes, behaviors, or preferences related to the study.
+The vertical dotted lines highlight the median and mean ages. The green dotted line represents the median age, and the blue dashed line represents the mean age, both located just above 45. This suggests the sample is predominantly middle-aged, with a gradual decline in respondent frequency after the age of 60. Few participants were over 80, indicating a lower representation of older individuals
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
 #| label: fig-one
-#| fig-cap: "The histogram shows the distribution of age given the 2018 survey respondents."
+#| fig-cap: "Distribution of age given the 2018 survey respondents. The mean and median of the sample is indicated with dashed and dotted lines respectively."
 
 library(here)
 
@@ -73,7 +73,7 @@ knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 \newpage
 
 #### Comparison 2018 to 2021
-@fig-two illustrates the different age ditribution for 2018 and 2021 surveys. The major difference is that there was greater representation of younger inviduals ranging from 18 to 23 in 2021 compared to 2018. The remaining age groups were not very different. 
+@fig-two compares the age distributions between 2018 and 2021. The main difference is an increase in respondents aged 18-23 in 2021, with other age groups remaining relatively stable. This shift may reflect changing demographic patterns or differences in survey methodologies within the three years.
 
 ```{r}
 #| warning: false
@@ -103,9 +103,9 @@ age_summary_combined %>%
 ```
 
 
-### Highest Level of Education Completed
+### Education
 #### Individual 2018
-@fig-three illustrates the distribution of survey respondents by their highest level of education attained. The most frequently reported education levels are "Completed undergraduate degree" and "Post graduate/professional school," with both categories having a noticeably higher frequency compared to others, indicating a well-educated respondent population. In contrast, fewer respondents reported "Some community college, vocational, trade school" and "Completed community college, vocational, trade school," suggesting these levels are less common among participants. Additionally, a small portion of respondents preferred not to disclose their education level. This distribution highlights a skew toward higher educational attainment within the sample, which may influence responses related to socio-economic factors and other survey topics.
+@fig-three shows the distribution of respondents by their highest level of education attained in 2018. The most common education levels are "Completed undergraduate degree" and "Postgraduate/professional school," indicating a well-educated respondent population. In contrast, fewer respondents reported having attended or completed community college, vocational, or trade school, suggesting lower representation in these categories. A small portion of respondents chose not to disclose their education level. Overall, the distribution reflects a skew toward higher levels of educational attainment.
 ```{r}
 #| warning: false
 #| echo: false
@@ -116,8 +116,12 @@ age_summary_combined %>%
 knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
 
 ```
+
 #### Comparison 2018 to 2021
-@fig-four illustrates respondant education level in 2018 and 2021 respectively. Please note, the categories of education level are different for 2018 and 2021 as these were different surveys and categories were updated in 2021. Despite this, we are still able to make comparisons. Individuals with high school diplomas or less account for 9 for 2018 and 38 for 2021 (addition of less than highs school and high school or equivalent categories). This could indicate that the younger population was included more in the 2021 suvey or that less education individuals were surveyed. Additionally, its not super clear howver those with a post graduate or professional degree accounted for 29 percent in 2018 and 35 percent in 2021. This illustrates that more educated inviduals responded to the 2021 survey.
+@fig-four compares the education levels of respondents in 2018 and 2021. The two surveys used different education categories, making direct comparisons challenging. In 2018, 9% of respondents had a high school diploma or less, while in 2021, this figure rose to 38%, due to the addition of the "less than high school" and "high school or equivalent" categories. This shift indicates that the 2021 survey better represented individuals with lower educational attainment.
+
+The 2018 survey provided more detailed categories, including options for community college, trade school, and distinctions between "some" versus "completed" education. In contrast, the 2021 survey used broader categories, which likely reduced the specificity of educational data. Notably, the 2021 survey appears to have offered a more balanced sample, with a wider spread across various education levels, while the 2018 sample was noticeably skewed toward respondents with higher educational attainment. This suggests that the 2021 survey may have captured a broader range of educational backgrounds, providing a more well-rounded representation of Toronto’s population.
+
 ```{r}
 #| warning: false
 #| echo: false
@@ -233,8 +237,7 @@ communication_summary_combined %>%
 
 
 ```
-### Likelihood Taking Action
-#### Individual 2018
+### Likelihood Taking Action 
 The likelihood of taking action against climate change was explored by assessing individuals' intentions and behaviors. 
 @fig-nine illustrates self-reported likelihood of taking certain actions that minimize climate change effects. On the x-axis, we have the nine different climate actions and on the y-axis is the percentage. The stacked bar chart allows understanding of how likely individuals are to take part in the given actions. 
 Sorting waste into the correct bins is the action that most individuals are doing right now, accounting for 60 percent whith 24 percent saying they are very likely to take part in this action. The next most prominent actions are walking or cycling short distances, reduce hydro usage, reduce waste and home improvements. 40 percent of invidiuals report walking or cycling when traveling shorter distances in the city with 22 percent reporting they are very likely. However, 7 percent say they are very unlikely to change their method of transportation. Reducing the amount of energy and water use is already done by 36 percent and very likely for 29 percent only a mere 3 percent is very unlikely. Reducing personal waste such as contributing to repurposing used products has similar percentages to responses for reducing hydro but even fewer individuals that report they are very unlikely to take action. Similarly, the likelihoods for making home improvements for energy efficiency such as energy-efficient appliances, programmable thermostat, LED lightbulbs, green or cool roof. 
