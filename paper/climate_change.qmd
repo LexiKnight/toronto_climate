@@ -10,7 +10,8 @@ abstract: "This study investigates how age and education influence people's like
 format:
   pdf:
     toc: true
-number-sections: true
+    number_sections: true
+    toc_depth: 2   # Optional: to control how deep the TOC goes (e.g., section and subsection)
 bibliography: references.bib
 ---
 
@@ -54,7 +55,7 @@ For 2021, summary data was available instead of individual-level data. To compar
 ## Features
 ### Age
 #### Individual 2018
-@fig-one presents the age distribution of survey respondents in 2018. The histogram shows the frequency of respondents across age groups, with age intervals on the x-axis and the number of respondents on the y-axis. The distribution is fairly balanced, with peaks around the 30–40 and 50–60 age ranges, indicating that these groups were the most represented in the survey.
+fig-one presents the age distribution of survey respondents in 2018. The histogram shows the frequency of respondents across age groups, with age intervals on the x-axis and the number of respondents on the y-axis. The distribution is fairly balanced, with peaks around the 30–40 and 50–60 age ranges, indicating that these groups were the most represented in the survey.
 
 The vertical dotted lines highlight the median and mean ages. The green dotted line represents the median age, and the blue dashed line represents the mean age, both located just above 45. This suggests the sample is predominantly middle-aged, with a gradual decline in respondent frequency after the age of 60. Few participants were over 80, indicating a lower representation of older individuals
 
@@ -62,7 +63,7 @@ The vertical dotted lines highlight the median and mean ages. The green dotted l
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-one
+##| label: fig-one
 #| fig-cap: "Distribution of age given the 2018 survey respondents. The mean and median of the sample is indicated with dashed and dotted lines respectively."
 
 library(here)
@@ -73,13 +74,13 @@ knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 \newpage
 
 #### Comparison 2018 to 2021
-@fig-two compares the age distributions between 2018 and 2021. The main difference is an increase in respondents aged 18-23 in 2021, with other age groups remaining relatively stable. This shift may reflect changing demographic patterns or differences in survey methodologies within the three years.
+fig-two compares the age distributions between 2018 and 2021. The main difference is an increase in respondents aged 18-23 in 2021, with other age groups remaining relatively stable. This shift may reflect changing demographic patterns or differences in survey methodologies within the three years.
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-two
+##| label: fig-two
 #| fig-cap: "This table highlights the age distribution of survey respondents in 2018 and 2021."
 
 # load libraries 
@@ -106,12 +107,12 @@ age_summary_combined %>%
 
 ### Education
 #### Individual 2018
-@fig-three shows the distribution of respondents by their highest level of education attained in 2018. The most common education levels are "Completed undergraduate degree" and "Postgraduate/professional school," indicating a well-educated respondent population. In contrast, fewer respondents reported having attended or completed community college, vocational, or trade school, suggesting lower representation in these categories. A small portion of respondents chose not to disclose their education level. Overall, the distribution reflects a skew toward higher levels of educational attainment.
+fig-three shows the distribution of respondents by their highest level of education attained in 2018. The most common education levels are "Completed undergraduate degree" and "Postgraduate/professional school," indicating a well-educated respondent population. In contrast, fewer respondents reported having attended or completed community college, vocational, or trade school, suggesting lower representation in these categories. A small portion of respondents chose not to disclose their education level. Overall, the distribution reflects a skew toward higher levels of educational attainment.
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-three
+##| label: fig-three
 #| fig-cap: "The histogram shows the distribution of education levels of 2018 survey respondents."
 
 knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
@@ -119,7 +120,7 @@ knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png")
 ```
 
 #### Comparison 2018 to 2021
-@fig-four compares the education levels of respondents in 2018 and 2021. The two surveys used different education categories, making direct comparisons challenging. In 2018, 9% of respondents had a high school diploma or less, while in 2021, this figure rose to 38%, due to the addition of the "less than high school" and "high school or equivalent" categories. This shift indicates that the 2021 survey better represented individuals with lower educational attainment.
+fig-four compares the education levels of respondents in 2018 and 2021. The two surveys used different education categories, making direct comparisons challenging. In 2018, 9% of respondents had a high school diploma or less, while in 2021, this figure rose to 38%, due to the addition of the "less than high school" and "high school or equivalent" categories. This shift indicates that the 2021 survey better represented individuals with lower educational attainment.
 
 The 2018 survey provided more detailed categories, including options for community college, trade school, and distinctions between "some" versus "completed" education. In contrast, the 2021 survey used broader categories, which likely reduced the specificity of educational data. Notably, the 2021 survey appears to have offered a more balanced sample, with a wider spread across various education levels, while the 2018 sample was noticeably skewed toward respondents with higher educational attainment. This suggests that the 2021 survey may have captured a broader range of educational backgrounds, providing a more well-rounded representation of Toronto’s population.
 
@@ -127,8 +128,8 @@ The 2018 survey provided more detailed categories, including options for communi
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-four
-#| fig-cap: This table highlights the education distribution of survey respondents in 2018 and 2021."
+##| label: fig-four
+#| fig-cap: "This table highlights the education distribution of survey respondents in 2018 and 2021."
 
 # Load necessary libraries
 library(tinytable)
@@ -150,25 +151,25 @@ education_summary_combined_tiny
 
 ### Extent Feel Informed
 #### Individual 2018
-@fig-five depicts the distribution of self-reported climate change knowledge among survey respondents in 2018. The majority of participants identified as "Very informed," making this the most prevalent category by a significant margin. A moderate number of respondents reported being "Not very informed," while a smaller yet noticeable group described themselves as "Extremely informed." In contrast, the categories "Not at all informed" and "Not very informed" have the lowest frequencies, with "Not at all informed" being particularly rare. This distribution suggests that most respondents possess a relatively high level of awareness about climate change, with very few indicating a lack of knowledge on the topic.
+fig-five depicts the distribution of self-reported climate change knowledge among survey respondents in 2018. The majority of participants identified as "Very informed," making this the most prevalent category by a significant margin. A moderate number of respondents reported being "Not very informed," while a smaller yet noticeable group described themselves as "Extremely informed." In contrast, the categories "Not at all informed" and "Not very informed" have the lowest frequencies, with "Not at all informed" being particularly rare. This distribution suggests that most respondents possess a relatively high level of awareness about climate change, with very few indicating a lack of knowledge on the topic.
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-five
-#| fig-cap: The histogram shows the distribution of self-reported climate change knowledge among 2018 survey respondents.
+##| label: fig-five
+#| fig-cap: "The histogram shows the distribution of self-reported climate change knowledge among 2018 survey respondents."
 
 knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.png"))
 
 ```
 #### Comparison 2018 to 2021
-@fig-six illustrates the self-reported level of extent inviduals feel informed about climate change and climate action for 2018 and 2021. In 2018, the large marjority of individuals say they are very informed with 60 percent and the follwoign category is not very informed with 27 percent. In 2021, The majority of inividuals also say they are very informed but to a lesser degree with 48 percent and this is closely followed by only a little informed with 37 percent. There is a trend that invidiusls in 2018 reported greater levels of knowldege about climate change whereas 2021 illstrates a more even split between very informed and only little informed, portraying that fewer individuals have adequate knowledge about climate change. 
+fig-six illustrates the self-reported level of extent inviduals feel informed about climate change and climate action for 2018 and 2021. In 2018, the large marjority of individuals say they are very informed with 60 percent and the follwoign category is not very informed with 27 percent. In 2021, The majority of inividuals also say they are very informed but to a lesser degree with 48 percent and this is closely followed by only a little informed with 37 percent. There is a trend that invidiusls in 2018 reported greater levels of knowldege about climate change whereas 2021 illstrates a more even split between very informed and only little informed, portraying that fewer individuals have adequate knowledge about climate change. 
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-six
+##| label: fig-six
 #| fig-cap: "This table highlights the extent feel informed distribution of survey respondents in 2018 and 2021."
 
 # Load libraries
@@ -194,14 +195,14 @@ informed_summary_combined %>%
 
 ### Best Method of Delivery
 #### Individual 2018
-@fig-seven, shows 2018 survey results for the preferred method for receiving climate change information. Advertising campaigns emerged as the most popular choice, selected by approximately 55 percent of respondents, followed closely by newsletters with 52 percent and the Toronto.ca website with 46 percent. On the other hand, social media platforms such as Facebook, Instagram, and Twitter were less popular overall, with Twitter 12 percent and Instagram 17 percent garnering the fewer votes. Notably, only 5 percent of respondents reported being uninterested in receiving information about climate action. These findings suggest that more traditional communication methods, such as advertising and newsletters, resonated better with respondents compared to social media.
+fig-seven, shows 2018 survey results for the preferred method for receiving climate change information. Advertising campaigns emerged as the most popular choice, selected by approximately 55 percent of respondents, followed closely by newsletters with 52 percent and the Toronto.ca website with 46 percent. On the other hand, social media platforms such as Facebook, Instagram, and Twitter were less popular overall, with Twitter 12 percent and Instagram 17 percent garnering the fewer votes. Notably, only 5 percent of respondents reported being uninterested in receiving information about climate action. These findings suggest that more traditional communication methods, such as advertising and newsletters, resonated better with respondents compared to social media.
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-seven
-#| fig-cap: The stacked bar plot illustrates the preferred methods of communication for receiving information about climate change and climate action.
+##| label: fig-seven
+#| fig-cap: "The stacked bar plot illustrates the preferred methods of communication for receiving information about climate change and climate action."
 
 library(here)
 
@@ -211,7 +212,7 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 ```
 
 #### Comparison 2018 to 2021
-@fig-eight compares the preferred methods of delivering climate change information between the 2018 and 2021 surveys. While the top three methods namely advertising campaigns, newsletters, and the Toronto.ca website remained consistent across both years, there were notable shifts in preferences. Traditional methods such as newsletters, advertising campaigns, brochures, and pamphlets saw a decline in 2021. In contrast, social media platforms including Twitter, Facebook, and Instagram gained traction, reflecting a growing reliance on digital communication channels.
+fig-eight compares the preferred methods of delivering climate change information between the 2018 and 2021 surveys. While the top three methods namely advertising campaigns, newsletters, and the Toronto.ca website remained consistent across both years, there were notable shifts in preferences. Traditional methods such as newsletters, advertising campaigns, brochures, and pamphlets saw a decline in 2021. In contrast, social media platforms including Twitter, Facebook, and Instagram gained traction, reflecting a growing reliance on digital communication channels.
 
 Additionally, the 2021 survey introduced new categories, including the BetterHomesTO.ca website, which accounted for 15 percent of responses. This addition underscores the increasing importance of specialized online platforms in engaging the public on climate action. These changes highlight a shift toward more diverse and digitally focused communication strategies over time.
 
@@ -219,7 +220,7 @@ Additionally, the 2021 survey introduced new categories, including the BetterHom
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-eight
+##| label: fig-eight
 #| fig-cap: "This table highlights the prefered method of communication of survey respondents in 2018 and 2021."
 
 # Load libraries
@@ -242,8 +243,9 @@ communication_summary_combined %>%
 
 
 ```
+
 ### Likelihood Taking Action 
-@fig-nine illustrates the self-reported likelihood of individuals taking various actions to minimize environmental impacts. The x-axis displays nine different climate actions, while the y-axis represents the percentage of individuals corresponding to each likelihood level. A stacked bar chart is used to visualize the distribution of responses, with a color-coded legend ranging from green (high likelihood of action) to red (low likelihood of action).
+fig-nine illustrates the self-reported likelihood of individuals taking various actions to minimize environmental impacts. The x-axis displays nine different climate actions, while the y-axis represents the percentage of individuals corresponding to each likelihood level. A stacked bar chart is used to visualize the distribution of responses, with a color-coded legend ranging from green (high likelihood of action) to red (low likelihood of action).
 
 Sorting waste into the correct bins is the most frequently reported action that individuals are currently undertaking, accounting for 60 percent of responses. Other common actions individuals are already participating in include walking or cycling short distances with 40 percent, reducing waste by contributing to the repurposing of used products with 37 percent and reducing hydro usage with 36 percent 
 
@@ -253,8 +255,8 @@ In contrast, the least popular actions include switching to electric or hybrid v
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-nine
-#| fig-cap: The stacked bar plot shows the likelihood of survey respondents taking various actions to address climate change.
+##| label: fig-nine
+#| fig-cap: "The stacked bar plot shows the likelihood of survey respondents taking various actions to address climate change."
 
 knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot.png"))
 
@@ -311,42 +313,42 @@ The model predicts that younger individuals with higher education levels are mor
 ### Transportation Actions
 
 #### Likelihood of switching to an electric or hybrid vehicle
-@fig-ten reveals that education is the primary predictor for the likelihood of switching to an electric or hybrid vehicle. Individuals with "Some Community/Trade School" or "Some University" education are "Very likely" to invest, though with moderate variability (error rate 63.8%). Those with higher education show more age-based segmentation. Younger individuals under 35 years are more likely to invest, with a lower error rate (30%). Older individuals, particularly those over 69 years, are "Very unlikely" to invest. This model demonstrates how age and education interact to influence vehicle choice.
+fig-ten reveals that education is the primary predictor for the likelihood of switching to an electric or hybrid vehicle. Individuals with "Some Community/Trade School" or "Some University" education are "Very likely" to invest, though with moderate variability (error rate 63.8%). Those with higher education show more age-based segmentation. Younger individuals under 35 years are more likely to invest, with a lower error rate (30%). Older individuals, particularly those over 69 years, are "Very unlikely" to invest. This model demonstrates how age and education interact to influence vehicle choice.
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-ten
-#| fig-cap: Probability tree for likelihood of investing in an electric or hybrid vehicle, predicted by age and education.
+##| label: fig-ten
+#| fig-cap: "Probability tree for likelihood of investing in an electric or hybrid vehicle, predicted by age and education."
 
 knitr::include_graphics(here::here("models/vehicle_electric_tree.png"))
 
 ```
 
 #### Likelihood of minimizing car use
-@fig-eleven shows that the likelihood of minimizing car use is consistent across the sample, with a high error rate (61.9%). The model classifies all individuals into the "Already doing this or have done this" category, indicating widespread adoption of this behavior, regardless of age or education
+fig-eleven shows that the likelihood of minimizing car use is consistent across the sample, with a high error rate (61.9%). The model classifies all individuals into the "Already doing this or have done this" category, indicating widespread adoption of this behavior, regardless of age or education
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-eleven
-#| fig-cap: Probability tree for likelihood of minimizing car use, predicted by age and education.
+##| label: fig-eleven
+#| fig-cap: "Probability tree for likelihood of minimizing car use, predicted by age and education."
 
 knitr::include_graphics(here::here("models/minimize_car_tree.png"))
 
 ```
 
 #### Likelihood of walking or cycling shorter distances
-@fig-twelve indicates that education is the primary factor influencing short-distance walking or cycling. Those with higher education (postgraduate, undergraduate, or some university) are more likely to engage in this behavior, with an error rate of 51.9%. For those with lower education, age plays a significant role, with younger individuals (under 66 years) more likely to walk or cycle, with an error rate of 60%. This model highlights how education and age together shape short-distance mobility, with error rates reflecting the model's predictive variability.
+fig-twelve indicates that education is the primary factor influencing short-distance walking or cycling. Those with higher education (postgraduate, undergraduate, or some university) are more likely to engage in this behavior, with an error rate of 51.9%. For those with lower education, age plays a significant role, with younger individuals (under 66 years) more likely to walk or cycle, with an error rate of 60%. This model highlights how education and age together shape short-distance mobility, with error rates reflecting the model's predictive variability.
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-twelve
-#| fig-cap: Probability tree for likelihood of walking or cycling shorter distances, predicted by age and education.
+##| label: fig-twelve
+#| fig-cap: "Probability tree for likelihood of walking or cycling shorter distances, predicted by age and education."
 
 knitr::include_graphics(here::here("models/short_distance_tree.png"))
 
@@ -355,39 +357,39 @@ knitr::include_graphics(here::here("models/short_distance_tree.png"))
 
 ### Waste and Product Actions
 #### Likelihood of purchasing green products
-@fig-thirteen reveals that age is the initial split for green product purchasing behavior. Younger individuals (under 38 years) are more likely to purchase green products, with an error rate of 51.9%. Education further refines the prediction. Older individuals (over 38 years) are classified by both age and education, with postgraduate education leading to higher engagement in purchasing green products, with an error rate of 60%. This model shows how age and education influence consumer choices in sustainable products.
+fig-thirteen reveals that age is the initial split for green product purchasing behavior. Younger individuals (under 38 years) are more likely to purchase green products, with an error rate of 51.9%. Education further refines the prediction. Older individuals (over 38 years) are classified by both age and education, with postgraduate education leading to higher engagement in purchasing green products, with an error rate of 60%. This model shows how age and education influence consumer choices in sustainable products.
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-thirteen
-#| fig-cap: Probability tree for likelihood of purchasing green products, predicted by age and education.
+##| label: fig-thirteen
+#| fig-cap: "Probability tree for likelihood of purchasing green products, predicted by age and education."
 
 knitr::include_graphics(here::here("models/green_product_tree.png"))
 
 ```
 
 #### Likelihood of reducing waste by repurposing used product
-@fig-fourteen shows that age is the primary factor for waste reduction behaviors. Younger individuals (under 35 years) are more likely to repurpose waste, with an error rate of 57.1%. Education further refines the classification. Older individuals (over 35 years) show varied likelihoods based on education, with more highly educated individuals more likely to repurpose waste, with an error rate of 60%. This highlights the influence of both age and education on waste-reduction habits.
+fig-fourteen shows that age is the primary factor for waste reduction behaviors. Younger individuals (under 35 years) are more likely to repurpose waste, with an error rate of 57.1%. Education further refines the classification. Older individuals (over 35 years) show varied likelihoods based on education, with more highly educated individuals more likely to repurpose waste, with an error rate of 60%. This highlights the influence of both age and education on waste-reduction habits.
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-fourteen
-#| fig-cap: Probability tree for likelihood of reducing waste, predicted by age and education.
+##| label: fig-fourteen
+#| fig-cap: "Probability tree for likelihood of reducing waste, predicted by age and education."
 
 knitr::include_graphics(here::here("models/reduce_waste_tree.png"))
 
 ```
 
 #### Likelihood of sorting waste correctly
-@fig-fifteen identifies education as the primary factor for sorting waste. Those with higher education (at least community/trade school or postgraduate) are more likely to sort waste correctly, with an error rate of 37.3%. Age further refines the predictions for those with lower education levels, with younger individuals under 37 years being more likely to sort waste correctly, albeit with a higher error rate of 57.1%. Older individuals (37 years and above) are more likely to sort waste correctly, with an error rate of 35.3%. The model emphasizes the role of education in fostering proper waste-sorting behaviors, with age providing additional nuance.
+fig-fifteen identifies education as the primary factor for sorting waste. Those with higher education (at least community/trade school or postgraduate) are more likely to sort waste correctly, with an error rate of 37.3%. Age further refines the predictions for those with lower education levels, with younger individuals under 37 years being more likely to sort waste correctly, albeit with a higher error rate of 57.1%. Older individuals (37 years and above) are more likely to sort waste correctly, with an error rate of 35.3%. The model emphasizes the role of education in fostering proper waste-sorting behaviors, with age providing additional nuance.
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-fifteen
-#| fig-cap: Probability tree for likelihood of sorting waste correctly, predicted by age and education.
+##| label: fig-fifteen
+#| fig-cap: "Probability tree for likelihood of sorting waste correctly, predicted by age and education."
 
 knitr::include_graphics(here::here("models/sort_waste_tree.png"))
 
@@ -396,28 +398,28 @@ knitr::include_graphics(here::here("models/sort_waste_tree.png"))
 
 ### Home and Lifestyle Changes
 #### Likelihood of making home improvements
-@fig-sixteen shows that age is the key predictor for home improvement behavior. Individuals aged 36 years and older are predominantly classified as "Already doing this or have done this," with an error rate of 59.6%. For younger individuals (under 36), education plays a role: those with higher educational attainment ("Community/Trade School," "Some University," or "Postgraduate") are "Very likely" to make home improvements, with an error rate of 55%. Conversely, individuals with lower education levels are classified as "Somewhat likely," with a higher error rate of 67.4%. This model highlights how age and education interact to influence home improvement decisions.
+fig-sixteen shows that age is the key predictor for home improvement behavior. Individuals aged 36 years and older are predominantly classified as "Already doing this or have done this," with an error rate of 59.6%. For younger individuals (under 36), education plays a role: those with higher educational attainment ("Community/Trade School," "Some University," or "Postgraduate") are "Very likely" to make home improvements, with an error rate of 55%. Conversely, individuals with lower education levels are classified as "Somewhat likely," with a higher error rate of 67.4%. This model highlights how age and education interact to influence home improvement decisions.
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-sixteen
-#| fig-cap: Probability tree for likelihood of making home improvements predicted by age and education.
+##| label: fig-sixteen
+#| fig-cap: "Probability tree for likelihood of making home improvements predicted by age and education."
 
 knitr::include_graphics(here::here("models/home_improvement_tree.png"))
 
 ```
 
 #### Likelihood of adopting meat alternatives
-@fig-seventeen demonstrates that age is the primary factor for adopting meat alternatives. Younger individuals (under 35 years) are more likely to adopt meat alternatives, with an error rate of 44%. For individuals aged 35 years or older, education becomes a key predictor. Those with community/trade school, undergraduate, or postgraduate education are more likely to adopt meat alternatives, with varying error rates, including "Somewhat unlikely" for younger individuals at 62.9%. This model highlights how age and education together shape dietary choices.
+fig-seventeen demonstrates that age is the primary factor for adopting meat alternatives. Younger individuals (under 35 years) are more likely to adopt meat alternatives, with an error rate of 44%. For individuals aged 35 years or older, education becomes a key predictor. Those with community/trade school, undergraduate, or postgraduate education are more likely to adopt meat alternatives, with varying error rates, including "Somewhat unlikely" for younger individuals at 62.9%. This model highlights how age and education together shape dietary choices.
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-seventeen
-#| fig-cap: Probability tree for likelihood of adopting meat alternatives, predicted by age and education.
+##| label: fig-seventeen
+#| fig-cap: "Probability tree for likelihood of adopting meat alternatives, predicted by age and education."
 
 knitr::include_graphics(here::here("models/protein_alternative_tree.png"))
 
@@ -425,14 +427,14 @@ knitr::include_graphics(here::here("models/protein_alternative_tree.png"))
 
 
 #### Likelihood of reducing hydro usage
-@fig-eighteen reveals that age is the primary predictor influencing hydro usage reduction. Younger individuals (under 35 years) are "Very likely" to reduce hydro usage, with an error rate of 60.9%. Older individuals (35 years and above) are further split by education and age, with those over 64 years also "Very likely" to engage in hydro conservation, with a lower error rate of 37.5%. Middle-aged individuals (35–64 years) with higher education are either "Already doing this or have done this" (error rate 56.3%) or "Somewhat likely" (error rate 50.0%). This model underscores the combined role of age and education in promoting energy-saving behaviors.
+fig-eighteen reveals that age is the primary predictor influencing hydro usage reduction. Younger individuals (under 35 years) are "Very likely" to reduce hydro usage, with an error rate of 60.9%. Older individuals (35 years and above) are further split by education and age, with those over 64 years also "Very likely" to engage in hydro conservation, with a lower error rate of 37.5%. Middle-aged individuals (35–64 years) with higher education are either "Already doing this or have done this" (error rate 56.3%) or "Somewhat likely" (error rate 50.0%). This model underscores the combined role of age and education in promoting energy-saving behaviors.
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-eighteen
-#| fig-cap: Probability tree for likelihood of reducing hydro usage, predicted by age and education.
+##| label: fig-eighteen
+#| fig-cap: "Probability tree for likelihood of reducing hydro usage, predicted by age and education."
 
 knitr::include_graphics(here::here("models/reduce_hydro_tree.png"))
 
@@ -449,9 +451,9 @@ fig-nineteen presents the accuracy of models predicting climate-friendly actions
 #| warning: false
 #| echo: false
 #| message: false
-#| results: hide
-# #| label: fig-nineteen
-#| fig-cap: This table presents the accuracy of models predicting the likelihood of various climate-friendly actions based on age and education.
+#| results: asis
+##| label: fig-nineteen
+#| fig-cap: "This table presents the accuracy of models predicting the likelihood of various climate-friendly actions based on age and education."
 
 # load packages
 library(dplyr)
@@ -468,13 +470,16 @@ model_accuracies <- model_accuracies %>%
   rename(`Accuracy (%)` = Accuracy)
 
 # Check data to ensure it loaded and rounded correctly
-print(model_accuracies)
+#print(model_accuracies)
 
+# Render the table
+knitr::kable(model_accuracies, format = "latex", booktabs = TRUE)
 
 ```
 
+
 ## Likelihood taking action by age
-@fig-twenty shows the relationship between age and the likelihood of engaging in various climate-related actions. The x-axis represents the age groups, and the y-axis indicates the percentage of respondents reporting different likelihood levels, from "Already doing this" to "Very unlikely". 
+fig-twenty shows the relationship between age and the likelihood of engaging in various climate-related actions. The x-axis represents the age groups, and the y-axis indicates the percentage of respondents reporting different likelihood levels, from "Already doing this" to "Very unlikely". 
 
 ### Transportation Actions
 In the category of transportation actions, the results reveal that for electric and hybrid vehicles, there is little difference between age groups in terms of the likelihood of adopting this behavior, but older individuals, particularly those aged 65+, are more likely to report being "very unlikely" to do so. For minimizing car use, individuals across all age groups report similar levels of engagement, with relatively consistent percentages already minimizing their car use. However, older individuals, particularly those in the 45-54 and 65+ age groups, are more likely to report being "very unlikely" to minimize car use. For walking or cycling short distances, the trend shows that all age groups, except for those aged 25-34, report similar levels of engagement, with a slight decrease in adoption among the 25-34 age group. Conversely, older individuals, especially those aged 65+, are more likely to report being "very unlikely" to engage in walking or cycling for short distances.
@@ -490,15 +495,15 @@ For making home improvements aimed at increasing energy efficiency, middle-aged 
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-twenty
-#| fig-cap: Likelihood of Taking Climate Change Actions by Age Group. The stacked bar chart illustrates the percentage of respondents across six age groups (15-24, 25-34, 35-44, 45-54, 55-64, 65+) in terms of their self-reported likelihood to engage in nine distinct climate-related actions. Each color represents a different level of likelihood, from "Already doing this or have done this" to "Very unlikely." The black dashed trend line highlights how the likelihood of action changes across age groups, providing insights into generational differences in climate-related behavior.
+##| label: fig-twenty
+#| fig-cap: "Likelihood of Taking Climate Change Actions by Age Group."
 
 knitr::include_graphics(here("data/03-figures_data", "likelihood_age_plot.png"))
 
 ```
 
 ## Likelihood taking action by education 
-@fig-twenty-one displays how the likelihood of engaging in climate-friendly actions varies by educational attainment. The x-axis represents the proportion of respondents in each education category, while the y-axis lists the educational levels, from low to high educational attainment. Each action is shown across separate facets, revealing how education level correlates with engagement in each behavior. 
+fig-twenty-one displays how the likelihood of engaging in climate-friendly actions varies by educational attainment. The x-axis represents the proportion of respondents in each education category, while the y-axis lists the educational levels, from low to high educational attainment. Each action is shown across separate facets, revealing how education level correlates with engagement in each behavior. 
 
 ### Transportation Actions
 In the category of transportation actions, the likelihood of adopting electric or hybrid vehicles does not significantly vary across age groups, but older individuals, particularly those aged 65+, are more likely to report being "very unlikely" to adopt this action. When considering minimizing car use, responses show relatively consistent engagement across all age groups, with similar percentages already engaging in this action. However, older age groups, particularly those aged 45-54 and 65+, are more likely to report being "very unlikely" to minimize their car use. For walking or cycling shorter distances, the trend is fairly consistent across age groups, with all groups showing similar levels of adoption, except for those aged 25-34, who report slightly lower engagement. Older age groups, particularly individuals aged 65+, are also more likely to report being "very unlikely" to engage in walking or cycling for short distances.
@@ -512,12 +517,12 @@ For making home improvements to increase energy efficiency, individuals in the 3
 #| warning: false
 #| echo: false
 #| message: false
-#| label: fig-twenty-one
+##| label: fig-twenty-one
+#| fig-cap: "Likelihood of Taking Climate Change Actions by Education Level."
 
 knitr::include_graphics(here("data/03-figures_data", "likelihood_education_plot.png"))
 
 ```
-
 
 
 # Discussion {#sec-discussion}
@@ -526,13 +531,13 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_education_plot.
 This paper explored how various demographic factors—such as age, education, and climate change knowledge—affect individuals’ engagement in climate-friendly behaviors. Through a comprehensive analysis of survey data from 2018 and 2021, we uncovered surprising patterns and deeper insights into the influences that drive people to adopt more sustainable actions. By investigating the interplay of these factors, we aimed to shed light on how societal changes, particularly in the context of climate action, reflect evolving values and behaviors.
 
 ## What We Learn About the World
-## Age and Climate-Friendly Behaviors {#sec-first-point}
+## Age and Climate-Friendly Behaviors
 Initially, we anticipated that younger individuals would lead the way in adopting climate-friendly actions. While younger people did excel in behaviors like walking or cycling and adopting meat alternatives, the older demographic demonstrated more significant commitment to long-term sustainable actions, such as making energy-efficient home improvements and reducing waste. This unexpected finding revealed that age influences sustainability in complex ways: younger people may embrace immediate, accessible actions, while older individuals engage in more transformative, lasting efforts. This highlights that climate action is a multi-generational effort, with each age group contributing in its own way.
 
-## The Role of Education in Sustainable Actions {#sec-second-point}
+## The Role of Education in Sustainable Actions
 We initially hypothesized that higher education levels would lead to greater engagement in climate-friendly behaviors, and the data largely supported this. Individuals with higher educational attainment were more likely to adopt green products and engage in waste reduction. However, some behaviors, such as reducing meat consumption, were less influenced by education and more affected by lifestyle preferences and cultural norms. Education acts as a strong catalyst for sustainability, but it works in conjunction with other factors, such as age and socio-economic status, to shape climate action. This reminds us that while education is a powerful tool for promoting sustainable behaviors, it is not the only factor at play.
 
-## The Influence of Climate Change Knowledge {#sec-third-point}
+## The Influence of Climate Change Knowledge
 To effectively encourage individuals to take climate action, it's crucial to consider the most popular and impactful methods of communication. Based on the findings from both 2018 and 2021, the most common methods for engaging individuals in climate-friendly behavior are ad campaigns, city newsletters/emails, and the official torontoca website. However, there has been a notable shift towards more diverse, digitally-focused strategies. Social media platforms, particularly Instagram and Twitter, have seen a significant increase in usage since 2018. These platforms allow for more dynamic, engaging, and personalized communication, which can be particularly effective for reaching younger demographics. Smith and Brown [@Smith2023] discuss how digital media can drive climate action by engaging youth through interactive and tailored content, offering an effective way to reach younger individuals who are more digitally engaged. Traditional methods, such as newsletters and brochures, continue to play a role but are becoming less dominant. To maximize engagement, a multi-channel approach that blends digital and traditional communication methods will likely resonate best with the broadest audience, particularly when targeting specific age groups and education levels.
 
 ## Weaknesses of the Study
@@ -557,7 +562,7 @@ This paper examined how age, education, and climate-friendly behaviors intersect
 
 # Appendix {#sec-appendix}
 
-# Idealized methodology {#sec-idealized-meth}
+# Idealized methodology 
 ## Survey objectives
 The primary objective of this study is to explore the factors influencing the likelihood of individuals engaging in climate-friendly behaviors. Specifically, the study aims to identify the age groups that are least likely to participate in sustainable actions and investigate how education levels impact climate-friendly behaviors. The research also seeks to determine whether individuals who report being relatively informed about climate change causes are more likely to take action to mitigate it. The underlying assumption is that individuals with greater knowledge of climate change should be more inclined to adopt behaviors that reduce its impact. Additionally, the study will examine the barriers that prevent people from engaging in sustainable behaviors, with the goal of identifying strategies to make these actions more accessible, affordable, and easy to adopt. The overarching aim is to develop solutions to increase the likelihood of participation in climate-friendly behaviors by removing existing barriers and promoting sustainability across different demographic groups. Part of this involves determining the most effective platforms for disseminating information about climate change, specifically by identifying which communication methods resonate most with different age groups. The research will also explore the role of education systems in fostering climate awareness and encouraging sustainable actions from a young age. Ultimately, the findings aim to provide actionable solutions to promote wider participation in climate-friendly actions, contributing to the fight against climate change.
 
