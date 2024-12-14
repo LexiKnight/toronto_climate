@@ -228,7 +228,7 @@ participation in climate action.
 \setcounter{tocdepth}{3}
 \tableofcontents
 }
-\subsection{Introduction}\label{introduction}
+\section{Introduction}\label{introduction}
 
 Climate change is one of the most pressing issues of our time. Its
 effects---rising temperatures, extreme weather events, and ecosystem
@@ -292,7 +292,7 @@ offers recommendations for enhancing climate action engagement.
 Additional methodological details and the data cleaning process are
 provided in Section~\ref{sec-appendix}.
 
-\subsection{Data}\label{sec-data}
+\section{Data}\label{sec-data}
 
 The primary data source for this project is the Climate Perception Study
 dataset, provided by the City of Toronto via the Open Data Toronto
@@ -301,7 +301,7 @@ public perceptions of climate change in Toronto in the years 2018 and
 2021. This dataset was accessed from \texttt{Open\ Data\ Toronto}
 ({``Open Data Toronto''} 2024) on 6 November 2024.
 
-\subsubsection{Software and R-packages}\label{software-and-r-packages}
+\subsection{Software and R-packages}\label{software-and-r-packages}
 
 This project was conducted using the statistical software \texttt{R} (R
 Core Team 2023), with several packages facilitating data cleaning,
@@ -336,9 +336,9 @@ both the exploratory data analysis script as well as in the paper. These
 packages ensured efficient and streamlined data management, analysis and
 reporting throughout the project.
 
-\subsubsection{Methodology}\label{methodology}
+\subsection{Methodology}\label{methodology}
 
-\paragraph{Data Collection}\label{data-collection}
+\subsubsection{Data Collection}\label{data-collection}
 
 To embark on this analysis, we turn to two pivotal surveys commissioned
 by the City of Toronto to capture residents' perceptions of climate
@@ -365,7 +365,7 @@ of the findings, unearthing patterns, and understanding the deeper story
 they tell about Toronto's residents and their views on climate change
 and collective action.
 
-\paragraph{Data Analysis}\label{data-analysis}
+\subsubsection{Data Analysis}\label{data-analysis}
 
 The focus of this analysis was the 2018 dataset, which examined five key
 variables: age, education, extent informed, likelihood to take action,
@@ -383,11 +383,11 @@ provided a dynamic view of evolving climate change perspectives in
 Toronto. The two-step approach---detailing 2018 data and then comparing
 it with 2021 trends---created a comprehensive narrative of change.
 
-\subsubsection{Features}\label{features}
+\subsection{Features}\label{features}
 
-\paragraph{Age}\label{age}
+\subsubsection{Age}\label{age}
 
-\subparagraph{Individual 2018}\label{individual-2018}
+\paragraph{Individual 2018}\label{individual-2018}
 
 Figure~\ref{fig-one} presents the age distribution of survey respondents
 in 2018. The histogram shows the frequency of respondents across age
@@ -419,7 +419,7 @@ and dotted lines respectively.}
 
 \newpage
 
-\subparagraph{Comparison 2018 to 2021}\label{comparison-2018-to-2021}
+\paragraph{Comparison 2018 to 2021}\label{comparison-2018-to-2021}
 
 Figure~\ref{fig-two} compares the age distributions between 2018 and
 2021. The main difference is an increase in respondents aged 18-23 in
@@ -455,9 +455,9 @@ survey respondents in 2018 and 2021.}
 
 \end{figure}%
 
-\paragraph{Education}\label{education}
+\subsubsection{Education}\label{education}
 
-\subparagraph{Individual 2018}\label{individual-2018-1}
+\paragraph{Individual 2018}\label{individual-2018-1}
 
 Figure~\ref{fig-three} shows the distribution of respondents by their
 highest level of education attained in 2018. The most common education
@@ -483,7 +483,7 @@ education levels of 2018 survey respondents.}
 
 \end{figure}%
 
-\subparagraph{Comparison 2018 to 2021}\label{comparison-2018-to-2021-1}
+\paragraph{Comparison 2018 to 2021}\label{comparison-2018-to-2021-1}
 
 Figure~\ref{fig-four} compares the education levels of respondents in
 2018 and 2021. The two surveys used different education categories,
@@ -535,9 +535,9 @@ distribution of survey respondents in 2018 and 2021.''}
 
 \end{figure}%
 
-\paragraph{Extent Feel Informed}\label{extent-feel-informed}
+\subsubsection{Extent Feel Informed}\label{extent-feel-informed}
 
-\subparagraph{Individual 2018}\label{individual-2018-2}
+\paragraph{Individual 2018}\label{individual-2018-2}
 
 Figure~\ref{fig-five} depicts the distribution of self-reported climate
 change knowledge among survey respondents in 2018. The majority of
@@ -564,7 +564,7 @@ self-reported climate change knowledge among 2018 survey respondents.}
 
 \end{figure}%
 
-\subparagraph{Comparison 2018 to 2021}\label{comparison-2018-to-2021-2}
+\paragraph{Comparison 2018 to 2021}\label{comparison-2018-to-2021-2}
 
 Figure~\ref{fig-six} illustrates the self-reported level of extent
 inviduals feel informed about climate change and climate action for 2018
@@ -606,9 +606,9 @@ distribution of survey respondents in 2018 and 2021.}
 
 \end{figure}%
 
-\paragraph{Best Method of Delivery}\label{best-method-of-delivery}
+\subsubsection{Best Method of Delivery}\label{best-method-of-delivery}
 
-\subparagraph{Individual 2018}\label{individual-2018-3}
+\paragraph{Individual 2018}\label{individual-2018-3}
 
 Figure~\ref{fig-seven}, shows 2018 survey results for the preferred
 method for receiving climate change information. Advertising campaigns
@@ -637,7 +637,7 @@ and climate action.}
 
 \end{figure}%
 
-\subparagraph{Comparison 2018 to 2021}\label{comparison-2018-to-2021-3}
+\paragraph{Comparison 2018 to 2021}\label{comparison-2018-to-2021-3}
 
 Figure~\ref{fig-eight} compares the preferred methods of delivering
 climate change information between the 2018 and 2021 surveys. While the
@@ -706,7 +706,7 @@ communication of survey respondents in 2018 and 2021.}
 
 \end{figure}%
 
-\paragraph{Likelihood Taking Action}\label{likelihood-taking-action}
+\subsubsection{Likelihood Taking Action}\label{likelihood-taking-action}
 
 Figure~\ref{fig-nine} illustrates the self-reported likelihood of
 individuals taking various actions to minimize environmental impacts.
@@ -746,7 +746,7 @@ survey respondents taking various actions to address climate change.}
 
 \end{figure}%
 
-\subsection{Model}\label{sec-model}
+\section{Model}\label{sec-model}
 
 The goal of our modeling strategy is twofold: first, to predict how
 demographic factors influence individuals' likelihood of engaging in
@@ -1106,7 +1106,7 @@ hydro usage, predicted by age and education.}
 
 \end{figure}%
 
-\subsection{Results}\label{sec-results}
+\section{Results}\label{sec-results}
 
 \subsection{Model Summary Table}\label{model-summary-table}
 
@@ -1279,7 +1279,7 @@ highest percentage of being ``very unlikely'' to reduce hydro usage.
 
 \end{figure}%
 
-\subsection{Discussion}\label{sec-discussion}
+\section{Discussion}\label{sec-discussion}
 
 \subsection{Overview of Climate Change
 Perspectives}\label{overview-of-climate-change-perspectives}
@@ -1409,7 +1409,7 @@ across diverse groups.
 
 \appendix
 
-\subsection{Appendix}\label{sec-appendix}
+\section{Appendix}\label{sec-appendix}
 
 \section{Idealized methodology}\label{sec-idealized-meth}
 
