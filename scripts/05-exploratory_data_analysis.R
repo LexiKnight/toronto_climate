@@ -28,6 +28,7 @@ individual_18 <- read_parquet(here("data/02-analysis_data/twenty_eighteen_indivi
 # Calculate mean and median of age
 mean_age <- mean(individual_18$age, na.rm = TRUE)
 median_age <- median(individual_18$age, na.rm = TRUE)
+
 # Create a histogram to show the distribution of age with mean and median lines
 age_individual_plot <- ggplot(individual_18, aes(x = age)) + 
   geom_histogram(binwidth = 5, fill = "skyblue", color = "black", alpha = 0.7) + 
@@ -37,9 +38,8 @@ age_individual_plot <- ggplot(individual_18, aes(x = age)) +
              show.legend = TRUE) +  # Median line
   labs(
     title = "Age Distribution of Survey Respondents (2018)",
-    x = "Age",
-    y = "Frequency",
-    caption = "Blue dashed line = Mean | Green dotted line = Median"  # Legend explanation
+    x = "Age (years)",
+    y = "Frequency"
   ) + 
   theme_minimal() +
   scale_x_continuous(
@@ -53,7 +53,7 @@ print(age_individual_plot)
 ggsave(
   filename = here("data/03-figures_data", "age_individual_plot.png"),  # Specify the correct path and filename
   plot = age_individual_plot,
-  width = 6, height = 4
+  width = 5, height = 2.5
 )
 
 
@@ -106,7 +106,7 @@ print(educ_individual_plot)
 ggsave(
   filename = here("data/03-figures_data", "educ_individual_plot.png"),  # Saving as a PNG file
   plot = educ_individual_plot,
-  width = 6, height = 4
+  width = 5, height = 3.5
 )
 
 
@@ -120,13 +120,15 @@ informed_18_plot <- individual_18 %>%
                                                       "Very informed", 
                                                       "Not very informed", 
                                                       "Not at all informed")))
+
 # Create the plot with adjusted y-axis range
 informed_18_plot <- ggplot(informed_18_plot, aes(x = extent_consider_informed, fill = extent_consider_informed)) +
   geom_bar(color = "black", alpha = 0.7) + 
   labs(
-    title = "Distribution of Self-Reported Climate Change Knowledge (2018)",
+    title = "Distribution of Self-Reported Climate Change Knowledge",
     x = "Extent Informed about Climate Change",
-    y = "Frequency"
+    y = "Frequency",
+    caption = "Figure 3: The histogram shows the distribution of self-reported climate change knowledge\namong 2018 survey respondents. This distribution provides insights into public awareness\nand the extent to which individuals feel informed about climate change."
   ) + 
   theme_minimal() +
   scale_x_discrete(
@@ -139,7 +141,8 @@ informed_18_plot <- ggplot(informed_18_plot, aes(x = extent_consider_informed, f
   ) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels by 45 degrees
-    plot.margin = margin(10, 10, 20, 10)  # Increase the margins for better spacing
+    plot.margin = margin(10, 10, 40, 10),  # Further increase bottom margin for caption space
+    plot.caption = element_text(hjust = 0.6, size = 8, lineheight = 1.2)  # Shift caption slightly to the right and reduce size
   ) +
   scale_fill_manual(values = c("Extremely informed" = "forestgreen", 
                                "Very informed" = "green", 
@@ -149,13 +152,13 @@ informed_18_plot <- ggplot(informed_18_plot, aes(x = extent_consider_informed, f
 
 # Display the plot
 print(informed_18_plot)
+
 # Save the informed plot to data/03-figures_data
 ggsave(
   filename = here("data/03-figures_data", "informed_individual_plot.png"),  # Saving as a PNG file
   plot = informed_18_plot,
-  width = 6, height = 4 
+  width = 6, height = 4, dpi = 300  # Increased resolution for better clarity
 )
-
 
 
 
@@ -215,8 +218,6 @@ ggsave(
   plot = likelihood_18_plot,
   width = 6, height = 4
 )
-
-
 
 
 # Figure for method of communication
@@ -282,19 +283,26 @@ communication_18_plot <- ggplot(data_summary, aes(x = reorder(delivery_method, p
     title = "Preferred Methods of Communication for Climate Change and Climate Action Information",
     x = "Delivery Method",
     y = "Percentage of Responses",
-    fill = "Delivery Method"
+    fill = "Delivery Method",
+    caption = "Figure 4: The stacked bar plot illustrates the preferred methods of communication for receiving\ninformation about climate change and climate action."
   ) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),  # Rotate x-axis labels for readability
-        axis.ticks.y = element_line(),  # Add tick marks on the y-axis
-        axis.ticks.x = element_line(),  # Add tick marks on the x-axis
-        axis.text.y = element_text(size = 10),  # Adjust y-axis text size if needed
-        legend.position = "none") +  # Remove the legend
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),  # Rotate x-axis labels for readability
+    axis.ticks.y = element_line(),  # Add tick marks on the y-axis
+    axis.ticks.x = element_line(),  # Add tick marks on the x-axis
+    axis.text.y = element_text(size = 10),  # Adjust y-axis text size if needed
+    legend.position = "none",  # Remove the legend
+    plot.caption = element_text(hjust = 0, size = 8, lineheight = 1.2),  # Center the caption
+    plot.title = element_text(size = 10),  # Reduce the title font size
+    plot.margin = margin(10, 10, 40, 10)  # Increase margin for caption space
+  ) +
   scale_fill_brewer(palette = "Set3") +  # Use a nice color palette for fill
   scale_y_continuous(breaks = seq(0, 100, by = 10))  # Set y-axis tick marks every 10%
 
 # The plot is now saved as 'communication_18_plot'
 communication_18_plot
+
 # Save the communication method plot to data/03-figures_data
 ggsave(
   filename = here("data/03-figures_data", "communication_18_plot.png"),  # Saving as a PNG file
@@ -302,7 +310,9 @@ ggsave(
   width = 6, height = 4
 )
 
-                                
+
+
+
 
 
 ## likelihood by age ##
@@ -492,42 +502,13 @@ ggsave(
 
 
 
- 
-### Comparison 2018 and 2021 tables
-
-## Age
-# Read the 2018 and 2021 age summary tables from Parquet files
-age_summary_18 <- read_parquet(here("data/03-figures_data", "age_summary_2018_table.parquet"))
-age_summary_21 <- read_parquet(here("data/03-figures_data", "age_summary_2021_table.parquet"))
-
-# Rename columns to indicate the year for clarity (without % signs)
-colnames(age_summary_18) <- c("Age_Group", "2018")
-colnames(age_summary_21) <- c("Age_Group", "2021")
-
-# Merge the two data frames by Age Group for side-by-side comparison
-age_summary_combined <- full_join(age_summary_18, age_summary_21, by = "Age_Group")
-
-# Remove the leading 'X' from column names (for both '2018' and '2021' columns)
-colnames(age_summary_combined) <- gsub("^X", "", colnames(age_summary_combined))
-
-# Convert the data frame to tinytable (optional)
-age_summary_combined_tiny <- tt(age_summary_combined)
-
-# Print the tinytable (optional, only for inspection)
-age_summary_combined_tiny
-
-# Save the cleaned and processed table as a CSV file
-write.csv(age_summary_combined, here("data/03-figures_data", "age_summary_combined.csv"), row.names = FALSE)
-
-# Print the table with a new title using kable (and change the caption)
-age_summary_combined %>%
-  kbl(caption = "Comparison of Age Distribution in 2018 and 2021") %>%
-  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
-
-
-
-
 ## Education 
+# Load necessary libraries
+library(kableExtra)
+library(here)
+library(dplyr)
+library(readr)
+
 # Read the 2018 and 2021 education summary tables from Parquet files
 education_summary_18 <- read_parquet(here("data/03-figures_data", "education_summary_2018_table.parquet"))
 education_summary_21 <- read_parquet(here("data/03-figures_data", "education_summary_2021_table.parquet"))
@@ -567,12 +548,15 @@ education_summary_combined <- education_summary_combined %>%
 # Replace NAs with empty strings to leave rows empty
 education_summary_combined[is.na(education_summary_combined)] <- ""
 
-# Print to check 
-education_summary_combined
+# Render the table with kableExtra for proper formatting and scaling
+education_summary_combined %>%
+  kbl() %>%  # Create the table with kableExtra
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed")) %>%
+  column_spec(1, width = "15em") %>%  # Adjust width of the first column (adjust if necessary)
+  row_spec(0, font_size = 10)  # Optional: Adjust font size for the header row
 
 # Save the combined table as a CSV file
 write.csv(education_summary_combined, here("data/03-figures_data", "education_summary_combined.csv"), row.names = FALSE)
-
 
 
 

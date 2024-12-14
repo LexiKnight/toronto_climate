@@ -23,17 +23,17 @@ Through our analysis, we found that younger individuals and those with higher le
 
 The findings from this study are significant because they provide a clearer understanding of how demographic characteristics shape the adoption of climate-friendly behaviors. By identifying which groups are more likely to act and which face greater barriers, we can design more effective policies and interventions that speak directly to the concerns of these populations. This study not only contributes to the broader understanding of climate change engagement but also offers practical insights for shaping messages and policies that can inspire individuals to take action.
 
-The remainder of this paper is structured as follows: @sec-data describes the data and methodology used for analysis, @sec-model outlines the statistical model used to assess the effects of age and education on behavior adoption, @sec-results presents the key findings, and @sec-discussion explores the implications of these results, addresses limitations, and suggests directions for future research. Finally, @sec-conclusion summarizes the main takeaways and offers recommendations for enhancing climate action engagement. Additional methodological details and the data cleaning process are provided in @sec-appendix.
+The remainder of this paper is structured as follows: The `data section` describes the data and methodology used for analysis, the `model section` outlines the statistical model used to assess the effects of age and education on behavior adoption, the `results section` presents the key findings, and teh `discussion section` explores the implications of these results, addresses limitations, and suggests directions for future research. Finally, the `conclusion section` summarizes the main takeaways and offers recommendations for enhancing climate action engagement. Additional methodological details and the data cleaning process are provided in the `appendix section`.
 
 
 
-# Data {#sec-data}
+# Data 
 The primary data source for this project is the Climate Perception Study dataset, provided by the City of Toronto via the Open Data Toronto platform [@climateperceptionstudy]. This dataset offers insights into public perceptions of climate change in Toronto in the years 2018 and 2021. This dataset was accessed from `Open Data Toronto` [@opendatatoronto] on 6 November 2024.
 
 ## Software and R-packages
 This project was conducted using the statistical software `R` [@citeR], with several packages facilitating data cleaning, analysis and reporting. The `tidyverse` package [@tidyverse] was central to the project, with `dplyr` [@dplyr] used in the cleaning and exploratory data analysis scripts for filtering, summarizing, and joining datasets. `readr` [@readr] handled reading and writing text data, while `tidyr` [@tidyr] reshaped data. `stringr` [@stringr] managed character strings, and `forcats` [@forcats] reordered factor levels for visualizations. 
 
-In the download script, `httr`[@httr] retrieved files from `Open Data Toronto` [@opendatatoronto], while`readxl` [@readxl] read Excel files, and `openxlsx` [@openxlsx] created structured Excel workbooks. The `arrow` package [@arrow] optimized data storage and was used in the simulation and cleaning scripts to save datasets as Parquet files. 
+In the download script, `httr` [@httr] retrieved files from `Open Data Toronto` [@opendatatoronto], while `readxl` [@readxl] read Excel files, and `openxlsx` [@openxlsx] created structured Excel workbooks. The `arrow` package [@arrow] optimized data storage and was used in the simulation and cleaning scripts to save datasets as Parquet files. 
 
 For modeling, `rpart` [@rpart] and `partykit` [@partykit] built and visualized decision trees in the model script. The `testthat` package [@testthat] validated simulated and cleaned datasets in their respective scripts. Visualizations were created using `ggplot2` [@ggplot2] in the exploratory data analysis. Reporting relied on `knitr` [@knitr] and `kableExtra` [@kableExtra] to integrate code, outputs, and styled tables. The `tinytable`package [@tinytable] generated compact tables in both the exploratory data analysis script as well as in the paper. These packages ensured efficient and streamlined data management, analysis and reporting throughout the project. 
 
@@ -54,15 +54,15 @@ For 2021, summary data was available instead of individual-level data. To compar
 ## Features
 ### Age
 #### Individual 2018
-fig-one presents the age distribution of survey respondents in 2018. The histogram shows the frequency of respondents across age groups, with age intervals on the x-axis and the number of respondents on the y-axis. The distribution is fairly balanced, with peaks around the 30–40 and 50–60 age ranges, indicating that these groups were the most represented in the survey.
+Figure 1 presents the age distribution of survey respondents in 2018. The histogram shows the frequency of respondents across age groups, with age intervals on the x-axis and the number of respondents on the y-axis. The distribution is fairly balanced, with peaks around the 30–40 and 50–60 age ranges, indicating that these groups were the most represented in the survey.
 
 The vertical dotted lines highlight the median and mean ages. The green dotted line represents the median age, and the blue dashed line represents the mean age, both located just above 45. This suggests the sample is predominantly middle-aged, with a gradual decline in respondent frequency after the age of 60. Few participants were over 80, indicating a lower representation of older individuals
+
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-##| label: fig-one
 #| fig-cap: "Distribution of age given the 2018 survey respondents. The mean and median of the sample is indicated with dashed and dotted lines respectively."
 
 library(here)
@@ -70,17 +70,17 @@ library(here)
 knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 
 ```
+
 \newpage
 
 #### Comparison 2018 to 2021
-fig-two compares the age distributions between 2018 and 2021. The main difference is an increase in respondents aged 18-23 in 2021, with other age groups remaining relatively stable. This shift may reflect changing demographic patterns or differences in survey methodologies within the three years.
+Table 1 compares the age distributions between 2018 and 2021. The main difference is an increase in respondents aged 18-23 in 2021, with other age groups remaining relatively stable. This shift may reflect changing demographic patterns or differences in survey methodologies within the three years.
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-##| label: fig-two
-#| fig-cap: "This table highlights the age distribution of survey respondents in 2018 and 2021."
+#| fig-pos: "H"  # Force figure placement here
 
 # load libraries 
 library(kableExtra)
@@ -95,31 +95,30 @@ age_summary_combined <- read.csv(here("data/03-figures_data", "age_summary_combi
 # Rename columns to "Age Group", "2018 Percentage", and "2021 Percentage"
 colnames(age_summary_combined) <- c("Age Group", "2018 Percentage", "2021 Percentage")
 
-# Print the cleaned table (using kable for styling)
+# Render the table with a manually added caption
 age_summary_combined %>%
-  kbl() %>%
+  kbl(caption = "This table highlights the age distribution of survey respondents in 2018 and 2021.") %>%
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
 
 ```
 
-
-
 ### Education
 #### Individual 2018
-fig-three shows the distribution of respondents by their highest level of education attained in 2018. The most common education levels are "Completed undergraduate degree" and "Postgraduate/professional school," indicating a well-educated respondent population. In contrast, fewer respondents reported having attended or completed community college, vocational, or trade school, suggesting lower representation in these categories. A small portion of respondents chose not to disclose their education level. Overall, the distribution reflects a skew toward higher levels of educational attainment.
+@fig-educ shows the distribution of respondents by their highest level of education attained in 2018. The most common education levels are "Completed undergraduate degree" and "Postgraduate/professional school," indicating a well-educated respondent population. In contrast, fewer respondents reported having attended or completed community college, vocational, or trade school, suggesting lower representation in these categories. A small portion of respondents chose not to disclose their education level. Overall, the distribution reflects a skew toward higher levels of educational attainment.
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-##| label: fig-three
+#| label: fig-educ
 #| fig-cap: "The histogram shows the distribution of education levels of 2018 survey respondents."
 
 knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
-
 ```
 
+\newpage
+
 #### Comparison 2018 to 2021
-fig-four compares the education levels of respondents in 2018 and 2021. The two surveys used different education categories, making direct comparisons challenging. In 2018, 9% of respondents had a high school diploma or less, while in 2021, this figure rose to 38%, due to the addition of the "less than high school" and "high school or equivalent" categories. This shift indicates that the 2021 survey better represented individuals with lower educational attainment.
+Table 2 compares the education levels of respondents in 2018 and 2021. The two surveys used different education categories, making direct comparisons challenging. In 2018, 9% of respondents had a high school diploma or less, while in 2021, this figure rose to 38%, due to the addition of the "less than high school" and "high school or equivalent" categories. This shift indicates that the 2021 survey better represented individuals with lower educational attainment.
 
 The 2018 survey provided more detailed categories, including options for community college, trade school, and distinctions between "some" versus "completed" education. In contrast, the 2021 survey used broader categories, which likely reduced the specificity of educational data. Notably, the 2021 survey appears to have offered a more balanced sample, with a wider spread across various education levels, while the 2018 sample was noticeably skewed toward respondents with higher educational attainment. This suggests that the 2021 survey may have captured a broader range of educational backgrounds, providing a more well-rounded representation of Toronto’s population.
 
@@ -127,11 +126,12 @@ The 2018 survey provided more detailed categories, including options for communi
 #| warning: false
 #| echo: false
 #| message: false
-##| label: fig-four
-#| fig-cap: "This table highlights the education distribution of survey respondents in 2018 and 2021."
+#| fig-cap: "Table 2: This table highlights the education distribution of survey respondents in 2018 and 2021."
 
 # Load necessary libraries
 library(tinytable)
+library(kableExtra)
+library(here)
 
 # Read the CSV into a data frame
 education_summary_combined <- read.csv(here("data/03-figures_data", "education_summary_combined.csv"))
@@ -139,37 +139,40 @@ education_summary_combined <- read.csv(here("data/03-figures_data", "education_s
 # Rename columns 
 colnames(education_summary_combined) <- c("Education Level ", "2018 Percentage", "Education Level", "2021 Percentage")
 
-# Convert the data frame to tinytable
-education_summary_combined_tiny <- tt(education_summary_combined)
+# Render the table with adjusted font size and column width
+education_summary_combined %>%
+  kable() %>%
+  kable_styling(full_width = TRUE, position = "center") %>%
+  column_spec(1, width = "10em") %>%
+  column_spec(3, width = "10em") %>%
+  kable_styling(latex_options = c("striped", "hold_position"), font_size = 8) %>%
+  # Add resizebox to scale the table down to fit within the page
+  row_spec(0, bold = TRUE) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"), full_width = TRUE)
 
 # Print the tinytable
-education_summary_combined_tiny
-
+#education_summary_combined
 
 ```
 
 ### Extent Feel Informed
 #### Individual 2018
-fig-five depicts the distribution of self-reported climate change knowledge among survey respondents in 2018. The majority of participants identified as "Very informed," making this the most prevalent category by a significant margin. A moderate number of respondents reported being "Not very informed," while a smaller yet noticeable group described themselves as "Extremely informed." In contrast, the categories "Not at all informed" and "Not very informed" have the lowest frequencies, with "Not at all informed" being particularly rare. This distribution suggests that most respondents possess a relatively high level of awareness about climate change, with very few indicating a lack of knowledge on the topic.
+Figure 3 depicts the distribution of self-reported climate change knowledge among survey respondents in 2018. The majority of participants identified as "Very informed," making this the most prevalent category by a significant margin. A moderate number of respondents reported being "Not very informed," while a smaller yet noticeable group described themselves as "Extremely informed." In contrast, the categories "Not at all informed" and "Not very informed" have the lowest frequencies, with "Not at all informed" being particularly rare. This distribution suggests that most respondents possess a relatively high level of awareness about climate change, with very few indicating a lack of knowledge on the topic.
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-##| label: fig-five
-#| fig-cap: "The histogram shows the distribution of self-reported climate change knowledge among 2018 survey respondents."
 
 knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.png"))
 
 ```
 #### Comparison 2018 to 2021
-fig-six illustrates the self-reported level of extent inviduals feel informed about climate change and climate action for 2018 and 2021. In 2018, the large marjority of individuals say they are very informed with 60 percent and the follwoign category is not very informed with 27 percent. In 2021, The majority of inividuals also say they are very informed but to a lesser degree with 48 percent and this is closely followed by only a little informed with 37 percent. There is a trend that invidiusls in 2018 reported greater levels of knowldege about climate change whereas 2021 illstrates a more even split between very informed and only little informed, portraying that fewer individuals have adequate knowledge about climate change. 
+Table 3 illustrates the self-reported level of extent individuals feel informed about climate change and climate action for 2018 and 2021. In 2018, the large majority of individuals say they are very informed with 60 percent and the following category is not very informed with 27 percent. In 2021, The majority of individuals also say they are very informed but to a lesser degree with 48 percent and this is closely followed by only a little informed with 37 percent. There is a trend that individuals in 2018 reported greater levels of knowledge about climate change whereas 2021 illustrates a more even split between very informed and only little informed, portraying that fewer individuals have adequate knowledge about climate change. 
 
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
-##| label: fig-six
-#| fig-cap: "This table highlights the extent feel informed distribution of survey respondents in 2018 and 2021."
 
 # Load libraries
 library(kableExtra)  # styling tables
@@ -185,16 +188,16 @@ colnames(informed_summary_combined) <- c("Extent Informed", "2018 Percentage", "
 
 # Print the table (using kable for styling)
 informed_summary_combined %>%
-  kbl() %>%
+  kbl(caption = "This table highlights the extent feel informed distribution of survey respondents in 2018 and 2021") %>%
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
-
 
 ```
 
+\newpage
 
 ### Best Method of Delivery
 #### Individual 2018
-fig-seven, shows 2018 survey results for the preferred method for receiving climate change information. Advertising campaigns emerged as the most popular choice, selected by approximately 55 percent of respondents, followed closely by newsletters with 52 percent and the Toronto.ca website with 46 percent. On the other hand, social media platforms such as Facebook, Instagram, and Twitter were less popular overall, with Twitter 12 percent and Instagram 17 percent garnering the fewer votes. Notably, only 5 percent of respondents reported being uninterested in receiving information about climate action. These findings suggest that more traditional communication methods, such as advertising and newsletters, resonated better with respondents compared to social media.
+Figure 4 shows 2018 survey results for the preferred method for receiving climate change information. Advertising campaigns emerged as the most popular choice, selected by approximately 55 percent of respondents, followed closely by newsletters with 52 percent and the Toronto.ca website with 46 percent. On the other hand, social media platforms such as Facebook, Instagram, and Twitter were less popular overall, with Twitter 12 percent and Instagram 17 percent garnering the fewer votes. Notably, only 5 percent of respondents reported being uninterested in receiving information about climate action. These findings suggest that more traditional communication methods, such as advertising and newsletters, resonated better with respondents compared to social media.
 
 ```{r}
 #| warning: false
