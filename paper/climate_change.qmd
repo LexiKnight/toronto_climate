@@ -14,7 +14,7 @@ number-sections: true
 bibliography: references.bib
 ---
 
-# Introduction
+## Introduction
 Climate change is one of the most pressing issues of our time. Its effects—rising temperatures, extreme weather events, and ecosystem disruptions—are already being felt globally, and the urgency for action has never been higher [@IPCC2023]. Despite widespread awareness of the risks associated with climate change, many individuals still struggle to adopt behaviors that could help mitigate its impact. This gap between understanding and action is a major barrier to effective climate solutions, and understanding the underlying reasons for this disconnect is essential for crafting strategies that encourage widespread behavioral change [@Gifford2011].
 
 This paper seeks to explore how certain demographic factors—specifically age and education—affect individuals’ likelihood to adopt climate-friendly behaviors. By analyzing data from a 2018 survey [@climateperceptionstudy], we aim to understand how these factors influence behaviors such as reducing energy consumption, using greener transportation, and minimizing waste. The estimand of this study is the effect of age and education on the likelihood of adopting these climate-friendly behaviors. We focus on these variables to understand whether younger, more educated individuals are more likely to engage in sustainable actions, and whether targeted strategies could drive greater participation in climate-positive behaviors.
@@ -27,33 +27,33 @@ The remainder of this paper is structured as follows: @sec-data describes the da
 
 
 
-# Data {#sec-data}
+## Data {#sec-data}
 The primary data source for this project is the Climate Perception Study dataset, provided by the City of Toronto via the Open Data Toronto platform [@climateperceptionstudy]. This dataset offers insights into public perceptions of climate change in Toronto in the years 2018 and 2021. This dataset was accessed from `Open Data Toronto` [@opendatatoronto] on 6 November 2024.
 
-## Software and R-packages
-This project was conducted using the statistical software `R` [@citeR], with several packages facilitating data cleaning, analysis and reporting. The `tidyverse` package [@tidyverse] was central to the project, with `dplyr` [@dplyr] used in the cleaning and exploratory data analysis scripts for filtering, summarizing, and joining datasets. `readr` [@readr] handled reading and writing text data, while `tidyr` [@tidyr] reshaped data. `stringr` [@stringr] managed character strings, and `forecats` [@forecats] reordered factor levels for visualizations. 
+### Software and R-packages
+This project was conducted using the statistical software `R` [@citeR], with several packages facilitating data cleaning, analysis and reporting. The `tidyverse` package [@tidyverse] was central to the project, with `dplyr` [@dplyr] used in the cleaning and exploratory data analysis scripts for filtering, summarizing, and joining datasets. `readr` [@readr] handled reading and writing text data, while `tidyr` [@tidyr] reshaped data. `stringr` [@stringr] managed character strings, and `forcats` [@forcats] reordered factor levels for visualizations. 
 
 In the download script, `httr`[@httr] retrieved files from `Open Data Toronto` [@opendatatoronto], while`readxl` [@readxl] read Excel files, and `openxlsx` [@openxlsx] created structured Excel workbooks. The `arrow` package [@arrow] optimized data storage and was used in the simulation and cleaning scripts to save datasets as Parquet files. 
 
 For modeling, `rpart` [@rpart] and `partykit` [@partykit] built and visualized decision trees in the model script. The `testthat` package [@testthat] validated simulated and cleaned datasets in their respective scripts. Visualizations were created using `ggplot2` [@ggplot2] in the exploratory data analysis. Reporting relied on `knitr` [@knitr] and `kableExtra` [@kableExtra] to integrate code, outputs, and styled tables. The `tinytable`package [@tinytable] generated compact tables in both the exploratory data analysis script as well as in the paper. These packages ensured efficient and streamlined data management, analysis and reporting throughout the project. 
 
-## Methodology 
-### Data Collection
+### Methodology 
+#### Data Collection
 To embark on this analysis, we turn to two pivotal surveys commissioned by the City of Toronto to capture residents' perceptions of climate change and their readiness to take action. Our journey begins in 2018, when Environics Research conducted an online survey with 404 Toronto residents aged 18 and older, from October 11 to 18. The sample, drawn from an online panel, was carefully crafted with quotas based on region, age, and gender to mirror the 2016 Census. A touch of minor weighting ensured a more representative reflection of the population. However, it’s important to note that this non-random sample introduces some potential bias, an aspect we keep in mind as we move forward.
 
 The path continues in 2021 with Ipsos at the helm, stepping in with a more expansive survey, engaging 1,400 residents from a mix of methods: 1,000 from an online panel, 300 via phone, and 100 through online interviews conducted in Mandarin, Cantonese, and Punjabi. This diverse approach sought to enhance the survey’s representativeness across Toronto’s varied communities. For our analysis, we used Version 2 of the 2021 dataset, where responses were presented in a clear, numeric format, offering a solid foundation for our exploration.
 
 With this data in hand, we are now ready to delve into the intricacies of the findings, unearthing patterns, and understanding the deeper story they tell about Toronto’s residents and their views on climate change and collective action.
 
-### Data Analysis
+#### Data Analysis
 The focus of this analysis was the 2018 dataset, which examined five key variables: age, education, extent informed, likelihood to take action, and preferred methods for delivering information about climate change action. These variables were analyzed at the individual level, allowing for an in-depth exploration of residents' perspectives.
 
 For 2021, summary data was available instead of individual-level data. To compare trends, I created summary data for 2018. Calculating the percentage distribution for each variable in both years helped identify shifts in demographics, public awareness, and engagement, as well as changes in preferred communication methods. Although the absence of individual data for 2021 posed a challenge, this comparison still provided a dynamic view of evolving climate change perspectives in Toronto. The two-step approach—detailing 2018 data and then comparing it with 2021 trends—created a comprehensive narrative of change.
 
 
-## Features
-### Age
-#### Individual 2018
+### Features
+#### Age
+##### Individual 2018
 @fig-one presents the age distribution of survey respondents in 2018. The histogram shows the frequency of respondents across age groups, with age intervals on the x-axis and the number of respondents on the y-axis. The distribution is fairly balanced, with peaks around the 30–40 and 50–60 age ranges, indicating that these groups were the most represented in the survey.
 
 The vertical dotted lines highlight the median and mean ages. The green dotted line represents the median age, and the blue dashed line represents the mean age, both located just above 45. This suggests the sample is predominantly middle-aged, with a gradual decline in respondent frequency after the age of 60. Few participants were over 80, indicating a lower representation of older individuals
@@ -72,7 +72,7 @@ knitr::include_graphics(here("data/03-figures_data", "age_individual_plot.png"))
 ```
 \newpage
 
-#### Comparison 2018 to 2021
+##### Comparison 2018 to 2021
 @fig-two compares the age distributions between 2018 and 2021. The main difference is an increase in respondents aged 18-23 in 2021, with other age groups remaining relatively stable. This shift may reflect changing demographic patterns or differences in survey methodologies within the three years.
 
 ```{r}
@@ -103,8 +103,9 @@ age_summary_combined %>%
 ```
 
 
-### Education
-#### Individual 2018
+
+#### Education
+##### Individual 2018
 @fig-three shows the distribution of respondents by their highest level of education attained in 2018. The most common education levels are "Completed undergraduate degree" and "Postgraduate/professional school," indicating a well-educated respondent population. In contrast, fewer respondents reported having attended or completed community college, vocational, or trade school, suggesting lower representation in these categories. A small portion of respondents chose not to disclose their education level. Overall, the distribution reflects a skew toward higher levels of educational attainment.
 ```{r}
 #| warning: false
@@ -117,7 +118,7 @@ knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png")
 
 ```
 
-#### Comparison 2018 to 2021
+##### Comparison 2018 to 2021
 @fig-four compares the education levels of respondents in 2018 and 2021. The two surveys used different education categories, making direct comparisons challenging. In 2018, 9% of respondents had a high school diploma or less, while in 2021, this figure rose to 38%, due to the addition of the "less than high school" and "high school or equivalent" categories. This shift indicates that the 2021 survey better represented individuals with lower educational attainment.
 
 The 2018 survey provided more detailed categories, including options for community college, trade school, and distinctions between "some" versus "completed" education. In contrast, the 2021 survey used broader categories, which likely reduced the specificity of educational data. Notably, the 2021 survey appears to have offered a more balanced sample, with a wider spread across various education levels, while the 2018 sample was noticeably skewed toward respondents with higher educational attainment. This suggests that the 2021 survey may have captured a broader range of educational backgrounds, providing a more well-rounded representation of Toronto’s population.
@@ -147,8 +148,8 @@ education_summary_combined_tiny
 
 ```
 
-### Extent Feel Informed
-#### Individual 2018
+#### Extent Feel Informed
+##### Individual 2018
 @fig-five depicts the distribution of self-reported climate change knowledge among survey respondents in 2018. The majority of participants identified as "Very informed," making this the most prevalent category by a significant margin. A moderate number of respondents reported being "Not very informed," while a smaller yet noticeable group described themselves as "Extremely informed." In contrast, the categories "Not at all informed" and "Not very informed" have the lowest frequencies, with "Not at all informed" being particularly rare. This distribution suggests that most respondents possess a relatively high level of awareness about climate change, with very few indicating a lack of knowledge on the topic.
 ```{r}
 #| warning: false
@@ -160,7 +161,7 @@ education_summary_combined_tiny
 knitr::include_graphics(here("data/03-figures_data", "informed_individual_plot.png"))
 
 ```
-#### Comparison 2018 to 2021
+##### Comparison 2018 to 2021
 @fig-six illustrates the self-reported level of extent inviduals feel informed about climate change and climate action for 2018 and 2021. In 2018, the large marjority of individuals say they are very informed with 60 percent and the follwoign category is not very informed with 27 percent. In 2021, The majority of inividuals also say they are very informed but to a lesser degree with 48 percent and this is closely followed by only a little informed with 37 percent. There is a trend that invidiusls in 2018 reported greater levels of knowldege about climate change whereas 2021 illstrates a more even split between very informed and only little informed, portraying that fewer individuals have adequate knowledge about climate change. 
 
 ```{r}
@@ -191,8 +192,8 @@ informed_summary_combined %>%
 ```
 
 
-### Best Method of Delivery
-#### Individual 2018
+#### Best Method of Delivery
+##### Individual 2018
 @fig-seven, shows 2018 survey results for the preferred method for receiving climate change information. Advertising campaigns emerged as the most popular choice, selected by approximately 55 percent of respondents, followed closely by newsletters with 52 percent and the Toronto.ca website with 46 percent. On the other hand, social media platforms such as Facebook, Instagram, and Twitter were less popular overall, with Twitter 12 percent and Instagram 17 percent garnering the fewer votes. Notably, only 5 percent of respondents reported being uninterested in receiving information about climate action. These findings suggest that more traditional communication methods, such as advertising and newsletters, resonated better with respondents compared to social media.
 
 ```{r}
@@ -209,7 +210,7 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 
 ```
 
-#### Comparison 2018 to 2021
+##### Comparison 2018 to 2021
 @fig-eight compares the preferred methods of delivering climate change information between the 2018 and 2021 surveys. While the top three methods namely advertising campaigns, newsletters, and the Toronto.ca website remained consistent across both years, there were notable shifts in preferences. Traditional methods such as newsletters, advertising campaigns, brochures, and pamphlets saw a decline in 2021. In contrast, social media platforms including Twitter, Facebook, and Instagram gained traction, reflecting a growing reliance on digital communication channels.
 
 Additionally, the 2021 survey introduced new categories, including the BetterHomesTO.ca website, which accounted for 15 percent of responses. This addition underscores the increasing importance of specialized online platforms in engaging the public on climate action. These changes highlight a shift toward more diverse and digitally focused communication strategies over time.
@@ -218,7 +219,7 @@ Additionally, the 2021 survey introduced new categories, including the BetterHom
 #| warning: false
 #| echo: false
 #| message: false
-#| label: table-eight
+#| label: fig-eight
 #| fig-cap: "This table highlights the prefered method of communication of survey respondents in 2018 and 2021."
 
 # Load libraries
@@ -241,7 +242,7 @@ communication_summary_combined %>%
 
 
 ```
-### Likelihood Taking Action 
+#### Likelihood Taking Action 
 @fig-nine illustrates the self-reported likelihood of individuals taking various actions to minimize environmental impacts. The x-axis displays nine different climate actions, while the y-axis represents the percentage of individuals corresponding to each likelihood level. A stacked bar chart is used to visualize the distribution of responses, with a color-coded legend ranging from green (high likelihood of action) to red (low likelihood of action).
 
 Sorting waste into the correct bins is the most frequently reported action that individuals are currently undertaking, accounting for 60 percent of responses. Other common actions individuals are already participating in include walking or cycling short distances with 40 percent, reducing waste by contributing to the repurposing of used products with 37 percent and reducing hydro usage with 36 percent 
@@ -261,7 +262,7 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_individual_plot
 
 
 
-# Model {#sec-model}
+## Model {#sec-model}
 The goal of our modeling strategy is twofold: first, to predict how demographic factors influence individuals’ likelihood of engaging in climate-friendly behaviors, and second, to uncover the role of age and education in shaping these actions. The actions considered include investing in electric vehicles, reducing hydro usage, adopting meat alternatives, and walking or cycling shorter distances. We use a decision tree model to provide a clear, interpretable framework for analyzing these relationships.
 
 ## Model set-up
@@ -439,14 +440,16 @@ knitr::include_graphics(here::here("models/reduce_hydro_tree.png"))
 
 
 
-# Results
+## Results {#sec-results}
 
 ## Model Summary Table
 @fig-nineteen presents the accuracy of models predicting climate-friendly actions based on age and education. A threshold emerges from the data: models with accuracy above 50% are considered reliable, while those below require careful interpretation. Sorting waste correctly, with an accuracy of 59%, is the most reliable prediction, indicating a stronger association between demographic factors and this behavior. Models like home improvements (33%) offer limited predictive value but remain somewhat informative. In contrast, actions such as adopting meat alternatives (25%) or choosing electric or hybrid vehicles (25%) approach random chance, making their predictions less reliable for drawing meaningful conclusions.
+
 ```{r}
 #| warning: false
 #| echo: false
 #| message: false
+#| results: hide
 #| label: fig-nineteen
 #| fig-cap: This table presents the accuracy of models predicting the likelihood of various climate-friendly actions based on age and education. The accuracy values reflect how closely the model predictions align with the actual observed data. Higher accuracy values indicate better model performance.
 
@@ -517,7 +520,7 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_education_plot.
 
 
 
-# Discussion
+## Discussion {#sec-discussion}
 
 ## Overview of Climate Change Perspectives
 This paper explored how various demographic factors—such as age, education, and climate change knowledge—affect individuals’ engagement in climate-friendly behaviors. Through a comprehensive analysis of survey data from 2018 and 2021, we uncovered surprising patterns and deeper insights into the influences that drive people to adopt more sustainable actions. By investigating the interplay of these factors, we aimed to shed light on how societal changes, particularly in the context of climate action, reflect evolving values and behaviors.
@@ -552,7 +555,7 @@ This paper examined how age, education, and climate-friendly behaviors intersect
 \appendix
 
 
-# Appendix {#sec-appendix}
+## Appendix {#sec-appendix}
 
 # Idealized methodology {#sec-idealized-meth}
 ## Survey objectives

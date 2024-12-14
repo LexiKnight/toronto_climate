@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.12.3)  10 DEC 2024 19:41
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.12.3)  13 DEC 2024 20:24
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -190,7 +190,7 @@ LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 )) (c:/Users/Lexi/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
-Package: iftex 2022/02/03 v1.0f TeX engine tests
+Package: iftex 2024/12/12 v1.0g TeX engine tests
 ) (c:/Users/Lexi/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/unicode-math/unicode-math.sty (c:/Users/Lexi/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty
 Package: expl3 2024-11-02 L3 programming layer (loader) 
 (c:/Users/Lexi/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
@@ -1070,16 +1070,22 @@ No file climate_change.toc.
 
 ]
 
-LaTeX Warning: Reference `sec-data' on page 2 undefined on input line 282.
+LaTeX Warning: Reference `sec-data' on page 2 undefined on input line 284.
 
 
-LaTeX Warning: Reference `sec-model' on page 2 undefined on input line 283.
+LaTeX Warning: Reference `sec-model' on page 2 undefined on input line 285.
 
 
-LaTeX Warning: Reference `sec-conclusion' on page 2 undefined on input line 289.
+LaTeX Warning: Reference `sec-results' on page 2 undefined on input line 287.
 
 
-LaTeX Warning: Reference `sec-appendix' on page 2 undefined on input line 291.
+LaTeX Warning: Reference `sec-discussion' on page 2 undefined on input line 288.
+
+
+LaTeX Warning: Reference `sec-conclusion' on page 2 undefined on input line 290.
+
+
+LaTeX Warning: Reference `sec-appendix' on page 2 undefined on input line 293.
 
 
 
@@ -1087,21 +1093,17 @@ LaTeX Warning: Reference `sec-appendix' on page 2 undefined on input line 291.
 
 [3]
 
-LaTeX Warning: Reference `fig-one' on page 4 undefined on input line 386.
+LaTeX Warning: Reference `fig-one' on page 4 undefined on input line 392.
 
-
-LaTeX Warning: Reference `fig-one' on page 4 undefined on input line 404.
-
-
-
-[4]
 File: ../data/03-figures_data/age_individual_plot.png Graphic file (type bmp)
 <../data/03-figures_data/age_individual_plot.png>
 
 
+[4]
+
 [5]
 
-LaTeX Warning: Reference `fig-two' on page 6 undefined on input line 427.
+LaTeX Warning: Reference `fig-two' on page 6 undefined on input line 424.
 
 
 ! LaTeX Error: Not in outer par mode.
@@ -1110,15 +1112,15 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.437 \centering
+l.435 \centering
                  
 Here is how much of TeX's memory you used:
- 28115 strings out of 475964
- 591635 string characters out of 5776217
- 1236839 words of memory out of 5000000
- 50607 multiletter control sequences out of 15000+600000
+ 28130 strings out of 475964
+ 592078 string characters out of 5776217
+ 1236910 words of memory out of 5000000
+ 50622 multiletter control sequences out of 15000+600000
  566598 words of font info for 101 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 108i,7n,123p,10909b,912s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 108i,7n,123p,10909b,918s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on climate_change.pdf (5 pages).
