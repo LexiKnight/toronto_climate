@@ -95,6 +95,27 @@ for (target_var in target_vars) {
   model_results <- rbind(model_results, data.frame(Model = model_name, Accuracy = accuracy))
 }
 
+#### Modify model_results ####
+# Rename variables in the Model column
+rename_models <- function(model_name) {
+  case_when(
+    model_name == "home_improvement" ~ "Home Improvement",
+    model_name == "reduce_hydro" ~ "Reduce Hydro",
+    model_name == "minimize_car" ~ "Minimize Car ",
+    model_name == "vehicle_electric" ~ " Electric / Hybrid Vehicle",
+    model_name == "protein_alternative" ~ "Meat Alternative",
+    model_name == "reduce_waste" ~ "Reduce Waste",
+    model_name == "green_product" ~ "Green Products",
+    model_name == "short_distance" ~ "Walk / Cycle Short Distance",
+    model_name == "sort_waste" ~ "Sort Waste Correctly",
+    TRUE ~ model_name # Default: keep original value if not matched
+  )
+}
+
+# Apply the renaming function
+model_results <- model_results %>%
+  mutate(Model = rename_models(Model))
+
 # Print the results table
 print(model_results)
 

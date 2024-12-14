@@ -424,7 +424,7 @@ knitr::include_graphics(here::here("models/protein_alternative_tree.png"))
 
 
 #### Likelihood of reducing hydro usage
-@fig-eighteen reveals that age and education influence hydro usage reduction. Younger individuals (under 35 years) are "Very likely" to reduce hydro usage, with an error rate of 60.9%. Older individuals (35 years and above) are further split by education and age, with those over 64 years also "Very likely" to engage in hydro conservation, with a lower error rate of 37.5%. Middle-aged individuals (35–64 years) with higher education are either "Already doing this or have done this" (error rate 56.3%) or "Somewhat likely" (error rate 50.0%). This model underscores the combined role of age and education in promoting energy-saving behaviors.
+@fig-eighteen reveals that age is the primary predictor influencing hydro usage reduction. Younger individuals (under 35 years) are "Very likely" to reduce hydro usage, with an error rate of 60.9%. Older individuals (35 years and above) are further split by education and age, with those over 64 years also "Very likely" to engage in hydro conservation, with a lower error rate of 37.5%. Middle-aged individuals (35–64 years) with higher education are either "Already doing this or have done this" (error rate 56.3%) or "Somewhat likely" (error rate 50.0%). This model underscores the combined role of age and education in promoting energy-saving behaviors.
 
 ```{r}
 #| warning: false
@@ -439,19 +439,10 @@ knitr::include_graphics(here::here("models/reduce_hydro_tree.png"))
 
 
 
-
-
-
-
-
-
-
 # Results
 
-## Model Predictions
-
 ## Model Summary Table
-@fig-nineteen presents the accuracy of models predicting the likelihood of various climate-friendly actions based on demographic factors such as age and education. Each row represents a different climate action (e.g., home improvement, reducing hydro, minimizing car use), with the corresponding accuracy of the model's predictions. The accuracy values reflect how well the models, which use age and education as predictors, align with the actual data. An accuracy of 33 percent  for home improvement" indicates that the model correctly predicted the outcome 33% of the time for this action. These accuracy values help evaluate the effectiveness of age and education as predictors for each specific climate action.
+@fig-nineteen presents the accuracy of models predicting the likelihood of various climate-friendly actions based on demographic factors age and education. Each row represents a different climate action with the corresponding accuracy of the model's predictions. The accuracy values reflect how well the models align with the actual data. An accuracy of 33 percent for home improvements indicates that the model correctly predicted the outcome 33% of the time for this action. These accuracy values help evaluate the effectiveness of age and education as predictors for each specific climate action.
 ```{r}
 #| warning: false
 #| echo: false
@@ -465,15 +456,28 @@ model_accuracies <- read.csv(here::here("models/model_accuracies.csv"))
 # Round numeric columns to whole numbers
 model_accuracies[] <- lapply(model_accuracies, function(x) if(is.numeric(x)) round(x) else x)
 
+# Rename the Accuracy column to Accuracy Percentage
+model_accuracies <- model_accuracies %>%
+  rename(`Accuracy (%)` = Accuracy)
+
 # Check the first few rows of the data to ensure it loaded and rounded correctly
 head(model_accuracies)
 
 
 ```
 
-
 ## Likelihood taking action by age
-@fig-twenty shows the relationship between age and the likelihood of engaging in various climate-related actions. The x-axis represents the age groups, and the y-axis indicates the percentage of respondents reporting different likelihood levels, from "Already doing this" to "Very unlikely." The trend lines across each action show how engagement varies by age.
+@fig-twenty shows the relationship between age and the likelihood of engaging in various climate-related actions. The x-axis represents the age groups, and the y-axis indicates the percentage of respondents reporting different likelihood levels, from "Already doing this" to "Very unlikely". 
+
+### Transportation Actions
+In the category of transportation actions, the results reveal that for electric and hybrid vehicles, there is little difference between age groups in terms of the likelihood of adopting this behavior, but older individuals, particularly those aged 65+, are more likely to report being "very unlikely" to do so. For minimizing car use, individuals across all age groups report similar levels of engagement, with relatively consistent percentages already minimizing their car use. However, older individuals, particularly those in the 45-54 and 65+ age groups, are more likely to report being "very unlikely" to minimize car use. For walking or cycling short distances, the trend shows that all age groups, except for those aged 25-34, report similar levels of engagement, with a slight decrease in adoption among the 25-34 age group. Conversely, older individuals, especially those aged 65+, are more likely to report being "very unlikely" to engage in walking or cycling for short distances.
+
+### Waste and Product Actions
+When examining purchasing green products, individuals aged 35 and older report higher engagement in this action, with many already purchasing green products or expressing a strong likelihood of doing so. Notably, those aged 45 and above are the least likely to adopt this behavior, with a significant percentage indicating they are "very unlikely" to do so. For reducing waste, older age groups show higher levels of engagement, with individuals aged 35 and above reporting the highest rates of already taking this action. The 45-54 age group, however, is the least likely to engage in this behavior. Sorting waste correctly is overwhelmingly supported by all age groups, with at least 75% in each category already doing or being very likely to take action. The incidence of individuals reporting being "very unlikely" to sort waste correctly is minimal across all age groups.
+
+### Home and Lifestyle Changes
+For making home improvements aimed at increasing energy efficiency, middle-aged individuals (35-54) are the most likely to report having already made improvements or being very likely to do so. Across all age groups, at least half of the respondents are already engaged in or very likely to engage in energy-efficient home improvements, though younger individuals (15-24) are less likely to take this action. Regarding adopting meat alternatives, younger individuals, particularly those aged 15-24, are the least likely to reduce meat consumption with plant-based alternatives. In contrast, individuals aged 35 and older show higher levels of adoption or strong intention to adopt this behavior. Lastly, for reducing hydro usage, there is a clear increase in the likelihood of engagement with increasing age. Older individuals, particularly those aged 65+, are more likely to report already reducing their hydro usage or being very likely to do so, though the 65+ age group also reports the highest percentage of being "very unlikely" to reduce hydro usage.
+
 
 ```{r}
 #| warning: false
@@ -487,8 +491,16 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_age_plot.png"))
 ```
 
 ## Likelihood taking action by education 
-@fig-twenty-one displays how the likelihood of engaging in climate-friendly actions varies by educational attainment. The x-axis represents the proportion of respondents in each education category, while the y-axis lists the educational levels, from "Prefer not to answer" to "Postgrad." Each action is shown across separate facets, revealing how education level correlates with engagement in each behavior.Individuals with higher education levels generally show a higher likelihood of engaging in climate-friendly actions. This trend is evident across all behaviors, with respondents possessing undergraduate or postgraduate degrees more likely to adopt electric vehicles or purchase green products.
+@fig-twenty-one displays how the likelihood of engaging in climate-friendly actions varies by educational attainment. The x-axis represents the proportion of respondents in each education category, while the y-axis lists the educational levels, from low to high educational attainment. Each action is shown across separate facets, revealing how education level correlates with engagement in each behavior. 
 
+### Transportation Actions
+In the category of transportation actions, the likelihood of adopting electric or hybrid vehicles does not significantly vary across age groups, but older individuals, particularly those aged 65+, are more likely to report being "very unlikely" to adopt this action. When considering minimizing car use, responses show relatively consistent engagement across all age groups, with similar percentages already engaging in this action. However, older age groups, particularly those aged 45-54 and 65+, are more likely to report being "very unlikely" to minimize their car use. For walking or cycling shorter distances, the trend is fairly consistent across age groups, with all groups showing similar levels of adoption, except for those aged 25-34, who report slightly lower engagement. Older age groups, particularly individuals aged 65+, are also more likely to report being "very unlikely" to engage in walking or cycling for short distances.
+
+### Waste and Product Actions
+Regarding purchasing green products, individuals aged 35 and older show higher levels of engagement, with a significant proportion already purchasing or expressing strong intentions to do so. Conversely, individuals aged 45 and older exhibit lower likelihoods, with a higher percentage reporting being "very unlikely" to adopt this behavior. For reducing waste, older age groups (35 and above) are more likely to have already taken action or express high intentions to do so. However, the 45-54 age group stands out as the least likely to engage in this action. Sorting waste correctly is a behavior that is overwhelmingly practiced across all age groups, with at least 75% of individuals from every age category reporting that they are already doing it or are very likely to do so. The percentage of individuals reporting being "very unlikely" to sort waste correctly is minimal across all age groups.
+
+### Home and Lifestyle Changes
+For making home improvements to increase energy efficiency, individuals in the 35-54 age range are the most likely to report having already made improvements or being very likely to do so. In general, at least half of the sample across all age groups reports that they are already engaged in or very likely to make energy-efficient home improvements, although younger individuals (15-24) are less likely to take this action. When it comes to adopting meat alternatives, individuals aged 35 and above are more likely to reduce meat consumption with plant-based alternatives, while those aged 15-24 are the least likely to engage in this behavior. For reducing hydro usage, older age groups, particularly those aged 65+, report the highest rates of already engaging in or being very likely to engage in this action. However, the 65+ age group also reports the highest percentage of being "very unlikely" to reduce hydro usage.
 ```{r}
 #| warning: false
 #| echo: false
@@ -500,70 +512,6 @@ knitr::include_graphics(here("data/03-figures_data", "likelihood_education_plot.
 ```
 
 
-### Electric / Hybrid Vehicle Adoption
-The model indicates that individuals with "Some Community/Trade School" or "Some University" education are the most likely to invest in electric or hybrid vehicles. This group is classified as "Very likely" (n = 47) with an error rate of 64%, suggesting that while many in this category are inclined to invest, there is notable variability. Among individuals with other educational backgrounds, age plays a key role. Younger individuals under 35 years old, particularly those classified as "Very likely" (n = 10, error = 30%), demonstrate a strong tendency to invest, reflecting high confidence in this prediction. However, another subset of younger individuals (n = 28) is "Somewhat likely," with a higher error rate of 61%, indicating less certainty. These trends suggest younger people are more open to adopting electric or hybrid vehicles, likely due to environmental awareness or familiarity with emerging technologies.
-
-Older individuals, particularly those over 69 years old, are the least likely to invest. This group is classified as "Very unlikely" (n = 18) with an error rate of 61.1%, highlighting some uncertainty but an overall low likelihood of adoption. Middle-aged individuals (35 to 69 years old) show more mixed results, with some classified as "Somewhat unlikely" (n = 84, error = 54%) and others as "Somewhat likely" (n = 46, error = 57%). These findings suggest that barriers such as cost, resistance to change, or lower interest in alternative vehicles may deter older age groups.
-
-In summary, the model suggests that younger individuals, particularly those under 35 years old, and those with mid-level education are the most likely to invest in electric or hybrid vehicles. In contrast, older individuals and those with minimal or advanced education are less likely to adopt these technologies. While the model provides insights into these trends, the error rates indicate variability in some predictions, particularly among "Somewhat likely" and "Somewhat unlikely" groups.
-
-### Home Improvement for Energy Efficiency
-The results reveal that age is the most significant predictor of climate-conscious home improvement behavior. Individuals aged 36 years or older are the most likely to already be taking or have taken such actions. This group represents the largest sample size (n = 223) but also exhibits a moderate error rate (59.6%), indicating some variation in their behaviors.
-
-For younger individuals (under 36 years), educational attainment is a key determinant. Those with higher education levels, such as "Community/Trade School," "Some University," or "Postgraduate," are the most likely to take action ("Very likely") with an error rate of 55%. However, younger individuals with lower levels of education, such as "High School" or "Some Community/Trade School," are less likely to engage in these actions, being classified as "Somewhat likely" but with a higher error rate of 67%, indicating greater variability in this group.
-
-Overall, individuals aged 36 or older are more likely to have already engaged in climate-conscious home improvements, regardless of education level. Younger individuals with higher education are more likely to adopt such changes in the future, while those with lower education are less likely, with predictions for this group being less certain. These findings underscore the importance of both age and education in shaping environmental engagement and suggest that outreach efforts might need to target younger, less-educated groups to increase participation.
-
-### Consumption of Meat Alternatives
-The model suggests that age is the strongest predictor of individuals’ likelihood to adopt meat alternatives for climate change mitigation. Younger individuals, particularly those under 34.5 years old, show varying tendencies. Among this group, those aged 31.5 years or younger are divided into “Somewhat likely” (n = 25, error = 44%) and “Somewhat unlikely” (n = 62, error = 62.9%), indicating considerable variability in predictions. These findings suggest that while younger individuals are more open to meat alternatives, their likelihood of adoption is not uniform.
-
-For individuals aged 34.5 years or older, education becomes a significant predictor. Those with community/trade school, undergraduate, or postgraduate education are more likely to consider or adopt meat alternatives. Within this group, further splits by age highlight nuanced behaviors. For instance, individuals over 65.5 years old are classified as “Already doing this or have done this” (n = 30, error = 56.7%), reflecting a subset of older adults who actively embrace meat alternatives, possibly due to increased awareness or health considerations.
-
-Conversely, individuals with high school education in this older age group show lower likelihoods of adopting meat alternatives, with many classified as “Somewhat unlikely” (n = 22, error = 68.2%). These results underscore the interplay of age and education, where younger individuals and those with higher education levels are more inclined toward adopting meat alternatives. However, the variability in error rates across groups indicates that other unmeasured factors, such as income or cultural attitudes, may also influence these decisions.
-
-### Minimizing Car Use
-The decision tree indicates that the majority of individuals in the dataset are classified as "Already doing this or have done this," with a sample size of 320 and an error rate of 61.9%. This classification implies that minimizing car use is a prevalent behavior among the population studied. However, the relatively high error rate suggests notable variability within this group, indicating that while many individuals report minimizing car use, there may be discrepancies or inconsistencies in the data.
-
-The lack of further splits in the decision tree highlights the uniformity of responses or the insufficiency of the input variables to explain differences in behavior. This uniform classification could reflect widespread adoption of car use minimization practices due to shared motivations, such as environmental awareness or accessibility to alternatives like public transportation or carpooling.
-
-In summary, the model reveals that minimizing car use is a broadly practiced behavior within the sample population. However, the high error rate points to potential data quality issues or the influence of unmeasured factors. Future research could benefit from incorporating additional variables, such as geographic location, income level, or access to transportation infrastructure, to better understand the drivers and barriers to minimizing car use.
-
-### Purchasing Green Products
-The model reveals distinct patterns regarding the likelihood of purchasing green products based on age and education. Among individuals aged 37.5 years or older, a notable segment is classified as "Somewhat likely" (n = 66, error = 54.5%). However, older individuals with age thresholds of 47.5 years and above show increased tendencies to fall into the category of "Already doing this or have done this." For instance, individuals aged over 50.5 years are predominantly classified as "Already doing this or have done this" (n = 7, error = 42.9%). These findings suggest that age plays a significant role in influencing behavior, with older age groups showing stronger commitment to green product purchases.
-
-For younger individuals under 37.5 years, the likelihood of purchasing green products varies based on education and finer age splits. Those under 27.5 years are more likely to be classified as "Very likely" (n = 24, error = 54.2%), while individuals under 22.5 years exhibit an even higher likelihood, with a smaller error rate (n = 8, error = 37.5%). This trend indicates that younger individuals, particularly those in the youngest age brackets, are more inclined toward green product purchasing, possibly reflecting heightened environmental awareness or greater receptiveness to sustainable practices.
-
-Overall, the decision tree highlights the interplay of age and education in predicting green product purchasing behavior. Younger individuals, especially those with mid-range education, demonstrate a stronger inclination toward adopting sustainable practices. In contrast, older individuals, particularly those above 50 years, are more likely to have already adopted these behaviors. While the model provides valuable insights, the variability in error rates across different nodes suggests that other unmeasured factors may also influence green product purchasing behavior.
-
-### Reducing Hydro Usage
-The findings from this decision tree analysis suggest that age and educational attainment are pivotal factors shaping individuals' likelihood of reducing hydro usage. Younger individuals, particularly those under 34.5 years, exhibit greater openness and enthusiasm for hydro-reduction practices. This trend likely reflects their increased exposure to sustainability discourse, progressive values, and familiarity with energy-saving technologies. Similarly, older individuals (above 64.5 years) might also demonstrate a willingness to reduce hydro usage, potentially driven by long-term environmental awareness or economic considerations during retirement. In contrast, middle-aged individuals show a more nuanced relationship with hydro-use reduction, as their decisions are influenced by their educational background, with those holding higher educational qualifications demonstrating greater likelihood to act.
-
-These results carry significant implications for policy and program design aimed at reducing hydro consumption. Younger individuals can serve as early adopters and advocates for hydro-saving technologies, making them a critical demographic for energy campaigns and innovative solutions. For older individuals, policymakers can emphasize the economic benefits of hydro-reduction initiatives, such as savings on utility bills, to motivate action. Addressing the middle-aged demographic requires more targeted approaches that consider educational disparities. Educational interventions, including workshops and informational campaigns, could bridge gaps for those with lower education levels, helping to increase their likelihood of engagement. Overall, these insights highlight the need for age- and education-specific strategies to effectively promote widespread hydro-use reduction.
-
-### Reducing Waste
-The results show that younger individuals under 34.5 years are more likely to be categorized as "Somewhat likely" or "Very likely" to reduce waste, particularly when they have higher levels of education. This suggests that environmental awareness among younger generations is strongly linked to educational attainment. In contrast, older individuals over 75.5 years are predominantly categorized as "Already doing this or have done this," reflecting long-standing habits and greater experience with resource conservation.
-
-For individuals aged 34.5 to 75.5 years, the likelihood of reducing waste varies based on both age and education. Those with higher educational attainment are more likely to have already adopted waste-reduction behaviors, while those with lower education levels are less consistent in their engagement. The errors associated with the predictions indicate variability within these groups, emphasizing the need for targeted interventions to improve participation rates.
-
-The findings suggest clear implications for policy and outreach. For younger individuals, campaigns focusing on leveraging their education and enthusiasm for sustainability can encourage even higher engagement. For middle-aged groups, addressing educational gaps through workshops or accessible resources can boost participation. For older individuals, reinforcing their existing waste-reduction practices with supportive policies, such as incentives for recycling or composting, can sustain their efforts. Tailoring strategies to these specific groups ensures a more effective approach to fostering waste reduction.
-
-### Sorting Waste Correctly
-The results indicate that individuals with higher educational attainment (Community/Trade School, Undergraduate, or above) overwhelmingly report "Already doing this or have done this" when it comes to sorting waste. This suggests that education enhances awareness and engagement with sustainable practices. However, the moderate error rate (37.3%) implies variability within this group, potentially due to differences in access to infrastructure or levels of personal commitment.
-
-Among those with a High School education, age emerges as a crucial factor. Younger individuals under 37 years are also likely to have sorted waste, though with higher inconsistencies. Older individuals in this category exhibit a stronger likelihood of intending to sort waste ("Very likely"), reflecting a growing awareness or changing attitudes with age. These findings highlight the nuanced relationship between age, education, and environmental behavior.
-
-The implications of this model suggest the need for tailored interventions. For individuals with lower educational attainment, targeted educational campaigns or accessible resources can bridge knowledge gaps and improve waste-sorting habits. For younger groups, embedding sustainability practices into school curricula can reinforce early habits. For older populations, providing convenient infrastructure or incentives for sorting waste could further encourage their commitment. Overall, the results emphasize the importance of addressing both educational and age-specific barriers to enhance waste-sorting behaviors.
-
-### Walking / Cycling Short Distances
-The model highlights a clear link between education and walking or cycling short distances. Individuals with higher education levels are more likely to engage in these activities, suggesting that education fosters awareness or access to environments conducive to active transportation. However, the moderate error rate in this group (51.9%) implies that other unmeasured factors, such as urban infrastructure or cultural attitudes, may also influence the behavior.
-
-Age emerges as a secondary but critical determinant, particularly for individuals with lower education levels. Those aged over 65.5 years are classified as “Very likely” to adopt walking or cycling, which may reflect a shift toward health-conscious behaviors among older adults. In contrast, individuals under 33.5 years show varying likelihoods, with subgroups classified as “Somewhat likely” or “Already doing this,” reflecting the nuanced impact of life stage and environmental factors.
-
-These findings suggest that promoting active transportation should consider demographic factors, such as age and education, alongside broader interventions like improved urban design or targeted awareness campaigns.
-
-
-## Overall Summary of Results:
-The results indicate that both age and education significantly influence the likelihood of engaging in climate-related actions. Younger respondents tend to be more likely to adopt behaviors such as consuming meat alternatives and minimizing car use, while older individuals are more inclined to engage in actions that require larger investments or long-term commitments, such as reducing hydro usage and investing in energy-efficient home improvements. Higher educational attainment is also strongly linked to a greater likelihood of engaging in climate-friendly behaviors, particularly those that involve financial investment, like adopting electric vehicles and consuming meat alternatives. However, simpler actions such as sorting waste correctly are more widely reported across all education levels. These generational and educational differences highlight the importance of factors such as income, lifestyle, and environmental awareness in shaping individuals' climate-related behaviors. In light of these findings, it is crucial to consider demographic factors when designing policies or campaigns aimed at encouraging climate action, as different age and education groups exhibit varied levels of engagement with both simple and more complex sustainable practices.
 
 
 # Discussion

@@ -1,10 +1,10 @@
 Model,Accuracy
-home_improvement,33.33333333333333
-reduce_hydro,28.39506172839506
-minimize_car,38.75
-vehicle_electric,24.691358024691358
-protein_alternative,25.31645569620253
-reduce_waste,39.24050632911392
-green_product,32.098765432098766
-short_distance,35.44303797468354
-sort_waste,59.25925925925925
+Home Improvement,33.33333333333333
+Reduce Hydro,28.39506172839506
+Minimize Car ,38.75
+ Electric / Hybrid Vehicle,24.691358024691358
+Meat Alternative,25.31645569620253
+Reduce Waste,39.24050632911392
+Green Products,32.098765432098766
+Walk / Cycle Short Distance,35.44303797468354
+Sort Waste Correctly,59.25925925925925

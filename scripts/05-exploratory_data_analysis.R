@@ -377,9 +377,8 @@ print(likelihood_age_plot)
 ggsave(
   filename = here("data/03-figures_data", "likelihood_age_plot.png"),
   plot = likelihood_age_plot,
-  width = 6, height = 4
+  width = 9, height = 7
 )
-
 
 
 
@@ -459,7 +458,7 @@ likelihood_education_plot <- ggplot(likelihood_education_plot_percent,
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Rotate x-axis labels 45 degrees
     axis.text.y = element_text(size = 10),  # Adjust font size for y-axis labels
-    strip.text.x = element_text(size = 10),  # Adjust font size for facet labels
+    strip.text.x = element_text(size = 12),  # Adjust font size for facet labels (action names)
     plot.margin = margin(10, 10, 20, 10),  # Increase plot margin for better spacing
     panel.spacing = unit(1, "lines"),  # Adjust spacing between facets
     legend.position = "right",  # Move legend to the right
@@ -480,14 +479,6 @@ likelihood_education_plot <- ggplot(likelihood_education_plot_percent,
     axis.ticks.x = element_blank(),  # Remove x-axis ticks
   )
 
-# Remove education levels from x-axis for all actions except the specified ones
-likelihood_education_plot$facet$params$strip.position <- "top"
-likelihood_education_plot <- likelihood_education_plot + 
-  theme(strip.background = element_blank(),
-        strip.text.x = element_blank()) + 
-  facet_wrap(~action, scales = "free_x", ncol = 3, 
-             labeller = label_wrap_gen(width = 20))
-
 # Display the Plot
 print(likelihood_education_plot)
 
@@ -495,9 +486,8 @@ print(likelihood_education_plot)
 ggsave(
   filename = here("data/03-figures_data", "likelihood_education_plot.png"),
   plot = likelihood_education_plot,
-  width = 6, height = 4
+  width = 9, height = 9
 )
-
 
 
 
