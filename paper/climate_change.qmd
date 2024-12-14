@@ -11,7 +11,6 @@ format:
   pdf:
     toc: true
     number_sections: true
-    toc_depth: 2   # Optional: to control how deep the TOC goes (e.g., section and subsection)
 bibliography: references.bib
 ---
 
