@@ -76,7 +76,8 @@ educ_individual_plot <- ggplot(individual_18, aes(x = highest_level_educ, fill =
   labs(
     title = "Education Distribution of Survey Respondents (2018)",
     x = "Education Level",
-    y = "Frequency"
+    y = "Frequency",
+    caption = "Figure 2: The histogram shows the distribution of education levels of 2018 survey respondents."
   ) + 
   theme_minimal() +
   scale_x_discrete(
@@ -106,7 +107,7 @@ print(educ_individual_plot)
 ggsave(
   filename = here("data/03-figures_data", "educ_individual_plot.png"),  # Saving as a PNG file
   plot = educ_individual_plot,
-  width = 5, height = 3.5
+  width = 6, height = 4
 )
 
 
@@ -127,8 +128,7 @@ informed_18_plot <- ggplot(informed_18_plot, aes(x = extent_consider_informed, f
   labs(
     title = "Distribution of Self-Reported Climate Change Knowledge",
     x = "Extent Informed about Climate Change",
-    y = "Frequency",
-    caption = "Figure 3: The histogram shows the distribution of self-reported climate change knowledge\namong 2018 survey respondents. This distribution provides insights into public awareness\nand the extent to which individuals feel informed about climate change."
+    y = "Frequency"
   ) + 
   theme_minimal() +
   scale_x_discrete(
@@ -186,6 +186,7 @@ likelihood_data <- individual_18 %>%
                                         "Somewhat likely", 
                                         "Somewhat unlikely", 
                                         "Very unlikely")))
+
 # Calculate percentages
 likelihood_18_plot_percent <- likelihood_data %>%
   group_by(action, likelihood) %>%
@@ -196,28 +197,48 @@ likelihood_18_plot_percent <- likelihood_data %>%
 # Create the likelihood plot
 likelihood_18_plot <- ggplot(likelihood_18_plot_percent, aes(x = action, fill = likelihood, y = percentage)) +
   geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Likelihood of Taking Climate Change Actions",
-       x = "Actions", y = "Percentage", fill = "Likelihood") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_manual(
-    values = c("Already doing this or have done this" = "forestgreen", 
-               "Very likely" = "green", 
-               "Somewhat likely" = "yellow", 
-               "Somewhat unlikely" = "orange", 
-               "Very unlikely" = "red")
+  labs(
+    title = "Likelihood of Taking Climate Change Actions",
+    x = "Actions",
+    y = "Percentage",
+    fill = "Likelihood",
+    caption = "Figure 5: The stacked bar plot shows the likelihood of survey respondents taking various actions\nto address climate change."
   ) +
-  geom_text(aes(label = paste0(round(percentage), "%")),
-            position = position_stack(vjust = 0.5), size = 3)
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.margin = margin(t = 10, r = 10, b = 50, l = 10),  # Increase bottom margin
+    plot.caption = element_text(hjust = 0, size = 10, lineheight = 1.2)  # Center caption
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Already doing this or have done this" = "forestgreen", 
+      "Very likely" = "green", 
+      "Somewhat likely" = "yellow", 
+      "Somewhat unlikely" = "orange", 
+      "Very unlikely" = "red"
+    )
+  ) +
+  geom_text(
+    aes(label = paste0(round(percentage), "%")),
+    position = position_stack(vjust = 0.5),
+    size = 3
+  )
 
 # Print the plot
 print(likelihood_18_plot)
+
 # Save the likelihood plot to data/03-figures_data
 ggsave(
   filename = here("data/03-figures_data", "likelihood_individual_plot.png"),  # Saving as a PNG file
   plot = likelihood_18_plot,
-  width = 6, height = 4
+  width = 7, height = 7,  # Ensure extra height for caption
+  dpi = 300
 )
+
+
+
+
 
 
 # Figure for method of communication
@@ -359,7 +380,8 @@ likelihood_age_plot <- ggplot(likelihood_age_plot_percent,
   labs(title = "Likelihood of Taking Climate Change Actions by Age Group",
        x = "Age Group", 
        y = "Percentage", 
-       fill = "Likelihood") +
+       fill = "Likelihood"
+       ) +
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),  # Rotate x-axis labels
@@ -387,7 +409,7 @@ print(likelihood_age_plot)
 ggsave(
   filename = here("data/03-figures_data", "likelihood_age_plot.png"),
   plot = likelihood_age_plot,
-  width = 9, height = 7
+  width = 9.2, height = 8
 )
 
 

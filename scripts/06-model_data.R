@@ -51,10 +51,10 @@ generate_model <- function(target_var, train_data, test_data, model_name) {
   png_file_path <- file.path(here::here("models/"), paste0(model_name, "_tree.png"))
   
   # Adjust PNG size to avoid cutting off the tree
-  png(png_file_path, width = 3200, height = 1500, res = 150)  # Increase size and resolution
+  png(png_file_path, width = 4800, height = 2400, res = 300)  # Larger size and higher resolution
   
   # Plot the decision tree and save the plot as a .png
-  plot(as.party(tree), gp = gpar(cex = 1), type = "simple")
+  plot(as.party(tree), gp = gpar(cex = 1.5), type = "simple")  # Adjust font size for better visibility
   
   # Close the device after saving the plot
   dev.off()
@@ -69,6 +69,7 @@ generate_model <- function(target_var, train_data, test_data, model_name) {
   accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix) * 100
   return(accuracy)
 }
+
 
 #### Loop to create models for different target variables ####
 # Create a data frame to store the model names and their corresponding accuracies
@@ -121,4 +122,5 @@ print(model_results)
 
 # Save the results as a CSV in the correct location
 write_csv(model_results, here::here("models/model_accuracies.csv"))
+
 
