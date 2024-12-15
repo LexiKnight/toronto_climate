@@ -304,8 +304,7 @@ communication_18_plot <- ggplot(data_summary, aes(x = reorder(delivery_method, p
     title = "Preferred Methods of Communication for Climate Change and Climate Action Information",
     x = "Delivery Method",
     y = "Percentage of Responses",
-    fill = "Delivery Method",
-    caption = "Figure 4: The stacked bar plot illustrates the preferred methods of communication for receiving\ninformation about climate change and climate action."
+    fill = "Delivery Method"
   ) +
   theme_minimal() +
   theme(

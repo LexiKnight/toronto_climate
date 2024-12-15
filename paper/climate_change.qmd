@@ -113,12 +113,12 @@ Figure 2 shows the distribution of respondents by their highest level of educati
 knitr::include_graphics(here("data/03-figures_data", "educ_individual_plot.png"))
 ```
 
-\newpage
-
 #### Comparison 2018 to 2021
 Table 2 compares the education levels of respondents in 2018 and 2021. The two surveys used different education categories, making direct comparisons challenging. In 2018, 9% of respondents had a high school diploma or less, while in 2021, this figure rose to 38%, due to the addition of the "less than high school" and "high school or equivalent" categories. This shift indicates that the 2021 survey better represented individuals with lower educational attainment.
 
 The 2018 survey provided more detailed categories, including options for community college, trade school, and distinctions between "some" versus "completed" education. In contrast, the 2021 survey used broader categories, which likely reduced the specificity of educational data. Notably, the 2021 survey appears to have offered a more balanced sample, with a wider spread across various education levels, while the 2018 sample was noticeably skewed toward respondents with higher educational attainment. This suggests that the 2021 survey may have captured a broader range of educational backgrounds, providing a more well-rounded representation of Toronto’s population.
+
+\newpage
 
 ```{r}
 #| warning: false
@@ -170,6 +170,8 @@ Figure 3: The histogram shows the distribution of self-reported climate change k
 #### Comparison 2018 to 2021
 Table 3 illustrates the self-reported level of extent individuals feel informed about climate change and climate action for 2018 and 2021. In 2018, the large majority of individuals say they are very informed with 60 percent and the following category is not very informed with 27 percent. In 2021, The majority of individuals also say they are very informed but to a lesser degree with 48 percent and this is closely followed by only a little informed with 37 percent. There is a trend that individuals in 2018 reported greater levels of knowledge about climate change whereas 2021 illustrates a more even split between very informed and only little informed, portraying that fewer individuals have adequate knowledge about climate change. 
 
+\newpage
+
 Table 3: This table highlights the extent feel informed distribution of survey respondents in 2018 and 2021.
 
 ```{r}
@@ -197,7 +199,6 @@ informed_summary_combined %>%
 ```
 
 
-
 ### Best Method of Delivery
 #### Individual 2018
 Figure 4 shows 2018 survey results for the preferred method for receiving climate change information. Advertising campaigns emerged as the most popular choice, selected by approximately 55 percent of respondents, followed closely by newsletters with 52 percent and the Toronto.ca website with 46 percent. On the other hand, social media platforms such as Facebook, Instagram, and Twitter were less popular overall, with Twitter 12 percent and Instagram 17 percent garnering the fewer votes. Notably, only 5 percent of respondents reported being uninterested in receiving information about climate action. These findings suggest that more traditional communication methods, such as advertising and newsletters, resonated better with respondents compared to social media.
@@ -206,8 +207,6 @@ Figure 4 shows 2018 survey results for the preferred method for receiving climat
 #| warning: false
 #| echo: false
 #| message: false
-##| label: fig-seven
-#| fig-cap: "The stacked bar plot illustrates the preferred methods of communication for receiving information about climate change and climate action."
 
 library(here)
 
@@ -215,6 +214,8 @@ knitr::include_graphics(here("data/03-figures_data", "communication_18_plot.png"
 
 
 ```
+
+Figure 4: The stacked bar plot illustrates the preferred methods of communication for receiving information about climate change and climate action.
 
 #### Comparison 2018 to 2021
 Table 4 compares the preferred methods of delivering climate change information between the 2018 and 2021 surveys. While the top three methods namely advertising campaigns, newsletters, and the Toronto.ca website remained consistent across both years, there were notable shifts in preferences. Traditional methods such as newsletters, advertising campaigns, brochures, and pamphlets saw a decline in 2021. In contrast, social media platforms including Twitter, Facebook, and Instagram gained traction, reflecting a growing reliance on digital communication channels.
@@ -241,13 +242,13 @@ colnames(communication_summary_combined) <- c("Communication Method", "2018 Perc
 
 # Print the table (using kable for styling)
 communication_summary_combined %>%
-  kbl(caption = "This table illustrates the prefered method of communication of survey respondents in 2018 and 2021") %>%
+  kbl() %>%
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
 
 
 ```
 
-\newpage
+Table 4: This table illustrates the preferred method of communication of survey respondents in 2018 and 2021
 
 ### Likelihood Taking Action 
 Figure 5 illustrates the self-reported likelihood of individuals taking various actions to minimize environmental impacts. The x-axis displays nine different climate actions, while the y-axis represents the percentage of individuals corresponding to each likelihood level. A stacked bar chart is used to visualize the distribution of responses, with a color-coded legend ranging from green (high likelihood of action) to red (low likelihood of action).
@@ -346,6 +347,8 @@ knitr::include_graphics(here::here("models/minimize_car_tree.png"))
 
 Figure 7: Probability tree for likelihood of minimizing car use, predicted by age and education.
 
+\newpage
+
 #### Likelihood of walking or cycling shorter distances
 Figure `8` indicates that education is the primary factor influencing short-distance walking or cycling. Those with higher education (postgraduate, undergraduate, or some university) are more likely to engage in this behavior, with an error rate of 51.9%. For those with lower education, age plays a significant role, with younger individuals (under 66 years) more likely to walk or cycle, with an error rate of 60%. This model highlights how education and age together shape short-distance mobility, with error rates reflecting the model's predictive variability.
 
@@ -361,6 +364,8 @@ knitr::include_graphics(here::here("models/short_distance_tree.png"))
 ```
 Figure 8: Probability tree for likelihood of walking or cycling shorter distances, predicted by age and education.
 
+\newpage
+
 ### Waste and Product Actions
 #### Likelihood of purchasing green products
 Figure `9` reveals that age is the initial split for green product purchasing behavior. Younger individuals (under 38 years) are more likely to purchase green products, with an error rate of 51.9%. Education further refines the prediction. Older individuals (over 38 years) are classified by both age and education, with postgraduate education leading to higher engagement in purchasing green products, with an error rate of 60%. This model shows how age and education influence consumer choices in sustainable products.
@@ -375,7 +380,9 @@ knitr::include_graphics(here::here("models/green_product_tree.png"))
 
 ```
 
-FIgure 9: Probability tree for likelihood of purchasing green products, predicted by age and education
+Figure 9: Probability tree for likelihood of purchasing green products, predicted by age and education
+
+\newpage
 
 #### Likelihood of reducing waste by repurposing used product
 Figure `10` shows that age is the primary factor for waste reduction behaviors. Younger individuals (under 35 years) are more likely to repurpose waste, with an error rate of 57.1%. Education further refines the classification. Older individuals (over 35 years) show varied likelihoods based on education, with more highly educated individuals more likely to repurpose waste, with an error rate of 60%. This highlights the influence of both age and education on waste-reduction habits.
@@ -392,6 +399,8 @@ knitr::include_graphics(here::here("models/reduce_waste_tree.png"))
 
 Figure 10: Probability tree for likelihood of reducing waste, predicted by age and education.
 
+\newpage
+
 #### Likelihood of sorting waste correctly
 Figure `11` identifies education as the primary factor for sorting waste. Those with higher education (at least community/trade school or postgraduate) are more likely to sort waste correctly, with an error rate of 37.3%. Age further refines the predictions for those with lower education levels, with younger individuals under 37 years being more likely to sort waste correctly, albeit with a higher error rate of 57.1%. Older individuals (37 years and above) are more likely to sort waste correctly, with an error rate of 35.3%. The model emphasizes the role of education in fostering proper waste-sorting behaviors, with age providing additional nuance.
 ```{r}
@@ -406,6 +415,8 @@ knitr::include_graphics(here::here("models/sort_waste_tree.png"))
 ```
 
 Figure 11: Probability tree for likelihood of sorting waste correctly, predicted by age and education
+
+\newpage
 
 ### Home and Lifestyle Changes
 #### Likelihood of making home improvements
@@ -424,6 +435,8 @@ knitr::include_graphics(here::here("models/home_improvement_tree.png"))
 
 Figure 12: Probability tree for likelihood of making home improvements predicted by age and education.
 
+\newpage
+
 #### Likelihood of adopting meat alternatives
 Figure `13` demonstrates that age is the primary factor for adopting meat alternatives. Younger individuals (under 35 years) are more likely to adopt meat alternatives, with an error rate of 44%. For individuals aged 35 years or older, education becomes a key predictor. Those with community/trade school, undergraduate, or postgraduate education are more likely to adopt meat alternatives, with varying error rates, including "Somewhat unlikely" for younger individuals at 62.9%. This model highlights how age and education together shape dietary choices.
 
@@ -439,6 +452,8 @@ knitr::include_graphics(here::here("models/protein_alternative_tree.png"))
 ```
 
 Figure 13: Probability tree for likelihood of adopting meat alternatives, predicted by age and education.
+
+\newpage
 
 #### Likelihood of reducing hydro usage
 Figure `14` reveals that age is the primary predictor influencing hydro usage reduction. Younger individuals (under 35 years) are "Very likely" to reduce hydro usage, with an error rate of 60.9%. Older individuals (35 years and above) are further split by education and age, with those over 64 years also "Very likely" to engage in hydro conservation, with a lower error rate of 37.5%. Middle-aged individuals (35–64 years) with higher education are either "Already doing this or have done this" (error rate 56.3%) or "Somewhat likely" (error rate 50.0%). This model underscores the combined role of age and education in promoting energy-saving behaviors.
@@ -460,6 +475,8 @@ Figure 14: Probability tree for likelihood of reducing hydro usage, predicted by
 
 ## Model Summary Table
 Table `5` presents the accuracy of models predicting climate-friendly actions based on age and education. A threshold emerges from the data: models with accuracy above 50% are considered reliable, while those below require careful interpretation. Sorting waste correctly, with an accuracy of 59%, is the most reliable prediction, indicating a stronger association between demographic factors and this behavior. Models like home improvements (33%) offer limited predictive value but remain somewhat informative. In contrast, actions such as adopting meat alternatives (25%) or choosing electric or hybrid vehicles (25%) approach random chance, making their predictions less reliable for drawing meaningful conclusions.
+
+
 
 ```{r}
 #| warning: false
@@ -510,7 +527,7 @@ For making home improvements aimed at increasing energy efficiency, middle-aged 
 #| warning: false
 #| echo: false
 #| message: false
-#| out.width: "200%"
+#| out.width: "100%"
 #| out.height: "auto"
 
 knitr::include_graphics(here("data/03-figures_data", "likelihood_age_plot.png"))
@@ -534,7 +551,7 @@ For making home improvements to increase energy efficiency, individuals in the 3
 #| warning: false
 #| echo: false
 #| message: false
-#| out.width: "200%"
+#| out.width: "100%"
 #| out.height: "auto"
 
 knitr::include_graphics(here("data/03-figures_data", "likelihood_education_plot.png"))
@@ -550,13 +567,13 @@ Figure 16: The facet of stacked bar charts allows for comparison of which climat
 This paper explored how various demographic factors—such as age, education, and climate change knowledge—affect individuals’ engagement in climate-friendly behaviors. Through a comprehensive analysis of survey data from 2018 and 2021, we uncovered surprising patterns and deeper insights into the influences that drive people to adopt more sustainable actions. By investigating the interplay of these factors, we aimed to shed light on how societal changes, particularly in the context of climate action, reflect evolving values and behaviors.
 
 ## What We Learn About the World
-## Age and Climate-Friendly Behaviors
+### Age and Climate-Friendly Behaviors
 Initially, we anticipated that younger individuals would lead the way in adopting climate-friendly actions. While younger people did excel in behaviors like walking or cycling and adopting meat alternatives, the older demographic demonstrated more significant commitment to long-term sustainable actions, such as making energy-efficient home improvements and reducing waste. This unexpected finding revealed that age influences sustainability in complex ways: younger people may embrace immediate, accessible actions, while older individuals engage in more transformative, lasting efforts. This highlights that climate action is a multi-generational effort, with each age group contributing in its own way.
 
-## The Role of Education in Sustainable Actions
+### The Role of Education in Sustainable Actions
 We initially hypothesized that higher education levels would lead to greater engagement in climate-friendly behaviors, and the data largely supported this. Individuals with higher educational attainment were more likely to adopt green products and engage in waste reduction. However, some behaviors, such as reducing meat consumption, were less influenced by education and more affected by lifestyle preferences and cultural norms. Education acts as a strong catalyst for sustainability, but it works in conjunction with other factors, such as age and socio-economic status, to shape climate action. This reminds us that while education is a powerful tool for promoting sustainable behaviors, it is not the only factor at play.
 
-## The Influence of Climate Change Knowledge
+### The Influence of Climate Change Knowledge
 To effectively encourage individuals to take climate action, it's crucial to consider the most popular and impactful methods of communication. Based on the findings from both 2018 and 2021, the most common methods for engaging individuals in climate-friendly behavior are ad campaigns, city newsletters/emails, and the official torontoca website. However, there has been a notable shift towards more diverse, digitally-focused strategies. Social media platforms, particularly Instagram and Twitter, have seen a significant increase in usage since 2018. These platforms allow for more dynamic, engaging, and personalized communication, which can be particularly effective for reaching younger demographics. Smith and Brown [@Smith2023] discuss how digital media can drive climate action by engaging youth through interactive and tailored content, offering an effective way to reach younger individuals who are more digitally engaged. Traditional methods, such as newsletters and brochures, continue to play a role but are becoming less dominant. To maximize engagement, a multi-channel approach that blends digital and traditional communication methods will likely resonate best with the broadest audience, particularly when targeting specific age groups and education levels.
 
 ## Weaknesses of the Study
@@ -598,7 +615,7 @@ Incentives such as gift cards or a donation to a climate-focused charity will be
 ## Data Validation 
 To ensure the validity and reliability of the data, several validation mechanisms will be employed. Responses will be reviewed for internal consistency, such as cross-checking whether respondents who claim high levels of climate change knowledge also report engaging in corresponding climate-friendly behaviors. Participants who provide inconsistent answers or fail to complete the survey will be excluded from the analysis. Additionally, respondents may be contacted for clarification if their answers are ambiguous or incomplete. This will ensure that the data accurately reflects the participant's true attitudes and behaviors.
 
-# Weighting and Data adjustments
+## Weighting and Data adjustments
 The data collected will be weighted to account for any imbalances in demographic representation within the sample. Statistical weighting will adjust for factors such as age, education level, income, and geographic location to ensure the sample accurately reflects the broader population. Weighting will correct for any over- or under-representation of specific demographic groups, allowing for more generalizable findings. Additionally, data will be adjusted for non-response bias, with greater weight given to underrepresented groups (e.g., certain age groups or income levels) to correct for gaps in participation.
 
 ## Budget
@@ -630,36 +647,55 @@ If you have any questions or concerns about this survey or its methodology, plea
 By checking this box, I consent to this survey collecting information about my awareness of climate change, the actions I take to address it, and the factors that influence my behavior for research
 
 Correspondence will not be shared with any external parties.
+
 -    I consent.
 
-**Demographic Information: **
-1. Whats your age? 12-17, 18-24, 25-34, 35-44, 45-54, 55-64, 65+, Prefer not to say
-2. What is the highest level of education that you've completed? Some high school, High school diploma, Diploma / post secondary certificate (college, trade school). Bachelor's degree, Master's degree, Doctorate degree.
+**Demographic Information:**
+
+1. What's your age? 12-17, 18-24, 25-34, 35-44, 45-54, 55-64, 65+, Prefer not to say
+
+2. What is the highest level of education that you've completed? Some high school, High school diploma, Diploma / post-secondary certificate (college, trade school), Bachelor's degree, Master's degree, Doctorate degree.
 
 **Climate Change knowledge and Awareness:**
+
 3. How would you rate your knowledge of the causes of climate change? Very informed, Somewhat informed, Neutral, Somewhat Uninformed, Very uninformed.
+
 4. How confident are you in your understanding of how to mitigate climate change through individual actions? Very confident, Confident, Neutral, Somewhat confident, Not confident.
 
 **Climate-Friendly Action: **
+
 5. Which of the following climate-friendly actions do you regularly engage in? (Select all that apply). Reduce personal vehicle use (e.g., carpooling, using public transport, biking or walking shorter distances), Use / install energy-efficient appliances / devices (e.g., LED bulbs, smart thermostats), Eat a plant-based diet or reduce meat consumption, Recycle and compost, Purchase eco-friendly products (e.g., sustainable clothing, eco-conscious brands), Use renewable energy sources (e.g., solar panels, wind energy), None of the above, Other.
+
 6. How often do you consider the environmental impact of your purchases? Always, Often, Sometimes, Rarely, Never
 
 **Barriers to Sustainable Actions: **
+
 7. What factors prevent you from engaging in more climate-friendly behaviors? (Select all that apply) Cost of sustainable products or services, Lack of time, Lack of knowledge about how to make sustainable choices, Convenience (e.g., environmentally harmful options are more accessible), Skepticism about the effectiveness of individual actions, No barriers (I already engage in sustainable behaviors), Other (please specify)
+
 8. Do you feel that climate-friendly behaviors are affordable for people in your community? Yes, No, Not sure
+
 9. Which of the following reasons best describe why you do not participate in more climate-friendly actions? (Select all that apply) I do not believe my individual actions will make a difference, I find it too difficult to make sustainable choices in my daily life, It is too expensive to adopt sustainable behaviors, I don’t know where to start or how to make a meaningful impact, Sustainable products or services are not easily available in my area, I do not feel that climate change directly affects me or my community, I am unsure about what actions are most effective in reducing climate change, I am not sure how to balance sustainable actions with my current lifestyle
+
 10. If you have avoided taking climate-friendly actions, what do you believe would make it easier for you to participate in these behaviors? (Select up to three) Lower cost of sustainable products or services, More convenient access to sustainable options, Clearer information on how individual actions can make a difference, More education or awareness about climate change, Incentives (e.g., government subsidies, rewards) to take action, More social pressure or norms encouraging sustainable behavior, Other (please specify)
+
 11. How much do you trust the information provided by the following groups on climate change? Government, Environmental NGOs, Local community organizations, Media (TV, online news), Social media influencers/bloggers, Scientists, I do not trust any of these sources
+
 12. If the government provided more support for individuals to take climate-friendly actions, would this lead you to taking more environmentally friendly actions (e.g., incentives, education programs, reduced cost)? Yes, No, Not sure
+
 13. How strongly do you agree with the following statement: "Taking climate-friendly actions is a personal responsibility." Strongly disagree, Disagree, Neutral, Agree, Strongly agree
+
 14. How strongly do you agree with the following statement: "The government or businesses should take more responsibility for addressing climate change than individuals." Strongly disagree, Disagree, Neutral, Agree, Strongly agree
+
 15. Do you think the reluctance to take action against climate change more due to a lack of knowledge about how to get involved, or is it primarily because sustainable actions are inconvenient for people? Lack of knowledge about how to take action, Inconvenience of sustainable actions, Both, Neither, Unsure
 
 **Education and Information: **
+
 16. How effective do you think current school programs are in educating students about climate change? Very ineffective, Somewhat ineffective, Neutral, Somewhat effective, Very effective
+
 17. Which platforms do you find most effective for receiving information about climate change? Social media (e.g., Instgram, Facebook, Twitter, TikTok), School programs, TV/Youtube, News articles, Websites, Podcasts, Community events, Email newsletters.
 
 **General Perception: **
+
 18. Do you believe that individual actions can make a significant difference in combating climate change? Yes, No, Not sure
 
 19. In your opinion, which of the following should be prioritized to encourage more sustainable behaviors? (Select up to two), Making sustainable actions more affordable, Providing more education and awareness about climate change, Improving the accessibility of sustainable options, Encouraging government policies and incentives for sustainable behaviors, Creating a societal norm where sustainable actions are expected and practiced
@@ -671,14 +707,14 @@ Thank you for your response. We greatly appreciate the time, effort, and honesty
 # Additional data details
 After data collection, the responses will be cleaned, coded, and analyzed using appropriate statistical methods. Analysis will focus on identifying correlations between demographic factors (age, education, income, geography) and engagement in climate-friendly behaviors. The data will also be examined for patterns in barriers to participation and preferences for information delivery. These findings will provide the basis for actionable recommendations to improve climate change education and encourage greater participation in sustainable behaviors.
 
-## Simlation Process {sec-simulation-process}
+## Simlation Process
 For the purposes of this study, I simulated data to investigate various factors related to climate change behaviors, including demographics, education levels, awareness of climate change causes, and preferences for communication methods. The simulated dataset consists of 404 entries, each representing an individual. To create this dataset, I used the `tidyverse` and `arrow` packages in R and set a seed value `(set.seed(853))` to ensure the results were reproducible. I generated the following variables:
 
 The age variable was sampled randomly from a range between 18 and 100 years old. For education, I created several categories, such as "high school or less," "some community college/trade school," and "postgraduate/professional school," with an option for "prefer not to answer." The informed variable was categorized into four levels, from "extremely informed" to "not at all informed," reflecting the extent to which individuals felt knowledgeable about climate change causes. To capture the likelihood of engaging in climate-friendly actions, I simulated the likelihood of taking action variable, with responses ranging from "already doing this or have done this" to "very unlikely." Finally, the communication method variable explored how individuals preferred to receive climate-related information, with options such as "Toronto.ca website," "social media platforms," and "advertising campaigns," among others.
 
 I used random sampling to generate values for each of these variables, ensuring a broad range of responses. After generating the data, I summarized it to verify its structure and consistency. The dataset was then saved as a `.parquet` file for further analysis. This approach allowed me to simulate a diverse set of responses and explore potential relationships between demographic factors, climate awareness, and willingness to engage in climate-friendly behaviors, all while maintaining the flexibility of synthetic data.
 
-## Data cleaning {#sec-data-cleaning}
+## Data cleaning
 
 ### 2018 Individual Data
 The cleaning process for the 2018 individual data began with selecting six key questions from the survey, focusing on variables that would provide insights into individual perceptions and behaviors regarding climate change. The corresponding columns were extracted and renamed with meaningful, descriptive names for clarity. The selected variables included age, the extent to which individuals consider themselves informed about the causes of climate change, the likelihood of taking specific climate actions, reasons for inaction (if they indicated they were unlikely to act), the highest level of education completed, and preferred methods for the city to deliver information about climate change and climate action.
